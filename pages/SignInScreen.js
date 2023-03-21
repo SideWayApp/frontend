@@ -5,15 +5,25 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  KeyboardAvoidingView,
 } from "react-native";
 
+import {
+  BigStyledButton,
+  StyledTextInput,
+  globalStyles,
+} from "../components/Styles";
+
+import { useNavigation, useRoute } from "@react-navigation/native";
+
 function SignInScreen() {
+  const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSignIn = () => {
-    // Implement your sign-in logic here
     console.log("Signing in with email:", email, "and password:", password);
+    navigation.navigate("Home");
   };
 
   const handleForgotPassword = () => {
@@ -25,24 +35,30 @@ function SignInScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Sign In</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={globalStyles.container}
+    >
+      <Text style={globalStyles.title}>Sign In</Text>
       <TextInput
-        style={styles.input}
+        style={globalStyles.input}
+        keyboardType="email-address"
         placeholder="Email"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={(e) => {
+          setEmail(e);
+        }}
       />
       <TextInput
-        style={styles.input}
+        style={globalStyles.input}
         placeholder="Password"
         secureTextEntry
         value={password}
-        onChangeText={setPassword}
+        onChangeText={(e) => {
+          setPassword(e);
+        }}
       />
-      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
-        <Text style={styles.buttonText}>Sign In</Text>
-      </TouchableOpacity>
+      <BigStyledButton callback={handleSignIn} text="Sign In" />
       <TouchableOpacity
         style={styles.forgotPasswordButton}
         onPress={handleForgotPassword}
@@ -52,43 +68,11 @@ function SignInScreen() {
       <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
         <Text style={styles.signUpText}>Don't have an account? Sign Up</Text>
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    // justifyContent: "center",
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  input: {
-    width: "100%",
-    height: 50,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: "blue",
-    width: "100%",
-    height: 50,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 18,
-  },
   forgotPasswordButton: {
     marginTop: 10,
   },
