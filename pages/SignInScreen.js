@@ -10,11 +10,10 @@ import {
 
 import {
   BigStyledButton,
-  StyledTextInput,
-  globalStyles,
-} from "../components/Styles";
-
-import { useNavigation, useRoute } from "@react-navigation/native";
+  StyledTitle,
+} from "../components/AuthFormsComponents";
+import { globalStyles } from "../Styles/GlobalStyles";
+import { useNavigation } from "@react-navigation/native";
 
 function SignInScreen() {
   const navigation = useNavigation();
@@ -31,7 +30,7 @@ function SignInScreen() {
   };
 
   const handleSignUp = () => {
-    // handle sign-up logic here
+    navigation.navigate("Sign Up");
   };
 
   return (
@@ -39,7 +38,7 @@ function SignInScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={globalStyles.container}
     >
-      <Text style={globalStyles.title}>Sign In</Text>
+      <StyledTitle title="Sign In" />
       <TextInput
         style={globalStyles.input}
         keyboardType="email-address"

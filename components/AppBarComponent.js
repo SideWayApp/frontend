@@ -8,13 +8,13 @@ function AppBarComponent({ showBackButton }) {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const isSignInPage = route.name === "Sign In";
+  const isHomeInPage = route.name === "Home";
 
   return (
     <AppBar
       style={styles.appbar}
       leading={(props) => {
-        if (!isSignInPage) {
+        if (isHomeInPage) {
           return (
             <IconButton
               icon={(props) => <Icon name="account" {...props} />}
