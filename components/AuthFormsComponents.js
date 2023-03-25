@@ -5,12 +5,11 @@ import {
   StyleSheet,
   View,
   Modal,
-  Pressable,
   Button,
 } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 
-const genderOptions = ["Male", "Female", "Preffered Not to Say"];
+const genderOptions = ["Male", "Female"];
 
 const ageOptions = ["18-24", "25-34", "35-44", "45-54", "55-64", "65+"];
 
@@ -48,15 +47,14 @@ const StyledPicker = ({ data, title, callback }) => {
         callback(selectedItem);
       }}
       buttonTextAfterSelection={(selectedItem, index) => {
-        // text represented after item is selected
-        // if data array is an array of objects then return selectedItem.property to render after item is selected
         return selectedItem;
       }}
       rowTextForSelection={(item, index) => {
-        // text represented for each item in dropdown
-        // if data array is an array of objects then return item.property to represent item in dropdown
         return item;
       }}
+      dropdownStyle={styles.pickerDropdown}
+      buttonStyle={styles.pickerButton}
+      textStyle={styles.pickerText}
     />
   );
 };
@@ -121,8 +119,29 @@ const styles = StyleSheet.create({
   },
   pickerRow: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    justifyContent: "center",
+    marginBottom: 10,
   },
-  picker: { marginBottom: 10 },
+  pickerDropdown: {
+    width: "40%",
+    height: 100,
+    borderRadius: 10,
+    backgroundColor: "#EAEAEA",
+    marginHorizontal: 10,
+  },
+  pickerButton: {
+    width: "40%",
+    height: 50,
+    backgroundColor: "#EAEAEA",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+    marginHorizontal: 10,
+  },
+  pickerText: {
+    color: "#333333",
+    fontSize: 18,
+  },
 });
