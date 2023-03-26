@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { TextInput, KeyboardAvoidingView } from "react-native";
+import {
+  TextInput,
+  KeyboardAvoidingView,
+  ActivityIndicator,
+} from "react-native";
 
 import {
   BigStyledButton,
@@ -83,6 +87,11 @@ const SignUpScreen = () => {
         }}
       />
       <BigStyledButton callback={handleSignUp} text="Sign Up" />
+      <ActivityIndicator
+        animating="false"
+        style={{ marginTop: 20 }}
+        size="large"
+      />
     </KeyboardAvoidingView>
   );
 };
