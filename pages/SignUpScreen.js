@@ -9,11 +9,11 @@ import {
   BigStyledButton,
   StyledTitle,
   PickerRow,
-  SignUpdModal,
+  PrefrencesModal,
 } from "../components/AuthFormsComponents";
 import { globalStyles } from "../Styles/GlobalStyles";
 import { useNavigation } from "@react-navigation/native";
-
+import { signUpUser } from "../axios";
 const SignUpScreen = () => {
   const navigation = useNavigation();
   const [signUpData, setSignUpData] = useState({
@@ -31,17 +31,30 @@ const SignUpScreen = () => {
     console.log(age);
     setIsModalVisible(true);
   };
-
-  const handleModalClose = () => {
+  const [loading, setLoading] = useState(false);
+  const handleModalClose = async (prefrences) => {
+    setLoading(true);
     setIsModalVisible(false);
+    const user = {
+      signUpData: signUpData,
+      prefrences: prefrences,
+    };
+    //add user validation
+
+    console.log(user);
+    const res = await signUpUser(user);
+    console.log(res);
+    navigation.navigate("Home");
   };
+
+  const handleSkip = () => {};
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={globalStyles.container}
     >
-      <SignUpdModal isVisible={isModalVisible} onClose={handleModalClose} />
+      <PrefrencesModal isVisible={isModalVisible} onClose={handleModalClose} />
       <StyledTitle title="Sign Up" />
       <TextInput
         style={globalStyles.input}
@@ -87,8 +100,9 @@ const SignUpScreen = () => {
         }}
       />
       <BigStyledButton callback={handleSignUp} text="Sign Up" />
+
       <ActivityIndicator
-        animating="false"
+        animating={loading}
         style={{ marginTop: 20 }}
         size="large"
       />

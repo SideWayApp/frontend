@@ -81,14 +81,14 @@ const ModalCheckbox = ({ title, onPress }) => {
   return (
     <View style={checkboxStyle.checkboxContainer}>
       <BouncyCheckbox
-        size={25}
+        size={35}
         fillColor="red"
         unfillColor="#FFFFFF"
         text={title}
         iconStyle={{ borderColor: "red" }}
         innerIconStyle={{ borderWidth: 2 }}
         onPress={(isChecked) => {
-          console.log(title, isChecked);
+          onPress(isChecked, title);
         }}
         textStyle={checkboxStyle.checkboxText}
       />
@@ -96,7 +96,11 @@ const ModalCheckbox = ({ title, onPress }) => {
   );
 };
 
-const ModalPreference = () => {
+const Prefrences = ({ setPreference }) => {
+  const onPress = (isChecked, title) => {
+    console.log(title, isChecked);
+    setPreference((oldData) => ({ ...oldData, title: isChecked }));
+  };
   return (
     <View
       style={{
@@ -104,16 +108,23 @@ const ModalPreference = () => {
         paddingLeft: 50,
       }}
     >
-      <ModalCheckbox title="Clean" />
-      <ModalCheckbox title="Security" />
-      <ModalCheckbox title="Scenery" />
-      <ModalCheckbox title="Speed" />
-      <ModalCheckbox title="Accessiblity" />
+      <ModalCheckbox onPress={onPress} title="Clean" />
+      <ModalCheckbox onPress={onPress} title="Security" />
+      <ModalCheckbox onPress={onPress} title="Scenery" />
+      <ModalCheckbox onPress={onPress} title="Speed" />
+      <ModalCheckbox onPress={onPress} title="Accessiblity" />
     </View>
   );
 };
 
-export const SignUpdModal = ({ isVisible, onClose }) => {
+export const PrefrencesModal = ({ isVisible, onClose }) => {
+  const [prefrences, setPreference] = useState({
+    Clean: false,
+    Security: false,
+    Scenery: false,
+    Speed: false,
+    Accessibility: false,
+  });
   return (
     <Modal
       onBackdropPress={onClose}
@@ -122,31 +133,39 @@ export const SignUpdModal = ({ isVisible, onClose }) => {
       animationType="slide"
       presentationStyle="pageSheet"
     >
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignContent: "center",
-          height: "60%",
+      <ModalTitle title="Set up your prefrences" />
+      <Prefrences setPreference={setPreference} />
+      <ModalSubmitButton onPress={() => onClose(prefrences)} title="Submit" />
+      <TouchableOpacity
+        style={modalStyles.skipButton}
+        onPress={() => {
+          {
+          }
         }}
       >
-        <ModalTitle title="Set up your prefrences" />
-        <ModalPreference />
-
-        <ModalSubmitButton onPress={() => onClose()} title="Submit" />
-      </View>
+        <Text style={modalStyles.skipText}>Skip</Text>
+      </TouchableOpacity>
     </Modal>
   );
 };
 
 const modalStyles = StyleSheet.create({
+  skipButton: {
+    marginTop: 20,
+  },
+  skipText: {
+    textAlign: "center",
+    color: "black",
+    fontSize: 18,
+    textDecorationLine: "underline",
+  },
   modalButton: {
     backgroundColor: "#007AFF",
     borderRadius: 10,
     height: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,
+    marginTop: "10%",
     marginHorizontal: 20,
   },
   modalButtonText: {
@@ -161,7 +180,7 @@ const modalStyles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     marginTop: 10,
-    marginBottom: 40,
+    marginBottom: "15%",
   },
   centeredView: {
     flex: 1,
