@@ -6,8 +6,10 @@ import {
   View,
   Modal,
   Button,
+  CheckBox,
 } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const genderOptions = ["Male", "Female"];
 
@@ -59,6 +61,58 @@ const StyledPicker = ({ data, title, callback }) => {
   );
 };
 
+const ModalTitle = ({ title }) => {
+  return (
+    <View style={modalStyles.modalTitleContainer}>
+      <Text style={modalStyles.title}>{title}</Text>
+    </View>
+  );
+};
+
+const ModalSubmitButton = ({ title, onPress }) => {
+  return (
+    <TouchableOpacity style={modalStyles.modalButton} onPress={onPress}>
+      <Text style={modalStyles.modalButtonText}>{title}</Text>
+    </TouchableOpacity>
+  );
+};
+
+const ModalCheckbox = ({ title, onPress }) => {
+  return (
+    <View style={checkboxStyle.checkboxContainer}>
+      <BouncyCheckbox
+        size={25}
+        fillColor="red"
+        unfillColor="#FFFFFF"
+        text={title}
+        iconStyle={{ borderColor: "red" }}
+        innerIconStyle={{ borderWidth: 2 }}
+        onPress={(isChecked) => {
+          console.log(title, isChecked);
+        }}
+        textStyle={checkboxStyle.checkboxText}
+      />
+    </View>
+  );
+};
+
+const ModalPreference = () => {
+  return (
+    <View
+      style={{
+        flexDirection: "column",
+        paddingLeft: 50,
+      }}
+    >
+      <ModalCheckbox title="Clean" />
+      <ModalCheckbox title="Security" />
+      <ModalCheckbox title="Scenery" />
+      <ModalCheckbox title="Speed" />
+      <ModalCheckbox title="Accessiblity" />
+    </View>
+  );
+};
+
 export const SignUpdModal = ({ isVisible, onClose }) => {
   return (
     <Modal
@@ -68,17 +122,47 @@ export const SignUpdModal = ({ isVisible, onClose }) => {
       animationType="slide"
       presentationStyle="pageSheet"
     >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Button onPress={() => onClose()} title="Close" />
-          <Text>Modal</Text>
-        </View>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignContent: "center",
+          height: "60%",
+        }}
+      >
+        <ModalTitle title="Set up your prefrences" />
+        <ModalPreference />
+
+        <ModalSubmitButton onPress={() => onClose()} title="Submit" />
       </View>
     </Modal>
   );
 };
 
-const styles = StyleSheet.create({
+const modalStyles = StyleSheet.create({
+  modalButton: {
+    backgroundColor: "#007AFF",
+    borderRadius: 10,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+    marginHorizontal: 20,
+  },
+  modalButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  modalTitleContainer: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+    backgroundColor: "#fff",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginTop: 10,
+    marginBottom: 40,
+  },
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -101,9 +185,18 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+});
+
+const styles = StyleSheet.create({
+  title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+    textAlign: "center",
   },
   buttonText: {
     color: "white",
@@ -143,5 +236,20 @@ const styles = StyleSheet.create({
   pickerText: {
     color: "#333333",
     fontSize: 18,
+  },
+});
+
+const checkboxStyle = StyleSheet.create({
+  checkboxContainer: {
+    paddingTop: 15,
+  },
+  checkbox: {
+    alignSelf: "center",
+  },
+  label: {
+    margin: 8,
+  },
+  checkboxText: {
+    textDecorationLine: "none",
   },
 });
