@@ -5,8 +5,7 @@ import {
   StyleSheet,
   View,
   Modal,
-  Button,
-  CheckBox,
+  Alert,
 } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
@@ -98,7 +97,7 @@ const ModalCheckbox = ({ title, onPress }) => {
 
 const Prefrences = ({ setPreference }) => {
   const onPress = (isChecked, title) => {
-    console.log(title, isChecked);
+    // console.log(title);
     setPreference((oldData) => ({ ...oldData, title: isChecked }));
   };
   return (
@@ -117,7 +116,7 @@ const Prefrences = ({ setPreference }) => {
   );
 };
 
-export const PrefrencesModal = ({ isVisible, onClose }) => {
+export const PrefrencesModal = ({ isVisible, onClose, handleSkip }) => {
   const [prefrences, setPreference] = useState({
     Clean: false,
     Security: false,
@@ -139,14 +138,23 @@ export const PrefrencesModal = ({ isVisible, onClose }) => {
       <TouchableOpacity
         style={modalStyles.skipButton}
         onPress={() => {
-          {
-          }
+          handleSkip();
         }}
       >
         <Text style={modalStyles.skipText}>Skip</Text>
       </TouchableOpacity>
     </Modal>
   );
+};
+
+export const StyledAlert = ({ error, setError }) => {
+  Alert.alert(
+    "Error",
+    error,
+    [{ text: "OK", onPress: () => setError(false) }],
+    { cancelable: false }
+  );
+  return null;
 };
 
 const modalStyles = StyleSheet.create({

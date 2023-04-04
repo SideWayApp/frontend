@@ -26,5 +26,8 @@ export const getDirections = async (origin, destination, preference) => {
     preference: "clean",*/
 
 export const signUpUser = async (userData) => {
+  let data = userData;
+  delete data.signUpData.rePassword;
+  console.log(data);
   return "done";
 };
