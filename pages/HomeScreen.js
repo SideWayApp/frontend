@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState,useRef } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 import DirectionsComponent from "../components/DirectionsComponent";
 import MapView ,{PROVIDER_GOOGLE,Marker} from "react-native-maps";
-import MapViewDirections from 'react-native-google-maps-directions';
+import MapViewDirections from 'react-native-maps-directions';
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GOOGLE_API_KEY } from "@env";
 const { width, height } = Dimensions.get("window");
+import { getDirections } from 'react-native-google-maps-directions';
 
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.02;
@@ -21,14 +22,31 @@ const HomeScreen = () =>{
   const [origin, setOrigin] = useState("")
   const [destination, setDestination] = useState("");
   const [preference, setPreference] = useState("fastest");
-  const [originCoordinates,setOriginCoordinates] = useState(null);
-  const [destinationCoordinates,setDestinationCoordinates] = useState(null);
-  
+  const [originCoordinates,setOriginCoordinates] = useState("");
+  const [destinationCoordinates,setDestinationCoordinates] = useState();
+  const [wayPointArr, setWayPointsArr] = useState([]);
+  const mapRef = useRef(null);
+  //provider={PROVIDER_GOOGLE}  
   return (
     <View style={styles.container}>
-      <DirectionsComponent originCoordinates={originCoordinates} setOriginCoordinates={setOriginCoordinates} destinationCoordinates={destinationCoordinates} setDestinationCoordinates={setDestinationCoordinates} origin={origin} setOrigin={setOrigin} destination={destination} setDestination={setDestination} preference={preference} setPreference={setPreference} />
-      <MapView style={styles.map} provider={PROVIDER_GOOGLE} initialRegion={INITIAL_POSITION}>
+      <DirectionsComponent setWayPointsArr={setWayPointsArr} setOriginCoordinates={setOriginCoordinates} setDestinationCoordinates={setDestinationCoordinates} origin={origin} setOrigin={setOrigin} destination={destination} setDestination={setDestination} preference={preference} setPreference={setPreference} />
+      <MapView style={styles.map}  initialRegion={INITIAL_POSITION}>
+        <MapViewDirections
+          origin={{latitude:32.0925377,longitude:34.7897462}}
+          destination={{latitude:32.1189037,longitude:34.8396364}}
+          waypoints={wayPointArr}
+          apikey={//apikey} // insert your API Key here
+          strokeWidth={4}
+          onReady={(result)=>{
+            mapRef.fitToCoordinates(result.coordinates, {
+            edgePadding: { top: 20, right: 20, bottom: 20, left: 20 },
+            });
+          }}
+          mode="WALKING"
+          strokeColor="#111111"
+        />
         <Marker coordinate={{latitude: originCoordinates.y, longitude: originCoordinates.x}} title="Origin"/>
+        <Marker coordinate={{latitude: destinationCoordinates.y, longitude: destinationCoordinates.x}} title="Destination"/>
       </MapView>
       </View>
   );
