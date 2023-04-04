@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useRef } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 import DirectionsComponent from "../components/DirectionsComponent";
 import MapView ,{PROVIDER_GOOGLE,Marker} from "react-native-maps";
@@ -22,21 +22,26 @@ const HomeScreen = () =>{
   const [origin, setOrigin] = useState("")
   const [destination, setDestination] = useState("");
   const [preference, setPreference] = useState("fastest");
-  const [originCoordinates,setOriginCoordinates] = useState({x:INITIAL_POSITION.longitude, y:INITIAL_POSITION.latitude});
-  const [destinationCoordinates,setDestinationCoordinates] = useState({x:INITIAL_POSITION.longitude, y:INITIAL_POSITION.latitude});
+  const [originCoordinates,setOriginCoordinates] = useState("");
+  const [destinationCoordinates,setDestinationCoordinates] = useState();
   const [wayPointArr, setWayPointsArr] = useState([]);
+  const mapRef = useRef(null);
   //provider={PROVIDER_GOOGLE}  
   return (
     <View style={styles.container}>
       <DirectionsComponent setWayPointsArr={setWayPointsArr} setOriginCoordinates={setOriginCoordinates} setDestinationCoordinates={setDestinationCoordinates} origin={origin} setOrigin={setOrigin} destination={destination} setDestination={setDestination} preference={preference} setPreference={setPreference} />
       <MapView style={styles.map}  initialRegion={INITIAL_POSITION}>
-
         <MapViewDirections
           origin={{latitude:32.0925377,longitude:34.7897462}}
           destination={{latitude:32.1189037,longitude:34.8396364}}
           waypoints={wayPointArr}
-          apikey={"AIzaSyDm0KEBdWg5Ri_G5EXX8IHieg5ZiiJDAaI"} // insert your API Key here
+          apikey={//apikey} // insert your API Key here
           strokeWidth={4}
+          onReady={(result)=>{
+            mapRef.fitToCoordinates(result.coordinates, {
+            edgePadding: { top: 20, right: 20, bottom: 20, left: 20 },
+            });
+          }}
           mode="WALKING"
           strokeColor="#111111"
         />
