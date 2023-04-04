@@ -1,7 +1,7 @@
 import React, { useState,useRef } from "react";
 import { View, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { getDirections } from "../axios";
+import { getDirectionsOne,getWayPoints} from "../axios";
 import {
   Stack,
   TextInput,
@@ -13,11 +13,15 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 const DirectionsComponent = (props) => {
   const handleGetDirections = async () => {
     try {
-      const directions = await getDirections(props.origin, props.destination, props.preference);
+      const directions = await getDirectionsOne(props.origin, props.destination, props.preference);
+      const wayPointArr = await getWayPoints(props.origin,props.destination,props.preference);
+      props.setWayPointsArr(wayPointArr)
       console.log(directions[0])
       const startLocation = directions[0].start_location;
+      const endLocation = directions[1].end_location;
       props.setOriginCoordinates({x: startLocation.x,y:startLocation.y});
-  
+      props.setDestinationCoordinates({x:endLocation.x, y:endLocation.y});
+      //const directionsRenderer = new google.maps.DirectionsRenderer();  
     } catch (error) {
       console.error(error);
     }
