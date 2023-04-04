@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 import DirectionsComponent from "../components/DirectionsComponent";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView ,{PROVIDER_GOOGLE,Marker} from "react-native-maps";
+import MapViewDirections from 'react-native-google-maps-directions';
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GOOGLE_API_KEY } from "@env";
 const { width, height } = Dimensions.get("window");
@@ -16,38 +17,20 @@ const INITIAL_POSITION = {
   longitudeDelta: LONGITUDE_DELTA,
 };
 
-function HomeScreen() {
-  const [origin, setOrigin] = useState({});
-  // const [destination, setDestination] = useState({});
+const HomeScreen = () =>{
+  const [origin, setOrigin] = useState("")
+  const [destination, setDestination] = useState("");
+  const [preference, setPreference] = useState("fastest");
+  const [originCoordinates,setOriginCoordinates] = useState(null);
+  const [destinationCoordinates,setDestinationCoordinates] = useState(null);
+  
   return (
     <View style={styles.container}>
-      <DirectionsComponent />
-      <MapView
-        style={styles.map}
-        provider={PROVIDER_GOOGLE}
-        initialRegion={INITIAL_POSITION}
-      />
-      {/* <View style={styles.searchContainer}>
-        <GooglePlacesAutocomplete
-          styles={{ textInput: styles.input }}
-          placeholder="Search"
-          debounce={400}
-          onPress={(data, details = null) => {
-            setOrigin({
-              location: details.geometry.location,
-              description: data.description,
-            });
-            console.log(details);
-          }}
-          fetchDetails={true}
-          returnKeyType={"search"}
-          query={{
-            key: GOOGLE_API_KEY,
-            language: "en",
-          }}
-        />
-      </View> */}
-    </View>
+      <DirectionsComponent originCoordinates={originCoordinates} setOriginCoordinates={setOriginCoordinates} destinationCoordinates={destinationCoordinates} setDestinationCoordinates={setDestinationCoordinates} origin={origin} setOrigin={setOrigin} destination={destination} setDestination={setDestination} preference={preference} setPreference={setPreference} />
+      <MapView style={styles.map} provider={PROVIDER_GOOGLE} initialRegion={INITIAL_POSITION}>
+        <Marker coordinate={{latitude: originCoordinates.y, longitude: originCoordinates.x}} title="Origin"/>
+      </MapView>
+      </View>
   );
 }
 

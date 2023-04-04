@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useRef } from "react";
 import { View, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { getDirections } from "../axios";
@@ -10,16 +10,14 @@ import {
 } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
-const DirectionsComponent = () => {
-  const [origin, setOrigin] = useState("");
-  const [destination, setDestination] = useState("");
-  const [preference, setPreference] = useState("fastest"); // Set default preference value
-
+const DirectionsComponent = (props) => {
   const handleGetDirections = async () => {
     try {
-      const directions = await getDirections(origin, destination, preference);
-      console.log(directions);
-      // Do something with the directions, e.g. render a map
+      const directions = await getDirections(props.origin, props.destination, props.preference);
+      console.log(directions[0])
+      const startLocation = directions[0].start_location;
+      props.setOriginCoordinates({x: startLocation.x,y:startLocation.y});
+  
     } catch (error) {
       console.error(error);
     }
@@ -31,14 +29,14 @@ const DirectionsComponent = () => {
         <TextInput
           label="Origin"
           variant="outlined"
-          value={origin}
-          onChangeText={setOrigin}
+          value={props.origin}
+          onChangeText={props.setOrigin}
         />
         <TextInput
           label="Destination"
           variant="outlined"
-          value={destination}
-          onChangeText={setDestination}
+          value={props.destination}
+          onChangeText={props.setDestination}
         />
         {/* <Picker selectedValue={preference} onValueChange={setPreference}>
 					<Picker.Item label="Clean" value="clean" />
