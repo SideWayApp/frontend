@@ -1,6 +1,6 @@
 import React, { useState,useRef,useEffect } from "react";
-import { View, StyleSheet, Dimensions,TouchableOpacity, Text, PermissionsAndroid } from "react-native";
-import MapView ,{Marker} from "react-native-maps";
+import { View, StyleSheet, Dimensions,TouchableOpacity,Image, Text,Button, PermissionsAndroid } from "react-native";
+import MapView ,{Marker,Callout} from "react-native-maps";
 import MapViewDirections from 'react-native-maps-directions';
 import { GOOGLE_API_KEY } from "@env";
 import { getDirections } from 'react-native-google-maps-directions';
@@ -9,7 +9,7 @@ import Geolocation from 'react-native-geolocation-service';
 import * as Location from 'expo-location';
 
 const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 0.0001;
+const LATITUDE_DELTA = 0.02;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const INITIAL_POSITION = {
   latitude: 32.0853,
@@ -22,6 +22,7 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
     const mapRef = useRef(null);
     const [location, setLocation] = useState(null);
     const userLocation = useState(null);
+    const [deltaChanged,isDeltaChanged] = useState(false);
     useEffect(()=>{
         const getPermissions = async () =>{
             let {status} = await Location.requestForegroundPermissionsAsync();
@@ -36,6 +37,21 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
         getPermissions();
     },[])
     
+    const deltaNavigation = () => {
+        const newLatitudeDelta = 0.0001;
+        const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+
+        // Create a new position object with the updated latitudeDelta and longitudeDelta
+        const newPosition = {
+            ...INITIAL_POSITION,
+            latitudeDelta: newLatitudeDelta,
+            longitudeDelta: newLongitudeDelta,
+        };
+
+        // Set the new position as the region of the map
+        mapRef.current.animateToRegion(newPosition);    
+    }
+
     const moveTo = async()=>{
         const camera = await mapRef.current.getCamera();
         if (camera){
@@ -43,15 +59,22 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
             mapRef.current.animateCamera(camera,{duration:1000});
         }
     }
-
+    
     return (
-    <View>
+    <View style={styles.container}>
         <MapView style={styles.map}  initialRegion={INITIAL_POSITION} ref={mapRef}>  
             {isDirection &&  moveTo()  &&(
             <>
                 <Marker coordinate={{latitude:wayPointArr[0].latitude,longitude:wayPointArr[0].longitude}} title="Origin"/>
                 <Marker coordinate={{latitude:wayPointArr[lastIndex].latitude,longitude:wayPointArr[lastIndex].longitude}} title="Destination"/>
-                <Marker coordinate={{latitude:location.coords.latitude,longitude: location.coords.longitude}} title="My Phone"/>
+                <Marker coordinate={{latitude:location.coords.latitude,longitude: location.coords.longitude}}>
+                    <Callout>
+                        <View style={styles.callout}>
+                            <Text>Marker Title</Text>
+                            <Image source={{ uri: 'https://example.com/my-image.jpg' }} style={{ width: 200, height: 200 }} resizeMode="contain"/>
+                        </View>
+                    </Callout>
+                </Marker>
                 <MapViewDirections
                     origin={{latitude:wayPointArr[0].latitude,longitude:wayPointArr[0].longitude}}
                     destination={{latitude:wayPointArr[lastIndex].latitude,longitude:wayPointArr[lastIndex].longitude}}
@@ -63,15 +86,30 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
                 />
             </>
         )}
-        </MapView>  
+        </MapView> 
+        <View style={styles.buttonContainer}>
+        <Button title="Back To Navigation" onPress={deltaNavigation} />
+      </View> 
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative',
+  },  
   map: {
     width: "100%",
     height: "100%",
     alignItems: "center",
   },
+  callout: {
+    alignItems: 'center',
+  },
+  buttonContainer: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+  }
 });
