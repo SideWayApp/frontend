@@ -1,25 +1,7 @@
-import React, { useState,useRef } from "react";
-import { View, StyleSheet, Dimensions,TouchableOpacity, Text } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet } from "react-native";
 import DirectionsComponent from "../components/DirectionsComponent";
-import MapView ,{PROVIDER_GOOGLE,Marker} from "react-native-maps";
-import MapViewDirections from 'react-native-maps-directions';
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { GOOGLE_API_KEY } from "@env";
-const { width, height } = Dimensions.get("window");
-
-import { getDirections } from 'react-native-google-maps-directions';
-import { Navigation, Colors } from 'react-native-maps-navigation';
-
-const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 0.00001;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-const INITIAL_POSITION = {
-  latitude: 32.0853,
-  longitude: 34.781769,
-  latitudeDelta: LATITUDE_DELTA,
-  longitudeDelta: LONGITUDE_DELTA,
-};
-
+import MapComponent from '../components/MapComponent';
 const HomeScreen = () =>{
   const [origin, setOrigin] = useState("")
   const [destination, setDestination] = useState("");
@@ -32,24 +14,7 @@ const HomeScreen = () =>{
   return (
     <View style={styles.container}>
       <DirectionsComponent isDirection={isDirection} setIsDirection={setIsDirection} setWayPointsArr={setWayPointsArr} origin={origin} setOrigin={setOrigin} destination={destination} setDestination={setDestination} preference={preference} setPreference={setPreference} />
-      <MapView style={styles.map}  initialRegion={INITIAL_POSITION}>  
-      {isDirection &&  
-        <>
-          <Marker coordinate={{latitude:wayPointArr[0].latitude,longitude:wayPointArr[0].longitude}} title="Origin"/>
-          <Marker coordinate={{latitude:wayPointArr[lastIndex].latitude,longitude:wayPointArr[lastIndex].longitude}} title="Destination"/>
-          <Marker coordinate={{latitude: wayPointArr[2].latitude, longitude: wayPointArr[2].longitude}} title="You" icon={require("../smallicon1.jpg")} style={{height:20,width:20}}/>
-          <MapViewDirections
-            origin={{latitude:wayPointArr[0].latitude,longitude:wayPointArr[0].longitude}}
-            destination={{latitude:wayPointArr[lastIndex].latitude,longitude:wayPointArr[lastIndex].longitude}}
-            waypoints={wayPointArr}
-            apikey={GOOGLE_API_KEY} 
-            strokeWidth={3}
-            mode="WALKING"
-            strokeColor="black"
-          />
-        </>
-      }
-    </MapView>
+      <MapComponent isDirection={isDirection} origin={origin} destination={destination} preference={preference} wayPointArr={wayPointArr}/>
     </View>
   );
 }
