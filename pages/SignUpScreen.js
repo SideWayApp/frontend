@@ -32,33 +32,47 @@ const SignUpScreen = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const handleSignUp = () => {
     setSignUpData((prev) => ({ ...prev, gender: gender, age: age }));
-    // const validation = validateSignUpData();
-    // if (validation === null) {
-    setIsModalVisible(true);
-    // } else {
-    //   console.log(validation);
-    //   setError(true);
-    //   setErrorMessage(validation);
-    //   setLoading(false);
-    // }
+    const validation = validateSignUpData();
+    if (validation === null) {
+      setIsModalVisible(true);
+    } else {
+      console.log(validation);
+      setError(true);
+      setErrorMessage(validation);
+      setLoading(false);
+    }
   };
   const [loading, setLoading] = useState(false);
-  const handleModalClose = async (prefrences) => {
+  const handleModalClose = async (preferences) => {
     setLoading(true);
     setIsModalVisible(false);
 
     const user = {
-      signUpData: signUpData,
-      prefrences: prefrences,
+      email: signUpData.email,
+      password: signUpData.password,
+      signUpData: {
+        name: signUpData.name,
+        gender: signUpData.gender,
+        age: signUpData.age,
+      },
+      preferences: preferences,
     };
     const res = await signUpUser(user);
+    setLoading(false);
+
     navigation.navigate("Home");
   };
 
   const handleSkip = async () => {
     const user = {
-      signUpData: signUpData,
-      prefrences: {},
+      email: signUpData.email,
+      password: signUpData.password,
+      signUpData: {
+        name: signUpData.name,
+        gender: signUpData.gender,
+        age: signUpData.age,
+      },
+      preferences: {},
     };
 
     const res = await signUpUser(user);
@@ -86,7 +100,7 @@ const SignUpScreen = () => {
       return "Password is required.";
     }
 
-    if (password.length < 8) {
+    if (password.length < 6) {
       return "Password should be at least 8 characters.";
     }
 

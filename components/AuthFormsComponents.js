@@ -97,8 +97,32 @@ const ModalCheckbox = ({ title, onPress }) => {
 
 const Prefrences = ({ setPreference }) => {
   const onPress = (isChecked, title) => {
-    // console.log(title);
-    setPreference((oldData) => ({ ...oldData, title: isChecked }));
+    setPreference((oldData) => {
+      // Create a new object to update the preferences
+      const newPreferences = { ...oldData };
+      // Update the appropriate field based on the title
+      switch (title) {
+        case "Clean":
+          newPreferences.clean = isChecked;
+          break;
+        case "Security":
+          newPreferences.security = isChecked;
+          break;
+        case "Scenery":
+          newPreferences.scenery = isChecked;
+          break;
+        case "Speed":
+          newPreferences.speed = isChecked;
+          break;
+        case "Accessibility":
+          newPreferences.accessibility = isChecked;
+          break;
+        default:
+          break;
+      }
+      // Return the updated preferences
+      return newPreferences;
+    });
   };
   return (
     <View
@@ -118,11 +142,11 @@ const Prefrences = ({ setPreference }) => {
 
 export const PrefrencesModal = ({ isVisible, onClose, handleSkip }) => {
   const [prefrences, setPreference] = useState({
-    Clean: false,
-    Security: false,
-    Scenery: false,
-    Speed: false,
-    Accessibility: false,
+    clean: false,
+    security: false,
+    scenery: false,
+    speed: false,
+    accessibility: false,
   });
   return (
     <Modal
