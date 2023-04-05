@@ -8,21 +8,13 @@ const { width, height } = Dimensions.get("window");
 import Geolocation from 'react-native-geolocation-service';
 import * as Location from 'expo-location';
 
-const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 0.02;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-const INITIAL_POSITION = {
-  latitude: 32.0853,
-  longitude: 34.781769,
-  latitudeDelta: LATITUDE_DELTA,
-  longitudeDelta: LONGITUDE_DELTA,
-};
 
 export default function MapComponent({lastIndex,isDirection,origin,destination,preference,wayPointArr}) {
     const mapRef = useRef(null);
     const [location, setLocation] = useState(null);
     const userLocation = useState(null);
     const [deltaChanged,isDeltaChanged] = useState(false);
+    const [isNavigationStarted,setIsNavigationStarted] = useState(false);
     useEffect(()=>{
         const getPermissions = async () =>{
             let {status} = await Location.requestForegroundPermissionsAsync();
@@ -37,8 +29,19 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
         getPermissions();
     },[])
     
+
+    const ASPECT_RATIO = width / height;
+    const LATITUDE_DELTA = 0.02;
+    const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+    const INITIAL_POSITION = {
+        latitude:32.05169730746334,
+        longitude:  34.76187512527052,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+    };
+
     const deltaToMe = () => {
-        const newLatitudeDelta = 0.0001;
+        const newLatitudeDelta = 0.001;
         const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
 
         // Create a new position object with the updated latitudeDelta and longitudeDelta
@@ -56,7 +59,7 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
     const deltaStartNavigation = () => {
         const newLatitudeDelta = 0.001;
         const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
-
+        setIsNavigationStarted(true);
         // Create a new position object with the updated latitudeDelta and longitudeDelta
         const newPosition = {
             latitude: wayPointArr[0].latitude,
@@ -86,10 +89,10 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
                 <Marker coordinate={{latitude:wayPointArr[lastIndex].latitude,longitude:wayPointArr[lastIndex].longitude}} title="Destination"/>
                 <Marker coordinate={{latitude:location.coords.latitude,longitude: location.coords.longitude}}>
                     <Callout>
-                        <View style={styles.callout}>
-                            <Text>Marker Title</Text>
-                            <Image source={{ uri: 'https://example.com/my-image.jpg' }} style={{ width: 200, height: 200 }} resizeMode="contain"/>
-                        </View>
+                    <View style={styles.callout}>
+                        <Text>Marker Title</Text>
+                        <Image source={{ uri: 'https://example.com/my-image.jpg' }} style={{ width: 200, height: 200 }} resizeMode="contain"/>
+                    </View>
                     </Callout>
                 </Marker>
                 <MapViewDirections
@@ -109,12 +112,10 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
         </View>
         {isDirection && (
             <View style={styles.buttonStartNavigation}>
-                <Button title="Start Navigation" onPress={deltaStartNavigation}/>
+                <Button title={isNavigationStarted ? "Back To Navigation" : "Start Navigation"} onPress={deltaStartNavigation}/>
             </View>
         )}
-        
     </View>
-    
   )
 }
 
