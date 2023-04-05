@@ -1,67 +1,52 @@
-import React, { useState,useRef } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet } from "react-native";
 import DirectionsComponent from "../components/DirectionsComponent";
-import MapView ,{PROVIDER_GOOGLE,Marker} from "react-native-maps";
-import MapViewDirections from 'react-native-maps-directions';
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { GOOGLE_API_KEY } from "@env";
-const { width, height } = Dimensions.get("window");
-import { getDirections } from 'react-native-google-maps-directions';
-
-const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 0.02;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-const INITIAL_POSITION = {
-  latitude: 32.0853,
-  longitude: 34.781769,
-  latitudeDelta: LATITUDE_DELTA,
-  longitudeDelta: LONGITUDE_DELTA,
-};
-
+import MapComponent from '../components/MapComponent';
 const HomeScreen = () =>{
   const [origin, setOrigin] = useState("")
   const [destination, setDestination] = useState("");
   const [preference, setPreference] = useState("fastest");
-  const [originCoordinates,setOriginCoordinates] = useState("");
-  const [destinationCoordinates,setDestinationCoordinates] = useState();
-  const [wayPointArr, setWayPointsArr] = useState([]);
-  const mapRef = useRef(null);
-  //provider={PROVIDER_GOOGLE}  
+  const [isDirection,setIsDirection] = useState(false)
+  const [wayPointArr, setWayPointsArr] = useState([]);  
+
+  const lastIndex = wayPointArr.length-1;
+  
   return (
     <View style={styles.container}>
-      <DirectionsComponent setWayPointsArr={setWayPointsArr} setOriginCoordinates={setOriginCoordinates} setDestinationCoordinates={setDestinationCoordinates} origin={origin} setOrigin={setOrigin} destination={destination} setDestination={setDestination} preference={preference} setPreference={setPreference} />
-      <MapView style={styles.map}  initialRegion={INITIAL_POSITION}>
-        <MapViewDirections
-          origin={{latitude:32.0925377,longitude:34.7897462}}
-          destination={{latitude:32.1189037,longitude:34.8396364}}
-          waypoints={wayPointArr}
-          apikey={//apikey} // insert your API Key here
-          strokeWidth={4}
-          onReady={(result)=>{
-            mapRef.fitToCoordinates(result.coordinates, {
-            edgePadding: { top: 20, right: 20, bottom: 20, left: 20 },
-            });
-          }}
-          mode="WALKING"
-          strokeColor="#111111"
-        />
-        <Marker coordinate={{latitude: originCoordinates.y, longitude: originCoordinates.x}} title="Origin"/>
-        <Marker coordinate={{latitude: destinationCoordinates.y, longitude: destinationCoordinates.x}} title="Destination"/>
-      </MapView>
-      </View>
+      <DirectionsComponent isDirection={isDirection} setIsDirection={setIsDirection} setWayPointsArr={setWayPointsArr} origin={origin} setOrigin={setOrigin} destination={destination} setDestination={setDestination} preference={preference} setPreference={setPreference} />
+      <MapComponent lastIndex={lastIndex} isDirection={isDirection} origin={origin} destination={destination} preference={preference} wayPointArr={wayPointArr}/>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: "center",
-    // justifyContent: "center",
   },
   map: {
     width: "100%",
     height: "80%",
     alignItems: "center",
+  },
+  markerImage:{
+    width: "5",
+    height: "5",
+    borderRadius:"20",
+  },
+  button: {
+    position: 'absolute',
+    bottom: 16,
+    left: 16,
+    right: 16,
+    backgroundColor: 'blue',
+    borderRadius: 8,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   searchContainer: {
     position: "absolute",
