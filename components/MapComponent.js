@@ -33,7 +33,7 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
                     apikey={GOOGLE_API_KEY} 
                     strokeWidth={3}
                     mode="WALKING"
-                    strokeColor="black"
+                    strokeColor="red"
                 />
             </>
         }
