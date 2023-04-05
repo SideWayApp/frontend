@@ -17,11 +17,9 @@ const DirectionsComponent = (props) => {
       const wayPointArr = await getWayPoints(props.origin,props.destination,props.preference);
       props.setWayPointsArr(wayPointArr)
       console.log(directions[0])
+      props.setIsDirection(true);
       const startLocation = directions[0].start_location;
       const endLocation = directions[1].end_location;
-      props.setOriginCoordinates({x: startLocation.x,y:startLocation.y});
-      props.setDestinationCoordinates({x:endLocation.x, y:endLocation.y});
-      //const directionsRenderer = new google.maps.DirectionsRenderer();  
     } catch (error) {
       console.error(error);
     }
@@ -42,12 +40,6 @@ const DirectionsComponent = (props) => {
           value={props.destination}
           onChangeText={props.setDestination}
         />
-        {/* <Picker selectedValue={preference} onValueChange={setPreference}>
-					<Picker.Item label="Clean" value="clean" />
-					<Picker.Item label="Safe" value="safe" />
-					<Picker.Item label="Scenery" value="scenery" />
-					<Picker.Item label="Accessible" value="accessible" />
-				</Picker> */}
         <Button
           style={{ backgroundColor: "green" }}
           title="Get Directions"

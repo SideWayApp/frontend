@@ -9,7 +9,6 @@ export const getWayPoints = async(origin,destination,preference) =>{
     destination: destination,
     preference: preference,
   };
-  console.log(data);
   try {
     const response = await axios.post(
       "http://10.100.102.4:8080/directions/getWayPoints",
@@ -28,7 +27,6 @@ export const getDirectionsOne = async (origin, destination, preference) => {
     destination: destination,
     preference: preference,
   };
-  console.log(data);
   try {
     const response = await axios.post(
       "http://10.100.102.4:8080/directions/getXYListinBestRoute",
