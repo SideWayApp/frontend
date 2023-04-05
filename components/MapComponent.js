@@ -17,10 +17,10 @@ const INITIAL_POSITION = {
   longitudeDelta: LONGITUDE_DELTA,
 };
 
-export default function MapComponent({isDirection,origin,destination,preference,wayPointArr}) {
+export default function MapComponent({lastIndex,isDirection,origin,destination,preference,wayPointArr}) {
     return (
     <View>
-        <MapView style={styles.map}  initialRegion={INITIAL_POSITION} ref={mapRef}>  
+        <MapView style={styles.map}  initialRegion={INITIAL_POSITION}>  
             {isDirection &&  
             <>
                 <Marker coordinate={{latitude:wayPointArr[0].latitude,longitude:wayPointArr[0].longitude}} title="Origin"/>
@@ -33,7 +33,7 @@ export default function MapComponent({isDirection,origin,destination,preference,
                     apikey={GOOGLE_API_KEY} 
                     strokeWidth={3}
                     mode="WALKING"
-                    strokeColor="black"
+                    strokeColor="red"
                 />
             </>
         }
