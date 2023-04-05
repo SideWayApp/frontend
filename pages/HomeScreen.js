@@ -14,7 +14,7 @@ const HomeScreen = () =>{
   return (
     <View style={styles.container}>
       <DirectionsComponent isDirection={isDirection} setIsDirection={setIsDirection} setWayPointsArr={setWayPointsArr} origin={origin} setOrigin={setOrigin} destination={destination} setDestination={setDestination} preference={preference} setPreference={setPreference} />
-      <MapComponent isDirection={isDirection} origin={origin} destination={destination} preference={preference} wayPointArr={wayPointArr}/>
+      <MapComponent lastIndex={lastIndex} isDirection={isDirection} origin={origin} destination={destination} preference={preference} wayPointArr={wayPointArr}/>
     </View>
   );
 }
