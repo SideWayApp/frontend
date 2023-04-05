@@ -37,13 +37,30 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
         getPermissions();
     },[])
     
-    const deltaNavigation = () => {
+    const deltaToMe = () => {
         const newLatitudeDelta = 0.0001;
         const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
 
         // Create a new position object with the updated latitudeDelta and longitudeDelta
         const newPosition = {
-            ...INITIAL_POSITION,
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: newLatitudeDelta,
+            longitudeDelta: newLongitudeDelta,
+        };
+
+        // Set the new position as the region of the map
+        mapRef.current.animateToRegion(newPosition);    
+    }
+
+    const deltaStartNavigation = () => {
+        const newLatitudeDelta = 0.001;
+        const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+
+        // Create a new position object with the updated latitudeDelta and longitudeDelta
+        const newPosition = {
+            latitude: wayPointArr[0].latitude,
+            longitude: wayPointArr[0].longitude,
             latitudeDelta: newLatitudeDelta,
             longitudeDelta: newLongitudeDelta,
         };
@@ -55,7 +72,7 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
     const moveTo = async()=>{
         const camera = await mapRef.current.getCamera();
         if (camera){
-            camera.center = {latitude:wayPointArr[0].latitude, longitude:wayPointArr[0].longitude};
+            camera.center = {latitude:location.coords.latitude, longitude:location.coords.longitude};
             mapRef.current.animateCamera(camera,{duration:1000});
         }
     }
@@ -88,9 +105,16 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
         )}
         </MapView> 
         <View style={styles.buttonContainer}>
-        <Button title="Back To Navigation" onPress={deltaNavigation} />
-      </View> 
+            <Button title="Back To Me" onPress={deltaToMe} />
+        </View>
+        {isDirection && (
+            <View style={styles.buttonStartNavigation}>
+                <Button title="Start Navigation" onPress={deltaStartNavigation}/>
+            </View>
+        )}
+        
     </View>
+    
   )
 }
 
@@ -111,5 +135,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 20,
     right: 20,
-  }
+  },
+  buttonStartNavigation: {
+    position: 'absolute',
+    top: 20,
+    right: 150,
+    backgroundColor: "#ff0000",
+    color: "#ffffff", // set the text color of the button
+  },
+
 });
