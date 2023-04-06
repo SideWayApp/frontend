@@ -16,7 +16,6 @@ const DirectionsComponent = (props) => {
       const directions = await getDirectionsOne(props.origin, props.destination, props.preference);
       const wayPointArr = await getWayPoints(props.origin,props.destination,props.preference);
       props.setWayPointsArr(wayPointArr)
-      console.log(directions[0])
       props.setIsDirection(true);
       const startLocation = directions[0].start_location;
       const endLocation = directions[1].end_location;
