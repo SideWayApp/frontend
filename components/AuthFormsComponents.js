@@ -5,8 +5,7 @@ import {
   StyleSheet,
   View,
   Modal,
-  Button,
-  CheckBox,
+  Alert,
 } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
@@ -98,8 +97,32 @@ const ModalCheckbox = ({ title, onPress }) => {
 
 const Prefrences = ({ setPreference }) => {
   const onPress = (isChecked, title) => {
-    console.log(title, isChecked);
-    setPreference((oldData) => ({ ...oldData, title: isChecked }));
+    setPreference((oldData) => {
+      // Create a new object to update the preferences
+      const newPreferences = { ...oldData };
+      // Update the appropriate field based on the title
+      switch (title) {
+        case "Clean":
+          newPreferences.clean = isChecked;
+          break;
+        case "Security":
+          newPreferences.security = isChecked;
+          break;
+        case "Scenery":
+          newPreferences.scenery = isChecked;
+          break;
+        case "Speed":
+          newPreferences.speed = isChecked;
+          break;
+        case "Accessibility":
+          newPreferences.accessibility = isChecked;
+          break;
+        default:
+          break;
+      }
+      // Return the updated preferences
+      return newPreferences;
+    });
   };
   return (
     <View
@@ -117,13 +140,13 @@ const Prefrences = ({ setPreference }) => {
   );
 };
 
-export const PrefrencesModal = ({ isVisible, onClose }) => {
+export const PrefrencesModal = ({ isVisible, onClose, handleSkip }) => {
   const [prefrences, setPreference] = useState({
-    Clean: false,
-    Security: false,
-    Scenery: false,
-    Speed: false,
-    Accessibility: false,
+    clean: false,
+    security: false,
+    scenery: false,
+    speed: false,
+    accessibility: false,
   });
   return (
     <Modal
@@ -139,14 +162,23 @@ export const PrefrencesModal = ({ isVisible, onClose }) => {
       <TouchableOpacity
         style={modalStyles.skipButton}
         onPress={() => {
-          {
-          }
+          handleSkip();
         }}
       >
         <Text style={modalStyles.skipText}>Skip</Text>
       </TouchableOpacity>
     </Modal>
   );
+};
+
+export const StyledAlert = ({ error, setError }) => {
+  Alert.alert(
+    "Error",
+    error,
+    [{ text: "OK", onPress: () => setError(false) }],
+    { cancelable: false }
+  );
+  return null;
 };
 
 const modalStyles = StyleSheet.create({
