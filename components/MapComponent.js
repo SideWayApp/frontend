@@ -90,7 +90,7 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
                     wayPointArr[lastIndex].latitude,
                     wayPointArr[lastIndex].longitude,
                 ),
-                pitch: 45,
+                pitch: 0,
                 zoom: 45,
             
             },{duration: 1000});    
@@ -113,14 +113,7 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
             <>
                 <Marker coordinate={{latitude:wayPointArr[0].latitude,longitude:wayPointArr[0].longitude}} title="Origin"/>
                 <Marker coordinate={{latitude:wayPointArr[lastIndex].latitude,longitude:wayPointArr[lastIndex].longitude}} title="Destination"/>
-                <Marker coordinate={{latitude:location.coords.latitude,longitude: location.coords.longitude}}>
-                    <Callout>
-                    <View style={styles.callout}>
-                        <Text>Marker Title!</Text>
-                        <Image source={require('../assets/photos/ptm.png')} style={{ width: 200, height: 200 }} />
-                    </View>
-                    </Callout>
-                </Marker>
+                <Marker coordinate={{latitude:location.coords.latitude,longitude: location.coords.longitude}} title="My Phone"/>
                 <MapViewDirections
                     origin={{latitude:wayPointArr[0].latitude,longitude:wayPointArr[0].longitude}}
                     destination={{latitude:wayPointArr[lastIndex].latitude,longitude:wayPointArr[lastIndex].longitude}}
@@ -168,6 +161,11 @@ const styles = StyleSheet.create({
     right: 20,
     backgroundColor: "#ff0",
     padding: 10,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 5,
+    borderRadius:10,
   },
   buttonStartNavigation: {
     position: 'absolute',
@@ -175,8 +173,13 @@ const styles = StyleSheet.create({
     right: 150,
     padding: 10,
     shadowOpacity:10,
-    backgroundColor: "#ff0000",
+    backgroundColor: "lightgreen",
     color: "#ffffff", // set the text color of the button
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 5,
+    borderRadius:10,
   },
 
 });
