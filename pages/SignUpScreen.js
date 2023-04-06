@@ -10,6 +10,7 @@ import {
   StyledTitle,
   PickerRow,
   PrefrencesModal,
+  StyledAlert,
 } from "../components/AuthFormsComponents";
 import { globalStyles } from "../Styles/GlobalStyles";
 import { useNavigation } from "@react-navigation/native";
@@ -21,40 +22,118 @@ const SignUpScreen = () => {
     email: "",
     password: "",
     rePassword: "",
+    gender: "",
+    age: "",
   });
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [gender, setGender] = useState("");
   const [age, setAge] = useState("");
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const handleSignUp = () => {
-    console.log(signUpData);
-    console.log(gender);
-    console.log(age);
-    setIsModalVisible(true);
+    setSignUpData((prev) => ({ ...prev, gender: gender, age: age }));
+    const validation = validateSignUpData();
+    if (validation === null) {
+      setIsModalVisible(true);
+    } else {
+      console.log(validation);
+      setError(true);
+      setErrorMessage(validation);
+      setLoading(false);
+    }
   };
   const [loading, setLoading] = useState(false);
-  const handleModalClose = async (prefrences) => {
+  const handleModalClose = async (preferences) => {
     setLoading(true);
     setIsModalVisible(false);
-    const user = {
-      signUpData: signUpData,
-      prefrences: prefrences,
-    };
-    //add user validation
 
-    console.log(user);
+    const user = {
+      email: signUpData.email,
+      password: signUpData.password,
+      signUpData: {
+        name: signUpData.name,
+        gender: signUpData.gender,
+        age: signUpData.age,
+      },
+      preferences: preferences,
+    };
     const res = await signUpUser(user);
-    console.log(res);
+    setLoading(false);
+
     navigation.navigate("Home");
   };
 
-  const handleSkip = () => {};
+  const handleSkip = async () => {
+    const user = {
+      email: signUpData.email,
+      password: signUpData.password,
+      signUpData: {
+        name: signUpData.name,
+        gender: signUpData.gender,
+        age: signUpData.age,
+      },
+      preferences: {},
+    };
+
+    const res = await signUpUser(user);
+    navigation.navigate("Home");
+  };
+
+  const validateSignUpData = () => {
+    const { name, email, password, rePassword, gender, age } = signUpData;
+
+    if (!name) {
+      return "Name is required.";
+    }
+
+    if (!email) {
+      return "Email is required.";
+    }
+
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return "Please enter a valid email.";
+    }
+
+    if (!password) {
+      return "Password is required.";
+    }
+
+    if (password.length < 6) {
+      return "Password should be at least 8 characters.";
+    }
+
+    if (!rePassword) {
+      return "Please confirm your password.";
+    }
+
+    if (password !== rePassword) {
+      return "Passwords do not match.";
+    }
+
+    if (!gender) {
+      return "Gender is required.";
+    }
+
+    if (!age) {
+      return "Age is required.";
+    }
+
+    return null;
+  };
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={globalStyles.container}
     >
-      <PrefrencesModal isVisible={isModalVisible} onClose={handleModalClose} />
+      <PrefrencesModal
+        isVisible={isModalVisible}
+        onClose={handleModalClose}
+        handleSkip={handleSkip}
+      />
+      {error && <StyledAlert error={errorMessage} setError={setError} />}
       <StyledTitle title="Sign Up" />
       <TextInput
         style={globalStyles.input}
