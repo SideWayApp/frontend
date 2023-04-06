@@ -18,16 +18,19 @@ export default function MapItemsComponent({ region }) {
   }, [region]);
   return (
     <>
-      {mapItems.map((mapItem, index) => (
-        <Marker
-          key={index}
-          coordinate={{ latitude: mapItem.y, longitude: mapItem.x }}
-        >
-          <View style={{ width: 50, height: 50 }}>
-            <Icon name="camera" />
-          </View>
-        </Marker>
-      ))}
+      {mapItems.map((mapItem, index) => {
+        return (
+          <Marker
+            key={mapItem.y + mapItem.x}
+            coordinate={{ latitude: mapItem.y, longitude: mapItem.x }}
+          >
+            <View style={{ width: 50, height: 50 }}>
+              {mapItem.type === "camera" && <Icon name="camera" />}
+              {mapItem.type !== "camera" && <Icon name="alert-octagon" />}
+            </View>
+          </Marker>
+        );
+      })}
     </>
   );
 }
