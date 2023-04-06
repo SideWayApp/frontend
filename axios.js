@@ -46,3 +46,10 @@ export const signUpUser = async (userData) => {
   console.log(res.data);
   return "done";
 };
+
+export const fetchObjectsInRegion = async (region) => {
+  console.log(region);
+  const itmes = await axios.post(`${API_BASE_URL}/api/items/region`, region);
+  console.log(itmes.data[0]);
+  return itmes.data;
+};
