@@ -24,7 +24,6 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
             }
             let currentLocation = await Location.getCurrentPositionAsync({});
             setLocation(currentLocation);
-            console.log("Location: " ,currentLocation);
         };
         getPermissions();
     },[])
@@ -56,21 +55,48 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
         mapRef.current.animateToRegion(newPosition);    
     }
 
-    const deltaStartNavigation = () => {
-        const newLatitudeDelta = 0.001;
-        const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
-        setIsNavigationStarted(true);
-        // Create a new position object with the updated latitudeDelta and longitudeDelta
-        const newPosition = {
-            latitude: wayPointArr[0].latitude,
-            longitude: wayPointArr[0].longitude,
-            latitudeDelta: newLatitudeDelta,
-            longitudeDelta: newLongitudeDelta,
-        };
+    const calculateHeading = (lat1, lon1, lat2, lon2) => {
+    const dLon = lon2 - lon1;
+    const y = Math.sin(dLon) * Math.cos(lat2);
+    const x =
+        Math.cos(lat1) * Math.sin(lat2) -
+        Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+        const brng = (Math.atan2(y, x) * 180) / Math.PI;
+        return brng >= 0 ? brng : 360 + brng;
+    };
 
-        // Set the new position as the region of the map
-        mapRef.current.animateToRegion(newPosition);    
+    const deltaStartNavigation = async () => {
+        setIsNavigationStarted(true);
+        setTimeout(() => {
+            const newLatitudeDelta = 0.001;
+            const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+
+            // Create a new position object with the updated latitudeDelta and longitudeDelta
+            const newPosition = {
+                latitude: wayPointArr[0].latitude,
+                longitude: wayPointArr[0].longitude,
+                latitudeDelta: newLatitudeDelta,
+                longitudeDelta: newLongitudeDelta,
+            };
+            // Set the new position as the region of the map
+            mapRef.current.animateCamera({
+                center: {
+                    latitude: newPosition.latitude,
+                    longitude: newPosition.longitude,
+                },
+                heading: calculateHeading(
+                    newPosition.latitude,
+                    newPosition.longitude,
+                    wayPointArr[lastIndex].latitude,
+                    wayPointArr[lastIndex].longitude,
+                ),
+                pitch: 45,
+                zoom: 45,
+            
+            },{duration: 1000});    
+        }, 1000);
     }
+
 
     const moveTo = async()=>{
         const camera = await mapRef.current.getCamera();
@@ -90,8 +116,8 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
                 <Marker coordinate={{latitude:location.coords.latitude,longitude: location.coords.longitude}}>
                     <Callout>
                     <View style={styles.callout}>
-                        <Text>Marker Title</Text>
-                        <Image source={{ uri: 'https://example.com/my-image.jpg' }} style={{ width: 200, height: 200 }} resizeMode="contain"/>
+                        <Text>Marker Title!</Text>
+                        <Image source={require('../assets/photos/ptm.png')} style={{ width: 200, height: 200 }} />
                     </View>
                     </Callout>
                 </Marker>
@@ -107,13 +133,16 @@ export default function MapComponent({lastIndex,isDirection,origin,destination,p
             </>
         )}
         </MapView> 
-        <View style={styles.buttonContainer}>
-            <Button title="Back To Me" onPress={deltaToMe} />
-        </View>
         {isDirection && (
-            <View style={styles.buttonStartNavigation}>
-                <Button title={isNavigationStarted ? "Back To Navigation" : "Start Navigation"} onPress={deltaStartNavigation}/>
-            </View>
+            <>
+                <TouchableOpacity style={styles.buttonContainer} onPress={deltaToMe}>
+                    <Text>Back To Me</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonStartNavigation} onPress={deltaStartNavigation}>
+                    <Text>{isNavigationStarted ? "Back To Navigation" : "Start Navigation"}</Text>
+                </TouchableOpacity>
+            
+            </>
         )}
     </View>
   )
@@ -131,16 +160,21 @@ const styles = StyleSheet.create({
   },
   callout: {
     alignItems: 'center',
+    textAlign: 'center',
   },
   buttonContainer: {
     position: 'absolute',
     top: 20,
     right: 20,
+    backgroundColor: "#ff0",
+    padding: 10,
   },
   buttonStartNavigation: {
     position: 'absolute',
     top: 20,
     right: 150,
+    padding: 10,
+    shadowOpacity:10,
     backgroundColor: "#ff0000",
     color: "#ffffff", // set the text color of the button
   },
