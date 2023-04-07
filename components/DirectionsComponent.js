@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react"
-import { View, Text, Image, TouchableOpacity } from "react-native"
+import { View, Text, Image, TouchableHighlight } from "react-native"
 import { Picker } from "@react-native-picker/picker"
 import { getDirectionsOne, getWayPoints } from "../axios"
 import {
@@ -57,11 +57,21 @@ const DirectionsComponent = (props) => {
 							color="black"
 						/>
 					</View>
-					<Image
-						source={require("../images/swap.png")}
-						style={{ width: "5%", height: "20%", alignSelf: "center" }}
-					></Image>
+					<TouchableHighlight
+						underlayColor="rgba(95, 94, 191, 0.5)"
+						onPress={() => {
+							dispatch(setOrigin(destination))
+							dispatch(setDestination(origin))
+						}}
+						style={{ alignSelf: "center", borderRadius: 20, overflow: "hidden" }}
+					>
+						<Image
+							source={require("../images/swap.png")}
+							style={{ width: 20, height: 20 }}
+						></Image>
+					</TouchableHighlight>
 				</View>
+
 				<Button
 					style={{ backgroundColor: "green" }}
 					title="Get Directions"
