@@ -26,7 +26,7 @@ function OriginOrDestination(value) {
 
 function ChoosePointScreen({ route, navigation }) {
 	const dispatch = useDispatch()
-	const { origin, destination } = useSelector((state) => state)
+	const { origin, destination } = useSelector((state) => state.directions)
 	const [location, setLocation] = useState("")
 	const handleSaveAddress = (event) => {
 		OriginOrDestination(event.nativeEvent.text)
