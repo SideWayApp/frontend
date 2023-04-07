@@ -14,15 +14,27 @@ import {
 } from "../components/AuthFormsComponents";
 import { globalStyles } from "../Styles/GlobalStyles";
 import { useNavigation } from "@react-navigation/native";
+import { login } from "../axios";
 
 function SignInScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     console.log("Signing in with email:", email, "and password:", password);
-    navigation.navigate("Home");
+    const validate = validateEmailAndPassword();
+    if (validate === null) {
+      const data = {
+        email: email,
+        password: password,
+      };
+      const user = await login(data);
+      console.log(user);
+      // navigation.navigate("Home");
+    } else {
+      console.log(validate);
+    }
   };
 
   const handleForgotPassword = () => {
@@ -32,6 +44,20 @@ function SignInScreen() {
   const handleSignUp = () => {
     navigation.navigate("Sign Up");
   };
+
+  function validateEmailAndPassword() {
+    const emailRegex = /^\S+@\S+\.\S+$/;
+
+    if (!emailRegex.test(email)) {
+      return "Please enter a valid email address.";
+    }
+
+    if (password.length < 6) {
+      return "Password must be at least 6 characters long ";
+    }
+
+    return null;
+  }
 
   return (
     <KeyboardAvoidingView

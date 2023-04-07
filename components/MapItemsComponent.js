@@ -19,7 +19,6 @@ export default function MapItemsComponent({ region }) {
       const objects = await fetchObjectsInRegion(region);
       setMapItem(objects);
     };
-    console.log(region);
     if (
       region.latitudeDelta <= minDisplayDelta.latitudeDelta ||
       region.longitudeDelta <= minDisplayDelta.longitudeDelta
