@@ -28,6 +28,7 @@ const DirectionsComponent = (props) => {
 			const wayPointArr = await getWayPoints(origin, destination, props.preference)
 			props.setWayPointsArr(wayPointArr)
 			props.setIsDirection(true)
+			props.setIsGotDirection(true);
 		} catch (error) {
 			console.error(error)
 		}

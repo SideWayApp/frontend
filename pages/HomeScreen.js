@@ -6,16 +6,18 @@ import { useSelector, useDispatch } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 
 const HomeScreen = () => {
-	const { origin, destination } = useSelector((state) => state.directions)
-	const [preference, setPreference] = useState("fastest")
-	const [isDirection, setIsDirection] = useState(false)
-	const [wayPointArr, setWayPointsArr] = useState([])
+	const { origin, destination } = useSelector((state) => state);
+	const [preference, setPreference] = useState("fastest");
+	const [isDirection, setIsDirection] = useState(false);
+	const [wayPointArr, setWayPointsArr] = useState([]);
+	const [isGotDirection, setIsGotDirection] = useState(false);
 
-	const lastIndex = wayPointArr.length - 1
+	const lastIndex = wayPointArr.length - 1;
 
 	return (
 		<View style={styles.container}>
 			<DirectionsComponent
+				setIsGotDirection={setIsGotDirection}
 				isDirection={isDirection}
 				setIsDirection={setIsDirection}
 				setWayPointsArr={setWayPointsArr}
@@ -25,6 +27,8 @@ const HomeScreen = () => {
 				setPreference={setPreference}
 			/>
 			<MapComponent
+				isGotDirection={isGotDirection}
+				setIsGotDirection={setIsGotDirection}
 				lastIndex={lastIndex}
 				isDirection={isDirection}
 				origin={origin}
