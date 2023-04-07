@@ -1,6 +1,6 @@
 import { React, useState } from "react"
 import DirectionsComponent from "../components/DirectionsComponent"
-import { View, Image } from "react-native"
+import { View, StyleSheet } from "react-native"
 import { useRoute, useNavigation } from "@react-navigation/native"
 import {
 	TextInput,
@@ -12,10 +12,12 @@ import {
 import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 import { useSelector, useDispatch } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
+import * as Location from "expo-location"
 
 function ChoosePointScreen({ route, navigation }) {
 	const dispatch = useDispatch()
 	const { origin, destination } = useSelector((state) => state)
+	const [location, setLocation] = useState("")
 	const handleSaveAddress = (event) => {
 		if (route.params.type === "Origin") {
 			dispatch(setOrigin(event.nativeEvent.text))
@@ -26,18 +28,17 @@ function ChoosePointScreen({ route, navigation }) {
 		navigation.goBack()
 	}
 
+	const getLocation = async () => {
+		let currentLocation = await Location.getCurrentPositionAsync({})
+		console.log(currentLocation)
+		setLocation(currentLocation)
+	}
+
 	return (
-		<View>
+		<View style={styles.container}>
 			<Stack spacing={0}>
-				<View
-					style={{
-						flexDirection: "column",
-						alignSelf: "center",
-						width: "99%",
-						gap: 5,
-					}}
-				>
-					<View style={{ gap: 10 }}>
+				<View style={styles.column}>
+					<View style={styles.view}>
 						<TextInput
 							label={route.params.type}
 							value={route.params.type === "Origin" ? origin : destination}
@@ -52,26 +53,19 @@ function ChoosePointScreen({ route, navigation }) {
 							onEndEditing={handleSaveAddress}
 							variant="outlined"
 							leading={(props) => <Icon name="magnify" {...props} />}
-						></TextInput>
+						/>
 						<Button
 							title="Your current location"
 							trailing={(props) => <Icon name="" {...props} />}
-						></Button>
+							onPress={getLocation}
+						/>
 						<Button
 							title="Choose on map"
 							trailing={(props) => <Icon name="map" {...props} />}
-						></Button>
+						/>
 					</View>
-					<View
-						style={{
-							alignSelf: "center",
-							width: "99%",
-							borderWidth: 1,
-							borderColor: "black",
-							borderRadius: 5,
-						}}
-					>
-						<Text>Recent</Text>
+					<View style={styles.section}>
+						<Text style={{ marginBottom: 10 }}>Recent</Text>
 						<ListItem
 							title="List Item"
 							trailing={(props) => <Icon name="star" {...props} />}
@@ -90,5 +84,24 @@ function ChoosePointScreen({ route, navigation }) {
 		</View>
 	)
 }
-
+const styles = StyleSheet.create({
+	container: {},
+	column: {
+		flexDirection: "column",
+		alignSelf: "center",
+		width: "99%",
+	},
+	section: {
+		alignSelf: "center",
+		width: "99%",
+		borderWidth: 1,
+		borderColor: "black",
+		borderRadius: 5,
+		padding: 10,
+		marginTop: 10,
+	},
+	view: {
+		gap: 10,
+	},
+})
 export default ChoosePointScreen
