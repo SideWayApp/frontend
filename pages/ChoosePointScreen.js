@@ -15,15 +15,6 @@ import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 import * as Location from "expo-location"
 import { getAddressFromLatLng } from "../axios"
 
-function OriginOrDestination(value) {
-	if (value === "Origin") {
-		dispatch(setOrigin(value))
-	}
-	if (value === "Destination") {
-		dispatch(setDestination(value))
-	}
-}
-
 function ChoosePointScreen({ route, navigation }) {
 	const dispatch = useDispatch()
 	const { origin, destination } = useSelector((state) => state.directions)
@@ -31,6 +22,15 @@ function ChoosePointScreen({ route, navigation }) {
 	const handleSaveAddress = (event) => {
 		OriginOrDestination(event.nativeEvent.text)
 		navigation.goBack()
+	}
+
+	function OriginOrDestination(value) {
+		if (route.params.type === "Origin") {
+			dispatch(setOrigin(value))
+		}
+		if (route.params.type === "Destination") {
+			dispatch(setDestination(value))
+		}
 	}
 
 	useEffect(() => {
@@ -41,21 +41,19 @@ function ChoosePointScreen({ route, navigation }) {
 		try {
 			let currentLocation = await Location.getCurrentPositionAsync({})
 			setLocation(currentLocation)
-			// console.log(location)
 		} catch (error) {
 			console.error(error)
 		}
 	}
 
 	const getAddress = async () => {
-		// console.log(location.coords.altitude, location.coords.longitude)
 		try {
 			const getAdd = await getAddressFromLatLng(
 				location.coords.latitude,
 				location.coords.longitude
 			)
-			console.log(getAdd)
 			OriginOrDestination(getAdd)
+			navigation.goBack()
 		} catch (error) {
 			console.error("Could not found", error)
 		}
@@ -80,10 +78,24 @@ function ChoosePointScreen({ route, navigation }) {
 							onEndEditing={handleSaveAddress}
 							variant="outlined"
 							leading={(props) => <Icon name="magnify" {...props} />}
+							trailing={(props) => (
+								<Icon
+									name="close"
+									onPress={() => {
+										if (route.params.type === "Origin") {
+											dispatch(setOrigin(""))
+										}
+										if (route.params.type === "Destination") {
+											dispatch(setDestination(""))
+										}
+									}}
+									{...props}
+								/>
+							)}
 						/>
 						<Button
 							title="Your current location"
-							trailing={(props) => <Icon name="" {...props} />}
+							trailing={(props) => <Icon name="pin" {...props} />}
 							onPress={getAddress}
 						/>
 						<Button

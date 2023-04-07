@@ -37,7 +37,7 @@ const DirectionsComponent = (props) => {
 		<View>
 			<Stack spacing={0}>
 				<View style={{ flexDirection: "row" }}>
-					<View style={{ width: "93%" }}>
+					<View style={{ width: "91%" }}>
 						<Button
 							title={origin}
 							variant="outlined"
@@ -57,19 +57,14 @@ const DirectionsComponent = (props) => {
 							color="black"
 						/>
 					</View>
-					<TouchableHighlight
-						underlayColor="rgba(95, 94, 191, 0.5)"
+					<IconButton
+						icon={(props) => <Icon name="swap-vertical" size={30} />}
 						onPress={() => {
 							dispatch(setOrigin(destination))
 							dispatch(setDestination(origin))
 						}}
-						style={{ alignSelf: "center", borderRadius: 20, overflow: "hidden" }}
-					>
-						<Image
-							source={require("../images/swap.png")}
-							style={{ width: 20, height: 20 }}
-						></Image>
-					</TouchableHighlight>
+						style={{ alignSelf: "center", width: 30, height: 30 }}
+					></IconButton>
 				</View>
 
 				<Button
