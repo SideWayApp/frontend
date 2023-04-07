@@ -5,7 +5,7 @@ const initialState = {
 	destination: "Destination",
 }
 
-function reducer(state = initialState, action) {
+function directionsReducer(state = initialState, action) {
 	switch (action.type) {
 		case SET_ORIGIN:
 			return { ...state, origin: action.payload }
@@ -15,4 +15,4 @@ function reducer(state = initialState, action) {
 			return state
 	}
 }
-export default reducer
+export default directionsReducer

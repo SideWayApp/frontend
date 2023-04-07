@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 
 const HomeScreen = () => {
-	const { origin, destination } = useSelector((state) => state)
+	const { origin, destination } = useSelector((state) => state.directions)
 	const [preference, setPreference] = useState("fastest")
 	const [isDirection, setIsDirection] = useState(false)
 	const [wayPointArr, setWayPointsArr] = useState([])

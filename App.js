@@ -7,7 +7,7 @@ import SignUpScreen from "./pages/SignUpScreen"
 import AppBarComponent from "./components/AppBarComponent"
 import ChoosePointScreen from "./pages/ChoosePointScreen"
 import { Provider } from "react-redux"
-import store from "./Redux/DirectionsStore/store"
+import store from "./Redux/store"
 
 const Stack = createNativeStackNavigator()
 export default function App() {

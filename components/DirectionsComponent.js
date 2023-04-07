@@ -15,7 +15,7 @@ import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 
 const DirectionsComponent = (props) => {
 	const navigation = useNavigation()
-	const { origin, destination } = useSelector((state) => state)
+	const { origin, destination } = useSelector((state) => state.directions)
 	const dispatch = useDispatch()
 
 	const handleGetDirections = async () => {
