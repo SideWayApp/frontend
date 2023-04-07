@@ -1,4 +1,4 @@
-import { React, useState } from "react"
+import { React, useState, useEffect } from "react"
 import DirectionsComponent from "../components/DirectionsComponent"
 import { View, StyleSheet } from "react-native"
 import { useRoute, useNavigation } from "@react-navigation/native"
@@ -13,25 +13,52 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 import { useSelector, useDispatch } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 import * as Location from "expo-location"
+import { getAddressFromLatLng } from "../axios"
+
+function OriginOrDestination(value) {
+	if (value === "Origin") {
+		dispatch(setOrigin(value))
+	}
+	if (value === "Destination") {
+		dispatch(setDestination(value))
+	}
+}
 
 function ChoosePointScreen({ route, navigation }) {
 	const dispatch = useDispatch()
 	const { origin, destination } = useSelector((state) => state)
 	const [location, setLocation] = useState("")
 	const handleSaveAddress = (event) => {
-		if (route.params.type === "Origin") {
-			dispatch(setOrigin(event.nativeEvent.text))
-		}
-		if (route.params.type === "Destination") {
-			dispatch(setDestination(event.nativeEvent.text))
-		}
+		OriginOrDestination(event.nativeEvent.text)
 		navigation.goBack()
 	}
 
+	useEffect(() => {
+		getLocation()
+	}, [])
+
 	const getLocation = async () => {
-		let currentLocation = await Location.getCurrentPositionAsync({})
-		console.log(currentLocation)
-		setLocation(currentLocation)
+		try {
+			let currentLocation = await Location.getCurrentPositionAsync({})
+			setLocation(currentLocation)
+			// console.log(location)
+		} catch (error) {
+			console.error(error)
+		}
+	}
+
+	const getAddress = async () => {
+		// console.log(location.coords.altitude, location.coords.longitude)
+		try {
+			const getAdd = await getAddressFromLatLng(
+				location.coords.latitude,
+				location.coords.longitude
+			)
+			console.log(getAdd)
+			OriginOrDestination(getAdd)
+		} catch (error) {
+			console.error("Could not found", error)
+		}
 	}
 
 	return (
@@ -57,7 +84,7 @@ function ChoosePointScreen({ route, navigation }) {
 						<Button
 							title="Your current location"
 							trailing={(props) => <Icon name="" {...props} />}
-							onPress={getLocation}
+							onPress={getAddress}
 						/>
 						<Button
 							title="Choose on map"
