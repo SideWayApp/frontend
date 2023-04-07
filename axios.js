@@ -65,6 +65,17 @@ export const signUpUser = async (userData) => {
 	return "done"
 }
 
+export const login = async (data) => {
+  console.log("login", data);
+  try {
+    const urlRoute = `${API_BASE_URL}/api/authentication/login`;
+    const res = await axios.post(urlRoute, data);
+    return res.data;
+  } catch (e) {
+    console.log("login", e);
+  }
+};
+
 export const fetchObjectsInRegion = async (region) => {
 	const itmes = await axios.post(`${API_BASE_URL}/api/items/region`, region)
 	return itmes.data
