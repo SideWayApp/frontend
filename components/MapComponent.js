@@ -13,12 +13,13 @@ import MapView, { Marker, Callout } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import { GOOGLE_API_KEY } from "@env";
 import { getDirections } from "react-native-google-maps-directions";
+import { FAB } from 'react-native-paper';
+import Feather from 'react-native-vector-icons/Feather';
 const { width, height } = Dimensions.get("window");
-// import Geolocation from 'react-native-geolocation-service';
 import * as Location from "expo-location";
 import MapItemsComponent from "./MapItemsComponent";
 import { getAddressFromLatLng } from "../axios"
-
+import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 export default function MapComponent({
   lastIndex,
   isDirection,
@@ -34,7 +35,11 @@ export default function MapComponent({
   const userLocation = useState(null);
   const [deltaChanged, isDeltaChanged] = useState(false);
   const [isNavigationStarted, setIsNavigationStarted] = useState(false);
+  const [coordinates, setCoordinates] = useState(null);
+  const [isClicked,setIsClicked] = useState(false);
   const [clickedAddress,setClickedAddress] = useState("");
+  const [visible, setVisible] = useState(true);
+
   useEffect(() => {
     const getPermissions = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -125,12 +130,14 @@ export default function MapComponent({
     }
   };
 
-  const [coordinates, setCoordinates] = useState(null);
-  const [isClicked,setIsClicked] = useState(false);
   const handleMapPress = async (event) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
-    setIsClicked(true);
-    setCoordinates({ latitude, longitude });
+    if (isClicked){
+      setIsClicked(false)
+    }else{
+      setIsClicked(true);
+      setCoordinates({ latitude, longitude });
+    }
     try{
       const address = await getAddressFromLatLng(latitude,longitude);
       setClickedAddress(address);
@@ -142,6 +149,7 @@ export default function MapComponent({
   return (
     <View style={styles.container}>
       <MapView
+        mapPadding={{ top: 0, right: 0, bottom: 0, left: 50 }}
         style={styles.map}
         initialRegion={INITIAL_POSITION}
         ref={mapRef}
@@ -197,19 +205,27 @@ export default function MapComponent({
         )}
         <MapItemsComponent region={region} />
       </MapView>
+      
       {isDirection && (
         <>
-          <TouchableOpacity style={styles.buttonContainer} onPress={deltaToMe}>
-            <Text>Back To Me</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.buttonStartNavigation}
+          <FAB
+            style={styles.fabMe}
+            icon={()=>
+            <View style={styles.iconContainer}>
+              <Icon name="home" size={30} color="black" />
+            </View>
+            }
+            onPress={deltaToMe}
+          />
+          <FAB
+            style={styles.fab}
+            icon={()=>
+            <View style={styles.iconContainer}>
+              <Icon name="navigation-variant" size={30} color="black" />
+            </View>
+            }
             onPress={deltaStartNavigation}
-          >
-            <Text>
-              {isNavigationStarted ? "Back To Navigation" : "Start Navigation"}
-            </Text>
-          </TouchableOpacity>
+          />
         </>
       )}
     </View>
@@ -267,5 +283,32 @@ const styles = StyleSheet.create({
   },
   coordinatesText: {
     fontSize: 16,
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    zIndex: 1,
+    borderRadius:100,
+    backgroundColor: 'lightyellow',
+  },
+  fabMe: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    backgroundColor: 'turquoise',
+    borderRadius: 100,
+    bottom: 60,
+    justifyContent:'center',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    justifyContent: 'center',
+    width: 30,
+    height: 30,
+    bottom:3,
+    alignSelf:'center',
+    alignItems: 'center',
   },
 });
