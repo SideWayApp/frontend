@@ -15,11 +15,15 @@ import {
 import { globalStyles } from "../Styles/GlobalStyles";
 import { useNavigation } from "@react-navigation/native";
 import { login } from "../axios";
+import { useSelector, useDispatch } from "react-redux";
+import { setToken, getToken } from "../Redux/authenticationReducer/authActions";
 
 function SignInScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
 
   const handleSignIn = async () => {
     console.log("Signing in with email:", email, "and password:", password);
@@ -30,7 +34,10 @@ function SignInScreen() {
         password: password,
       };
       const user = await login(data);
-      console.log(user);
+      dispatch(setToken(user));
+      setTimeout(() => {
+        console.log(token);
+      }, 1000);
       // navigation.navigate("Home");
     } else {
       console.log(validate);
