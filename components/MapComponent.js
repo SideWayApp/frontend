@@ -17,6 +17,7 @@ const { width, height } = Dimensions.get("window");
 // import Geolocation from 'react-native-geolocation-service';
 import * as Location from "expo-location";
 import MapItemsComponent from "./MapItemsComponent";
+import { getAddressFromLatLng } from "../axios"
 
 export default function MapComponent({
   lastIndex,
@@ -33,6 +34,7 @@ export default function MapComponent({
   const userLocation = useState(null);
   const [deltaChanged, isDeltaChanged] = useState(false);
   const [isNavigationStarted, setIsNavigationStarted] = useState(false);
+  const [clickedAddress,setClickedAddress] = useState("");
   useEffect(() => {
     const getPermissions = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -86,7 +88,7 @@ export default function MapComponent({
     const brng = (Math.atan2(y, x) * 180) / Math.PI;
     return brng >= 0 ? brng : 360 + brng;
   };
-
+  
   const deltaStartNavigation = async () => {
     setIsNavigationStarted(true);
     const camera =  await mapRef.current.getCamera();
@@ -125,12 +127,16 @@ export default function MapComponent({
 
   const [coordinates, setCoordinates] = useState(null);
   const [isClicked,setIsClicked] = useState(false);
-  const handleMapPress = (event) => {
+  const handleMapPress = async (event) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
     setIsClicked(true);
     setCoordinates({ latitude, longitude });
-    console.log("coordinates = ")
-    console.log(coordinates);
+    try{
+      const address = await getAddressFromLatLng(latitude,longitude);
+      setClickedAddress(address);
+    }catch(error){
+      console.log(error)
+    }
   };
 
   return (
@@ -146,6 +152,7 @@ export default function MapComponent({
           <Marker
             coordinate={coordinates}
             title={`${coordinates.latitude.toFixed(4)},${coordinates.longitude.toFixed(4)}`}
+            description = {clickedAddress}
           />
         )}
         {isDirection && moveTo() &&(
