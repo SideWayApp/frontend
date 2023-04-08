@@ -20,15 +20,19 @@ const DirectionsComponent = (props) => {
 
 	const handleGetDirections = async () => {
 		try {
-			const directions = await getDirectionsOne(
-				origin,
-				destination,
-				props.preference
-			)
-			const wayPointArr = await getWayPoints(origin, destination, props.preference)
-			props.setWayPointsArr(wayPointArr)
-			props.setIsDirection(true)
-			props.setIsGotDirection(true);
+			if (props.origin === "" || props.destination === ""){
+				return;
+			}else{
+				const directions = await getDirectionsOne(
+					origin,
+					destination,
+					props.preference
+				)
+				const wayPointArr = await getWayPoints(origin, destination, props.preference)
+				props.setWayPointsArr(wayPointArr)
+				props.setIsDirection(true)
+				props.setIsGotDirection(true);
+			}
 		} catch (error) {
 			console.error(error)
 		}
