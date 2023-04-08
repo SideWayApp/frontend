@@ -59,14 +59,17 @@ export const getDirectionsOne = async (origin, destination, preference) => {
     preference: "clean",*/
 
 export const signUpUser = async (userData) => {
-  const urlRoute = `${API_BASE_URL}/api/authentication/register`;
-  const res = await axios.post(urlRoute, userData);
-  console.log(res.data);
-  return "done";
+  try {
+    const urlRoute = `${API_BASE_URL}/api/authentication/register`;
+    const res = await axios.post(urlRoute, userData);
+    console.log(res.data);
+    return "done";
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const login = async (data) => {
-  console.log("login", data);
   try {
     const urlRoute = `${API_BASE_URL}/api/authentication/login`;
     const res = await axios.post(urlRoute, data);
@@ -74,6 +77,28 @@ export const login = async (data) => {
   } catch (e) {
     console.log("login", e);
   }
+};
+
+export const getUserData = async (token) => {
+  try {
+    console.log("getUser", token);
+    const user = {
+      email: "guy@guy.guy",
+      preferences: {
+        accessibility: true,
+        clean: false,
+        scenery: false,
+        security: true,
+        speed: false,
+      },
+      signUpData: {
+        name: "Guy",
+        gender: "male",
+        age: "26",
+      },
+    };
+    return user;
+  } catch (e) {}
 };
 
 export const fetchObjectsInRegion = async (region) => {

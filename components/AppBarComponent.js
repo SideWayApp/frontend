@@ -3,13 +3,25 @@ import { StyleSheet } from "react-native";
 import { AppBar, IconButton, Avatar } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { setToken, setUser } from "../Redux/authenticationReducer/authActions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function AppBarComponent({ showBackButton }) {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-
+  const user = useSelector((state) => state.auth.user);
+  // console.log("App bar user:", user);
   const isHomeInPage = route.name === "Home";
 
+  const handleMenuPreesed = async () => {
+    await AsyncStorage.removeItem("token");
+    console.log("Item removed successfully!");
+    dispatch(setUser(null));
+    dispatch(setToken(null));
+    console.log(user);
+  };
   return (
     <AppBar
       style={styles.appbar}
@@ -34,6 +46,7 @@ function AppBarComponent({ showBackButton }) {
       }}
       trailing={(props) => (
         <IconButton
+          onPress={handleMenuPreesed}
           icon={(props) => <Icon name="dots-horizontal" {...props} />}
           {...props}
         />
