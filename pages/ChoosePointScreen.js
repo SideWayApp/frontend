@@ -95,7 +95,7 @@ function ChoosePointScreen({ route, navigation }) {
 						/>
 						<Button
 							title="Your current location"
-							trailing={(props) => <Icon name="pin" {...props} />}
+							trailing={(props) => <Icon name="map-marker" {...props} />}
 							onPress={getAddress}
 						/>
 						<Button
