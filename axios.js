@@ -81,7 +81,6 @@ export const login = async (data) => {
 
 export const getUserData = async (token) => {
   try {
-    console.log("getUser", token);
     const user = {
       email: "guy@guy.guy",
       preferences: {
