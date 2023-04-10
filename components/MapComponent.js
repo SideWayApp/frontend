@@ -205,7 +205,15 @@ export default function MapComponent({
         )}
         <MapItemsComponent region={region} />
       </MapView>
-      
+      <FAB
+            style={styles.fab}
+            icon={()=>
+            <View style={styles.iconContainer}>
+              <Icon name="plus" size={30} color="black" />
+            </View>
+            }
+            
+          />
       {isDirection && (
         <>
           <FAB
@@ -217,7 +225,7 @@ export default function MapComponent({
             }
             onPress={deltaToMe}
           />
-          <FAB
+          {/* <FAB
             style={styles.fab}
             icon={()=>
             <View style={styles.iconContainer}>
@@ -225,7 +233,7 @@ export default function MapComponent({
             </View>
             }
             onPress={deltaStartNavigation}
-          />
+          /> */}
         </>
       )}
     </View>
