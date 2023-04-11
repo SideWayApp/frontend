@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from "react"
 import DirectionsComponent from "../components/DirectionsComponent"
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native"
 import { useRoute, useNavigation } from "@react-navigation/native"
 import {
 	TextInput,
@@ -14,15 +14,21 @@ import { useSelector, useDispatch } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 import * as Location from "expo-location"
 import { getAddressFromLatLng } from "../axios"
+import Autocomplete from "../components/Autocomplete"
 
 function ChoosePointScreen({ route, navigation }) {
 	const dispatch = useDispatch()
 	const { origin, destination } = useSelector((state) => state.directions)
 	const [location, setLocation] = useState("")
-	const handleSaveAddress = (event) => {
-		OriginOrDestination(event.nativeEvent.text)
-		navigation.goBack()
-	}
+
+	// const handleSaveAddress = (event) => {
+	// 	OriginOrDestination(event.nativeEvent.text)
+	// 	navigation.goBack()
+	// }
+
+	useEffect(() => {
+		getLocation()
+	}, [])
 
 	function OriginOrDestination(value) {
 		if (route.params.type === "Origin") {
@@ -31,11 +37,8 @@ function ChoosePointScreen({ route, navigation }) {
 		if (route.params.type === "Destination") {
 			dispatch(setDestination(value))
 		}
+		navigation.goBack()
 	}
-
-	useEffect(() => {
-		getLocation()
-	}, [])
 
 	const getLocation = async () => {
 		try {
@@ -59,12 +62,85 @@ function ChoosePointScreen({ route, navigation }) {
 		}
 	}
 
+	////////////////////////////////////////////////////////////////
+	const [inputValue, setInputValue] = useState("")
+	const [filteredSuggestions, setFilteredSuggestions] = useState([])
+	const [showSuggestions, setShowSuggestions] = useState(false)
+
+	const onChange = (inputValue) => {
+		const filteredSuggestions = suggestions.filter(
+			(suggestion) =>
+				suggestion.toLowerCase().indexOf(inputValue.toLowerCase()) === 0
+		)
+
+		setInputValue(inputValue)
+		setFilteredSuggestions(filteredSuggestions)
+		setShowSuggestions(true)
+	}
+
+	const onClick = (suggestion) => {
+		setInputValue(suggestion)
+		setFilteredSuggestions([])
+		setShowSuggestions(false)
+	}
+	const renderSuggestions = () => {
+		if (showSuggestions && inputValue) {
+			if (filteredSuggestions.length) {
+				return (
+					<FlatList
+						data={filteredSuggestions}
+						renderItem={({ item }) => (
+							<TouchableOpacity onPress={() => onClick(item)}>
+								<Text
+									style={styles.suggestion}
+									onPress={() => OriginOrDestination(item)}
+								>
+									{item}
+								</Text>
+							</TouchableOpacity>
+						)}
+						keyExtractor={(item) => item}
+					/>
+				)
+			} else {
+				return <Text style={styles.noSuggestions}>No suggestions available.</Text>
+			}
+		}
+		return null
+	}
+	////////////////////////////////////////////////////////////////
+	const suggestions = ["apple", "app", "ab", "date", "elderberry"]
 	return (
 		<View style={styles.container}>
 			<Stack spacing={0}>
 				<View style={styles.column}>
 					<View style={styles.view}>
 						<TextInput
+							label={route.params.type}
+							style={styles.input}
+							onChangeText={onChange}
+							value={inputValue}
+							placeholder="Search"
+							// onEndEditing={handleSaveAddress}
+							variant="outlined"
+							leading={(props) => <Icon name="magnify" {...props} />}
+							trailing={(props) => (
+								<Icon
+									name="close"
+									onPress={() => {
+										if (route.params.type === "Origin") {
+											dispatch(setOrigin(""))
+										}
+										if (route.params.type === "Destination") {
+											dispatch(setDestination(""))
+										}
+									}}
+									{...props}
+								/>
+							)}
+						/>
+						{renderSuggestions()}
+						{/* <TextInput
 							label={route.params.type}
 							value={route.params.type === "Origin" ? origin : destination}
 							onChangeText={(text) => {
@@ -92,7 +168,7 @@ function ChoosePointScreen({ route, navigation }) {
 									{...props}
 								/>
 							)}
-						/>
+						/> */}
 						<Button
 							title="Your current location"
 							trailing={(props) => <Icon name="map-marker" {...props} />}
@@ -141,6 +217,19 @@ const styles = StyleSheet.create({
 	},
 	view: {
 		gap: 10,
+	},
+	suggestion: {
+		padding: 10,
+		backgroundColor: "#eee",
+		borderBottomWidth: 1,
+		borderBottomColor: "#ccc",
+		transition: "background-color 0.3s ease-in-out",
+		"&:hover": {
+			backgroundColor: "blue",
+		},
+	},
+	noSuggestions: {
+		padding: 10,
 	},
 })
 export default ChoosePointScreen
