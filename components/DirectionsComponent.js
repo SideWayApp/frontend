@@ -20,6 +20,10 @@ const DirectionsComponent = (props) => {
 
 	const handleGetDirections = async () => {
 		try {
+			if (!origin || !destination){
+				console.log("Problem in origin or destination...")
+				return;
+			}
 			const directions = await getDirectionsOne(
 				origin,
 				destination,
