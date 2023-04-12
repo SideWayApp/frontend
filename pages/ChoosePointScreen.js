@@ -1,7 +1,5 @@
 import { React, useState, useEffect } from "react"
-import DirectionsComponent from "../components/DirectionsComponent"
 import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native"
-import { useRoute, useNavigation } from "@react-navigation/native"
 import {
 	TextInput,
 	Stack,
@@ -10,21 +8,17 @@ import {
 	Text,
 } from "@react-native-material/core"
 import Icon from "@expo/vector-icons/MaterialCommunityIcons"
-import { useSelector, useDispatch } from "react-redux"
+import { useDispatch } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 import * as Location from "expo-location"
 import { getAddressFromLatLng } from "../axios"
-import Autocomplete from "../components/Autocomplete"
 
 function ChoosePointScreen({ route, navigation }) {
 	const dispatch = useDispatch()
-	const { origin, destination } = useSelector((state) => state.directions)
 	const [location, setLocation] = useState("")
-
-	// const handleSaveAddress = (event) => {
-	// 	OriginOrDestination(event.nativeEvent.text)
-	// 	navigation.goBack()
-	// }
+	const [inputValue, setInputValue] = useState("")
+	const [filteredSuggestions, setFilteredSuggestions] = useState([])
+	const [showSuggestions, setShowSuggestions] = useState(false)
 
 	useEffect(() => {
 		getLocation()
@@ -61,11 +55,6 @@ function ChoosePointScreen({ route, navigation }) {
 			console.error("Could not found", error)
 		}
 	}
-
-	////////////////////////////////////////////////////////////////
-	const [inputValue, setInputValue] = useState("")
-	const [filteredSuggestions, setFilteredSuggestions] = useState([])
-	const [showSuggestions, setShowSuggestions] = useState(false)
 
 	const onChange = (inputValue) => {
 		const filteredSuggestions = suggestions.filter(
@@ -108,7 +97,7 @@ function ChoosePointScreen({ route, navigation }) {
 		}
 		return null
 	}
-	////////////////////////////////////////////////////////////////
+
 	const suggestions = ["apple", "app", "ab", "date", "elderberry"]
 	return (
 		<View style={styles.container}>
@@ -121,7 +110,6 @@ function ChoosePointScreen({ route, navigation }) {
 							onChangeText={onChange}
 							value={inputValue}
 							placeholder="Search"
-							// onEndEditing={handleSaveAddress}
 							variant="outlined"
 							leading={(props) => <Icon name="magnify" {...props} />}
 							trailing={(props) => (
@@ -140,35 +128,7 @@ function ChoosePointScreen({ route, navigation }) {
 							)}
 						/>
 						{renderSuggestions()}
-						{/* <TextInput
-							label={route.params.type}
-							value={route.params.type === "Origin" ? origin : destination}
-							onChangeText={(text) => {
-								if (route.params.type === "Origin") {
-									dispatch(setOrigin(text))
-								}
-								if (route.params.type === "Destination") {
-									dispatch(setDestination(text))
-								}
-							}}
-							onEndEditing={handleSaveAddress}
-							variant="outlined"
-							leading={(props) => <Icon name="magnify" {...props} />}
-							trailing={(props) => (
-								<Icon
-									name="close"
-									onPress={() => {
-										if (route.params.type === "Origin") {
-											dispatch(setOrigin(""))
-										}
-										if (route.params.type === "Destination") {
-											dispatch(setDestination(""))
-										}
-									}}
-									{...props}
-								/>
-							)}
-						/> */}
+
 						<Button
 							title="Your current location"
 							trailing={(props) => <Icon name="map-marker" {...props} />}
