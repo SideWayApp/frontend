@@ -24,15 +24,10 @@ const DirectionsComponent = (props) => {
 				console.log("Problem in origin or destination...")
 				return;
 			}
-			const directions = await getDirectionsOne(
-				origin,
-				destination,
-				props.preference
-			)
-			const wayPointArr = await getWayPoints(origin, destination, props.preference)
-			props.setWayPointsArr(wayPointArr)
-			props.setIsDirection(true)
-			props.setIsGotDirection(true);
+			const res = await getWayPoints(origin, destination, props.preference);
+			props.setWayPoints(res);
+			props.setIsDirection(true);
+			props.setIsGotDirection(true)
 		} catch (error) {
 			console.error(error)
 		}

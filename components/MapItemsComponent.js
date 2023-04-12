@@ -31,7 +31,6 @@ export default function MapItemsComponent({ region }) {
   return (
     <>
       {mapItems.map((mapItem, index) => {
-        console.log(typeof(mapItem.x))
         return (
           <Marker
             title={mapItem.type}

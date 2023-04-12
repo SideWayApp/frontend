@@ -9,13 +9,17 @@ import { getUserData } from "../axios";
 import { setUser } from "../Redux/authenticationReducer/authActions";
 
 const HomeScreen = () => {
+  
   const { origin, destination } = useSelector((state) => state);
   const [preference, setPreference] = useState("fastest");
-  const [isDirection, setIsDirection] = useState(false);
-  const [wayPointArr, setWayPointsArr] = useState([]);
-  const [isGotDirection, setIsGotDirection] = useState(false);
+  const [wayPoints, setWayPoints] = useState([]);
+  const [isDirection,setIsDirection] = useState(false);
+  const [isGotDirection,setIsGotDirection] = useState(false);
+
   const token = useSelector((state) => state.auth.token);
+  
   const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchAsyncToken = async () => {
       const asyncToken = await AsyncStorage.getItem("token");
@@ -28,29 +32,22 @@ const HomeScreen = () => {
     fetchAsyncToken();
   }, [token]);
 
-  const lastIndex = wayPointArr.length - 1;
 
   return (
     <View style={styles.container}>
       <DirectionsComponent
-        setIsGotDirection={setIsGotDirection}
-        isDirection={isDirection}
-        setIsDirection={setIsDirection}
-        setWayPointsArr={setWayPointsArr}
         origin={origin}
         destination={destination}
         preference={preference}
-        setPreference={setPreference}
+        setWayPoints = {setWayPoints}
+        setIsDirection = {setIsDirection}
+        setIsGotDirection = {setIsGotDirection}
       />
       <MapComponent
-        isGotDirection={isGotDirection}
-        setIsGotDirection={setIsGotDirection}
-        lastIndex={lastIndex}
-        isDirection={isDirection}
-        origin={origin}
-        destination={destination}
-        preference={preference}
-        wayPointArr={wayPointArr}
+        wayPoints={wayPoints}
+        isDirection = {isDirection}
+        setIsGotDirection = {setIsGotDirection}
+        isGotDirection = {isGotDirection}
       />
     </View>
   );
