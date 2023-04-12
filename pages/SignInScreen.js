@@ -10,6 +10,7 @@ import {
 
 import {
   BigStyledButton,
+  SignInModal,
   StyledTitle,
 } from "../components/AuthFormsComponents";
 import { globalStyles } from "../Styles/GlobalStyles";
@@ -23,6 +24,10 @@ function SignInScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const handleSignIn = async () => {
@@ -37,7 +42,8 @@ function SignInScreen() {
       if (token !== null) {
         dispatch(setToken(token));
         await AsyncStorage.setItem("token", token);
-        navigation.navigate("Home");
+        setIsModalVisible(true);
+        //navigation.navigate("Home");
       }
     } else {
       console.log(validate);
@@ -52,7 +58,7 @@ function SignInScreen() {
     navigation.navigate("Sign Up");
   };
 
-  function validateEmailAndPassword() {
+  const validateEmailAndPassword = () => {
     const emailRegex = /^\S+@\S+\.\S+$/;
 
     if (!emailRegex.test(email)) {
@@ -64,13 +70,27 @@ function SignInScreen() {
     }
 
     return null;
-  }
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleSkip = () => {
+    setIsModalVisible(false);
+    navigation.navigate("Home");
+  };
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={globalStyles.container}
     >
+      <SignInModal
+        isVisible={isModalVisible}
+        onClose={handleModalClose}
+        handleSkip={handleSkip}
+      />
       <StyledTitle title="Sign In" />
       <TextInput
         style={globalStyles.input}
