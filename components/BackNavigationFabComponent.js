@@ -3,7 +3,7 @@ import React from 'react'
 import { FAB } from 'react-native-paper';
 import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 
-export default function BackNavigationFabComponent(){
+export default function BackNavigationFabComponent(props){
   return (
       <FAB
         style={styles.fabMe}
@@ -12,7 +12,8 @@ export default function BackNavigationFabComponent(){
             <Icon name="navigation-variant" size={30} color="black" />
           </View>
         }
-        //onPress={deltaToMe}
+        onPress={props.moveTo}
+        onPress={()=>props.setIsGotDirection(true)}
       />
   )
 }

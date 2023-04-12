@@ -65,12 +65,22 @@ function MapComponent({wayPoints,isDirection,isGotDirection,setIsGotDirection}) 
   const moveTo = async () => {
     const camera = await mapRef.current.getCamera();
     if (camera) {
+      const newLatitudeDelta = 0.0015;
+      const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+      const newPosition = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: newLatitudeDelta,
+      longitudeDelta: newLongitudeDelta
+    };
       camera.center = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude
       };
+      camera.pitch = 90;
       if (isGotDirection){
         mapRef.current.animateCamera(camera, { duration: 1000 });
+        mapRef.current.animateToRegion(newPosition);
         setIsGotDirection(false)
       }
     }
@@ -119,7 +129,7 @@ function MapComponent({wayPoints,isDirection,isGotDirection,setIsGotDirection}) 
         <MapItemsComponent region={region} />
       </MapView>
       {isDirection &&
-        <BackNavigationFabComponent />        
+        <BackNavigationFabComponent moveTo={moveTo} setIsGotDirection={setIsGotDirection}/>        
       }  
       <FAB
           style={styles.fab}
