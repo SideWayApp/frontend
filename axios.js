@@ -101,6 +101,10 @@ export const getUserData = async (token) => {
 };
 
 export const fetchObjectsInRegion = async (region) => {
-  const itmes = await axios.post(`${API_BASE_URL}/api/items/region`, region);
-  return itmes.data;
+  try{
+    const itmes = await axios.post(`${API_BASE_URL}/api/items/region`, region);
+    return itmes.data;
+  }catch(error){
+    console.log(error);
+  }
 };
