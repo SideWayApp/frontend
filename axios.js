@@ -19,7 +19,7 @@ export const getAddressFromLatLng = async (latitude, longitude) => {
   }
 };
 
-export const getWayPoints = async (origin, destination, preference) => {
+export const getWayPointsAndInstructions = async (origin, destination, preference) => {
   const data = {
     origin: origin,
     destination: destination,
@@ -27,7 +27,7 @@ export const getWayPoints = async (origin, destination, preference) => {
   };
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/directions/getWayPoints`,
+      `${API_BASE_URL}/directions/getWayPointsAndInstructions`,
       data
     );
     return response.data;
@@ -36,6 +36,28 @@ export const getWayPoints = async (origin, destination, preference) => {
     throw new Error("Failed to fetch directions");
   }
 };
+
+
+export const getInstructions = async (origin, destination, preference) => {
+  const data = {
+    origin: origin,
+    destination: destination,
+    preference: preference,
+  };
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/directions/getInstructions`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to fetch directions");
+  }
+};
+
+
+
 
 export const getDirectionsOne = async (origin, destination, preference) => {
   const data = {
