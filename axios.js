@@ -73,15 +73,24 @@ export const login = async (data) => {
   try {
     const urlRoute = `${API_BASE_URL}/api/authentication/login`;
     const res = await axios.post(urlRoute, data);
-    return res.data.access;
+    return res.data.accessToken;
   } catch (e) {
     console.log("login", e);
   }
 };
 
+export const logout = async (token) => {
+  try {
+    const res = await axios.post(`${API_BASE_URL}/api/authentication/logout`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (e) {
+    console.log("logout", e);
+  }
+};
+
 export const getUserData = async (token) => {
   try {
-    console.log("getUser", token);
     const user = {
       email: "guy@guy.guy",
       preferences: {
@@ -102,10 +111,10 @@ export const getUserData = async (token) => {
 };
 
 export const fetchObjectsInRegion = async (region) => {
-  try{
+  try {
     const itmes = await axios.post(`${API_BASE_URL}/api/items/region`, region);
     return itmes.data;
-  }catch(error){
+  } catch (error) {
     console.log(error);
   }
 };

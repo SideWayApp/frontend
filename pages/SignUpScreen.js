@@ -30,19 +30,19 @@ const SignUpScreen = () => {
   const [age, setAge] = useState("");
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const handleSignUp = () => {
     setSignUpData((prev) => ({ ...prev, gender: gender, age: age }));
     const validation = validateSignUpData();
-    if (validation === null) {
-      setIsModalVisible(true);
-    } else {
-      console.log(validation);
-      setError(true);
-      setErrorMessage(validation);
-      setLoading(false);
-    }
+    // if (validation === null) {
+    setIsModalVisible(true);
+    //  } else {
+    //   console.log(validation);
+    //   setError(true);
+    //   setErrorMessage(validation);
+    //   setLoading(false);
+    // }
   };
-  const [loading, setLoading] = useState(false);
   const handleModalClose = async (preferences) => {
     setLoading(true);
     setIsModalVisible(false);
@@ -101,7 +101,7 @@ const SignUpScreen = () => {
     }
 
     if (password.length < 6) {
-      return "Password should be at least 8 characters.";
+      return "Password should be at least 6 characters.";
     }
 
     if (!rePassword) {
