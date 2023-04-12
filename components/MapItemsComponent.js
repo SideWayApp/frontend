@@ -36,7 +36,10 @@ export default function MapItemsComponent({ region }) {
             title={mapItem.type}
             description={mapItem.streetName}
             key={mapItem.y + mapItem.x}
-            coordinate={{ latitude: parseFloat(mapItem.y), longitude: parseFloat(mapItem.x) }}
+            coordinate={{
+              latitude: parseFloat(mapItem.y),
+              longitude: parseFloat(mapItem.x),
+            }}
           >
             <View style={styles.markerContainer}>
               {mapItem.type === "camera" && <Icon name="camera" />}

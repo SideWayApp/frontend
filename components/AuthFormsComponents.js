@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { useSelector } from "react-redux";
 
 const genderOptions = ["Male", "Female"];
 
@@ -168,6 +169,56 @@ export const PrefrencesModal = ({ isVisible, onClose, handleSkip }) => {
         <Text style={modalStyles.skipText}>Skip</Text>
       </TouchableOpacity>
     </Modal>
+  );
+};
+
+export const SignInModal = ({ isVisible, onClose, handleSkip }) => {
+  const user = useSelector((state) => state.auth.user);
+  return (
+    <Modal
+      onBackdropPress={onClose}
+      visible={isVisible}
+      onRequestClose={onClose}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
+      {user && (
+        <>
+          <ModalTitle title={`Hello ${user.signUpData.name}`} />
+          <BorderLineButton title="Update your prefrencess" />
+          <BorderLineButton title="Edit your information" />
+
+          <TouchableOpacity
+            style={modalStyles.skipButton}
+            onPress={() => {
+              handleSkip();
+            }}
+          >
+            <Text style={modalStyles.skipText}>Skip</Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </Modal>
+  );
+};
+
+const BorderLineButton = ({ title, onPress }) => {
+  return (
+    <TouchableOpacity
+      style={{
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: "black",
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        marginVertical: 8,
+        marginHorizontal: 15,
+        height: 50,
+      }}
+      onPress={onPress}
+    >
+      <Text style={{ textAlign: "center", fontSize: 20 }}>{title}</Text>
+    </TouchableOpacity>
   );
 };
 

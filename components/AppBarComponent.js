@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { AppBar, IconButton, Avatar } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -12,7 +12,6 @@ function AppBarComponent({ showBackButton }) {
   const navigation = useNavigation();
   const route = useRoute();
   const user = useSelector((state) => state.auth.user);
-  // console.log("App bar user:", user);
   const isHomeInPage = route.name === "Home";
 
   const handleMenuPreesed = async () => {
@@ -27,13 +26,27 @@ function AppBarComponent({ showBackButton }) {
       style={styles.appbar}
       leading={(props) => {
         if (isHomeInPage) {
-          return (
-            <IconButton
-              icon={(props) => <Icon name="account" {...props} />}
-              color="white"
-              onPress={() => navigation.navigate("Sign In")}
-            />
-          );
+          if (user === null) {
+            return (
+              <IconButton
+                icon={(props) => <Icon name="account" {...props} />}
+                color="white"
+                onPress={() => navigation.navigate("Sign In")}
+              />
+            );
+          } else {
+            return (
+              <IconButton
+                icon={() => (
+                  <Text style={{ color: "white", fontSize: 24 }}>
+                    {user.email.charAt(0).toUpperCase()}
+                  </Text>
+                )}
+                color="white"
+                onPress={() => console.log("create user feed")}
+              />
+            );
+          }
         } else {
           return (
             <IconButton
