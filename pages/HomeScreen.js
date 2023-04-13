@@ -7,23 +7,22 @@ import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getUserData } from "../axios";
 import { setUser } from "../Redux/authenticationReducer/authActions";
+import InstructionsComponent from "../components/InstructionsComponent";
 
 const HomeScreen = () => {
-  
   const { origin, destination } = useSelector((state) => state);
   const [preference, setPreference] = useState("fastest");
   const [wayPoints, setWayPoints] = useState([]);
-  const [isDirection,setIsDirection] = useState(false);
-  const [isGotDirection,setIsGotDirection] = useState(false);
+  const [isDirection, setIsDirection] = useState(false);
+  const [isGotDirection, setIsGotDirection] = useState(false);
 
   const token = useSelector((state) => state.auth.token);
-  
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchAsyncToken = async () => {
       const asyncToken = await AsyncStorage.getItem("token");
-      console.log(asyncToken);
       if (asyncToken !== null) {
         const user = await getUserData(asyncToken);
         dispatch(setUser(user));
@@ -32,22 +31,24 @@ const HomeScreen = () => {
     fetchAsyncToken();
   }, [token]);
 
-
   return (
     <View style={styles.container}>
-      <DirectionsComponent
-        origin={origin}
-        destination={destination}
-        preference={preference}
-        setWayPoints = {setWayPoints}
-        setIsDirection = {setIsDirection}
-        setIsGotDirection = {setIsGotDirection}
-      />
+      {!isDirection && (
+        <DirectionsComponent
+          origin={origin}
+          destination={destination}
+          preference={preference}
+          setWayPoints={setWayPoints}
+          setIsDirection={setIsDirection}
+          setIsGotDirection={setIsGotDirection}
+        />
+      )}
+      {isDirection && <InstructionsComponent instructions={wayPoints} />}
       <MapComponent
         wayPoints={wayPoints}
-        isDirection = {isDirection}
-        setIsGotDirection = {setIsGotDirection}
-        isGotDirection = {isGotDirection}
+        isDirection={isDirection}
+        setIsGotDirection={setIsGotDirection}
+        isGotDirection={isGotDirection}
       />
     </View>
   );

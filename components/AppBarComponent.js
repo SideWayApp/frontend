@@ -19,7 +19,6 @@ function AppBarComponent({ showBackButton }) {
     console.log("Item removed successfully!");
     dispatch(setUser(null));
     dispatch(setToken(null));
-    console.log(user);
   };
   return (
     <AppBar

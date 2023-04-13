@@ -194,7 +194,7 @@ export const SignInModal = ({ isVisible, onClose, handleSkip }) => {
               handleSkip();
             }}
           >
-            <Text style={modalStyles.skipText}>Skip</Text>
+            <Text style={modalStyles.skipText}>Continue</Text>
           </TouchableOpacity>
         </>
       )}
