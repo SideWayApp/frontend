@@ -3,7 +3,6 @@ import MapViewDirections from "react-native-maps-directions";
 
 export default function OnMapDirections({wayPoints}){
   const lastIndex = wayPoints.length-1;
-  console.log(lastIndex + "From OnMap")
   return (
     <MapViewDirections
           origin={{
