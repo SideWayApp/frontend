@@ -33,23 +33,44 @@ export const getAddressFromLatLng = async (latitude, longitude) => {
 	}
 }
 
-export const getWayPoints = async (origin, destination, preference) => {
-	const data = {
-		origin: origin,
-		destination: destination,
-		preference: preference,
-	}
-	try {
-		const response = await axios.post(
-			`${API_BASE_URL}/directions/getWayPoints`,
-			data
-		)
-		return response.data
-	} catch (error) {
-		console.error(error)
-		throw new Error("Failed to fetch directions")
-	}
-}
+export const getWayPointsAndInstructions = async (origin, destination, preference) => {
+  const data = {
+    origin: origin,
+    destination: destination,
+    preference: preference,
+  };
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/directions/getWayPointsAndInstructions`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to fetch directions");
+  }
+};
+
+export const getInstructions = async (origin, destination, preference) => {
+  const data = {
+    origin: origin,
+    destination: destination,
+    preference: preference,
+  };
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/directions/getInstructions`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to fetch directions");
+  }
+};
+
+
+
 
 export const getDirectionsOne = async (origin, destination, preference) => {
 	const data = {
@@ -84,38 +105,54 @@ export const signUpUser = async (userData) => {
 }
 
 export const login = async (data) => {
-	try {
-		const urlRoute = `${API_BASE_URL}/api/authentication/login`
-		const res = await axios.post(urlRoute, data)
-		return res.data.access
-	} catch (e) {
-		console.log("login", e)
-	}
-}
+  try {
+    const urlRoute = `${API_BASE_URL}/api/authentication/login`;
+    const res = await axios.post(urlRoute, data);
+    console.log(res.status);
+    return res.data.accessToken;
+  } catch (e) {
+    console.log("login", e);
+    return null;
+  }
+};
+
+export const logout = async (token) => {
+  try {
+    const res = await axios.post(`${API_BASE_URL}/api/authentication/logout`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (e) {
+    console.log("logout", e);
+  }
+};
 
 export const getUserData = async (token) => {
-	try {
-		console.log("getUser", token)
-		const user = {
-			email: "guy@guy.guy",
-			preferences: {
-				accessibility: true,
-				clean: false,
-				scenery: false,
-				security: true,
-				speed: false,
-			},
-			signUpData: {
-				name: "Guy",
-				gender: "male",
-				age: "26",
-			},
-		}
-		return user
-	} catch (e) {}
-}
+  try {
+    const user = {
+      email: "guy@guy.guy",
+      preferences: {
+        accessibility: true,
+        clean: false,
+        scenery: false,
+        security: true,
+        speed: false,
+      },
+      signUpData: {
+        name: "Guy",
+        gender: "male",
+        age: "26",
+      },
+    };
+    return user;
+  } catch (e) {}
+};
 
 export const fetchObjectsInRegion = async (region) => {
-	const itmes = await axios.post(`${API_BASE_URL}/api/items/region`, region)
-	return itmes.data
-}
+  try {
+    const itmes = await axios.post(`${API_BASE_URL}/api/items/region`, region);
+    return itmes.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
