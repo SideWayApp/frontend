@@ -1,23 +1,37 @@
-import axios from "axios";
-import { API_BASE_URL } from "@env";
+import axios from "axios"
+import { API_BASE_URL } from "@env"
+
+export const getStreetsStartingWith = async (letters) => {
+	const data = { letters }
+	try {
+		const response = await axios.post(
+			`${API_BASE_URL}/api/streets/getStreetsStartingWith/${letters}`,
+			data
+		)
+		return response.data
+	} catch (error) {
+		console.error(error)
+		throw new Error("Failed to fetch streets")
+	}
+}
 
 export const getAddressFromLatLng = async (latitude, longitude) => {
-  const data = {
-    latitude: latitude,
-    longitude: longitude,
-  };
+	const data = {
+		latitude: latitude,
+		longitude: longitude,
+	}
 
-  try {
-    const response = await axios.post(
-      `${API_BASE_URL}/directions/getAddressFromLatLng`,
-      data
-    );
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw new Error("Failed to fetch Address");
-  }
-};
+	try {
+		const response = await axios.post(
+			`${API_BASE_URL}/directions/getAddressFromLatLng`,
+			data
+		)
+		return response.data
+	} catch (error) {
+		console.error(error)
+		throw new Error("Failed to fetch Address")
+	}
+}
 
 export const getWayPointsAndInstructions = async (origin, destination, preference) => {
   const data = {
@@ -36,7 +50,6 @@ export const getWayPointsAndInstructions = async (origin, destination, preferenc
     throw new Error("Failed to fetch directions");
   }
 };
-
 
 export const getInstructions = async (origin, destination, preference) => {
   const data = {
@@ -60,36 +73,36 @@ export const getInstructions = async (origin, destination, preference) => {
 
 
 export const getDirectionsOne = async (origin, destination, preference) => {
-  const data = {
-    origin: origin,
-    destination: destination,
-    preference: preference,
-  };
-  try {
-    const response = await axios.post(
-      `${API_BASE_URL}/directions/getXYListinBestRoute`,
-      data
-    );
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw new Error("Failed to fetch directions");
-  }
-};
+	const data = {
+		origin: origin,
+		destination: destination,
+		preference: preference,
+	}
+	try {
+		const response = await axios.post(
+			`${API_BASE_URL}/directions/getXYListinBestRoute`,
+			data
+		)
+		return response.data
+	} catch (error) {
+		console.error(error)
+		throw new Error("Failed to fetch directions")
+	}
+}
 /*    origin: "Louis Marshall 41, Tel Aviv",
     destination: "Ahi Dakar 1, Tel Aviv",
     preference: "clean",*/
 
 export const signUpUser = async (userData) => {
-  try {
-    const urlRoute = `${API_BASE_URL}/api/authentication/register`;
-    const res = await axios.post(urlRoute, userData);
-    console.log(res.data);
-    return "done";
-  } catch (error) {
-    console.log(error);
-  }
-};
+	try {
+		const urlRoute = `${API_BASE_URL}/api/authentication/register`
+		const res = await axios.post(urlRoute, userData)
+		console.log(res.data)
+		return "done"
+	} catch (error) {
+		console.log(error)
+	}
+}
 
 export const login = async (data) => {
   try {
@@ -142,3 +155,4 @@ export const fetchObjectsInRegion = async (region) => {
     console.log(error);
   }
 };
+
