@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react"
 import { View, Text, Image, TouchableHighlight } from "react-native"
 import { Picker } from "@react-native-picker/picker"
-import { getDirectionsOne, getWayPoints } from "../axios"
+import { getDirectionsOne, getWayPointsAndInstructions } from "../axios"
 import {
 	Stack,
 	TextInput,
@@ -24,15 +24,10 @@ const DirectionsComponent = (props) => {
 				console.log("Problem in origin or destination...")
 				return;
 			}
-			const directions = await getDirectionsOne(
-				origin,
-				destination,
-				props.preference
-			)
-			const wayPointArr = await getWayPoints(origin, destination, props.preference)
-			props.setWayPointsArr(wayPointArr)
-			props.setIsDirection(true)
-			props.setIsGotDirection(true);
+			const res = await getWayPointsAndInstructions(origin, destination, props.preference);
+			props.setWayPoints(res);
+			props.setIsDirection(true);
+			props.setIsGotDirection(true)
 		} catch (error) {
 			console.error(error)
 		}
