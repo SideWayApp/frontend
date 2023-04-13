@@ -11,7 +11,7 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 import { useDispatch } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 import * as Location from "expo-location"
-import { getAddressFromLatLng } from "../axios"
+import { getAddressFromLatLng, getStreetsStartingWith } from "../axios"
 
 function ChoosePointScreen({ route, navigation }) {
 	const dispatch = useDispatch()
@@ -33,7 +33,6 @@ function ChoosePointScreen({ route, navigation }) {
 		}
 		navigation.goBack()
 	}
-
 	const getLocation = async () => {
 		try {
 			let currentLocation = await Location.getCurrentPositionAsync({})
@@ -56,15 +55,22 @@ function ChoosePointScreen({ route, navigation }) {
 		}
 	}
 
-	const onChange = (inputValue) => {
-		const filteredSuggestions = suggestions.filter(
-			(suggestion) =>
-				suggestion.toLowerCase().indexOf(inputValue.toLowerCase()) === 0
-		)
-
-		setInputValue(inputValue)
-		setFilteredSuggestions(filteredSuggestions)
-		setShowSuggestions(true)
+	const onChange = async (inputValue) => {
+		if (inputValue === "") {
+			setInputValue("")
+			return
+		} else {
+			try {
+				setInputValue(inputValue)
+				const filteredSuggestions = await getStreetsStartingWith(inputValue)
+				setFilteredSuggestions(filteredSuggestions)
+				setShowSuggestions(true)
+			} catch (error) {
+				console.error(error)
+				setFilteredSuggestions([])
+				setShowSuggestions(false)
+			}
+		}
 	}
 
 	const onClick = (suggestion) => {
@@ -98,7 +104,6 @@ function ChoosePointScreen({ route, navigation }) {
 		return null
 	}
 
-	const suggestions = ["apple", "app", "ab", "date", "elderberry"]
 	return (
 		<View style={styles.container}>
 			<Stack spacing={0}>
