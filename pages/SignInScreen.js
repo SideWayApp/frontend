@@ -40,10 +40,13 @@ function SignInScreen() {
       };
       const token = await login(data);
       if (token !== null) {
+        console.log(token);
         dispatch(setToken(token));
         await AsyncStorage.setItem("token", token);
         setIsModalVisible(true);
-        //navigation.navigate("Home");
+        // navigation.navigate("Home");
+      } else {
+        console.log("wrong email or password");
       }
     } else {
       console.log(validate);

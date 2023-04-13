@@ -73,9 +73,11 @@ export const login = async (data) => {
   try {
     const urlRoute = `${API_BASE_URL}/api/authentication/login`;
     const res = await axios.post(urlRoute, data);
+    console.log(res.status);
     return res.data.accessToken;
   } catch (e) {
     console.log("login", e);
+    return null;
   }
 };
 

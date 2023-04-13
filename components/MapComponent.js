@@ -7,19 +7,19 @@ import {
   Image,
   Text,
   Button,
-  PermissionsAndroid
+  PermissionsAndroid,
 } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import { GOOGLE_API_KEY } from "@env";
 import { getDirections } from "react-native-google-maps-directions";
-import { FAB } from 'react-native-paper';
-import Feather from 'react-native-vector-icons/Feather';
+import { FAB } from "react-native-paper";
+import Feather from "react-native-vector-icons/Feather";
 const { width, height } = Dimensions.get("window");
 import * as Location from "expo-location";
 import MapItemsComponent from "./MapItemsComponent";
-import { getAddressFromLatLng } from "../axios"
-import Icon from "@expo/vector-icons/MaterialCommunityIcons"
+import { getAddressFromLatLng } from "../axios";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 export default function MapComponent({
   lastIndex,
   isDirection,
@@ -36,8 +36,8 @@ export default function MapComponent({
   const [deltaChanged, isDeltaChanged] = useState(false);
   const [isNavigationStarted, setIsNavigationStarted] = useState(false);
   const [coordinates, setCoordinates] = useState(null);
-  const [isClicked,setIsClicked] = useState(false);
-  const [clickedAddress,setClickedAddress] = useState("");
+  const [isClicked, setIsClicked] = useState(false);
+  const [clickedAddress, setClickedAddress] = useState("");
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function MapComponent({
     latitude: 32.05169730746334,
     longitude: 34.76187512527052,
     latitudeDelta: LATITUDE_DELTA,
-    longitudeDelta: LONGITUDE_DELTA
+    longitudeDelta: LONGITUDE_DELTA,
   };
   const [region, setRegion] = useState(INITIAL_POSITION);
   const handleRegionChangeComplete = (newRegion) => {
@@ -77,7 +77,7 @@ export default function MapComponent({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
       latitudeDelta: newLatitudeDelta,
-      longitudeDelta: newLongitudeDelta
+      longitudeDelta: newLongitudeDelta,
     };
 
     // Set the new position as the region of the map
@@ -93,27 +93,27 @@ export default function MapComponent({
     const brng = (Math.atan2(y, x) * 180) / Math.PI;
     return brng >= 0 ? brng : 360 + brng;
   };
-  
+
   const deltaStartNavigation = async () => {
     setIsNavigationStarted(true);
-    const camera =  await mapRef.current.getCamera();
+    const camera = await mapRef.current.getCamera();
     setTimeout(() => {
       const newLatitudeDelta = 0.001;
       const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
       const newPosition = {
         // latitude: location.coords.latitude,
         // longitude: location.coords.longitude,
-        latitude:wayPointArr[0].latitude,
+        latitude: wayPointArr[0].latitude,
         longitude: wayPointArr[0].longitude,
         latitudeDelta: newLatitudeDelta,
-        longitudeDelta: newLongitudeDelta
-    };
+        longitudeDelta: newLongitudeDelta,
+      };
 
-    // Set the new position as the region of the map
-    if (camera) {
-    mapRef.current.animateToRegion(newPosition);
-    }
-  }, 1000);
+      // Set the new position as the region of the map
+      if (camera) {
+        mapRef.current.animateToRegion(newPosition);
+      }
+    }, 1000);
   };
 
   const moveTo = async () => {
@@ -121,28 +121,28 @@ export default function MapComponent({
     if (camera) {
       camera.center = {
         latitude: location.coords.latitude,
-        longitude: location.coords.longitude
+        longitude: location.coords.longitude,
       };
-      if (isGotDirection){
+      if (isGotDirection) {
         mapRef.current.animateCamera(camera, { duration: 1000 });
-        setIsGotDirection(false)
+        setIsGotDirection(false);
       }
     }
   };
 
   const handleMapPress = async (event) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
-    if (isClicked){
-      setIsClicked(false)
-    }else{
+    if (isClicked) {
+      setIsClicked(false);
+    } else {
       setIsClicked(true);
       setCoordinates({ latitude, longitude });
     }
-    try{
-      const address = await getAddressFromLatLng(latitude,longitude);
+    try {
+      const address = await getAddressFromLatLng(latitude, longitude);
       setClickedAddress(address);
-    }catch(error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -155,45 +155,49 @@ export default function MapComponent({
         ref={mapRef}
         onRegionChangeComplete={handleRegionChangeComplete}
         onPress={handleMapPress}
+        pitchEnabled={true}
+        rotateEnabled={true}
       >
-      {isClicked && (
+        {isClicked && (
           <Marker
             coordinate={coordinates}
-            title={`${coordinates.latitude.toFixed(4)},${coordinates.longitude.toFixed(4)}`}
-            description = {clickedAddress}
+            title={`${coordinates.latitude.toFixed(
+              4
+            )},${coordinates.longitude.toFixed(4)}`}
+            description={clickedAddress}
           />
         )}
-        {isDirection && moveTo() &&(
+        {isDirection && moveTo() && (
           <>
             <Marker
               coordinate={{
                 latitude: wayPointArr[0].latitude,
-                longitude: wayPointArr[0].longitude
+                longitude: wayPointArr[0].longitude,
               }}
               title="Origin"
             />
             <Marker
               coordinate={{
                 latitude: wayPointArr[lastIndex].latitude,
-                longitude: wayPointArr[lastIndex].longitude
+                longitude: wayPointArr[lastIndex].longitude,
               }}
               title="Destination"
             />
             <Marker
               coordinate={{
                 latitude: location.coords.latitude,
-                longitude: location.coords.longitude
+                longitude: location.coords.longitude,
               }}
               title="My Phone"
             />
             <MapViewDirections
               origin={{
                 latitude: wayPointArr[0].latitude,
-                longitude: wayPointArr[0].longitude
+                longitude: wayPointArr[0].longitude,
               }}
               destination={{
                 latitude: wayPointArr[lastIndex].latitude,
-                longitude: wayPointArr[lastIndex].longitude
+                longitude: wayPointArr[lastIndex].longitude,
               }}
               waypoints={wayPointArr}
               apikey={GOOGLE_API_KEY}
@@ -206,23 +210,22 @@ export default function MapComponent({
         <MapItemsComponent region={region} />
       </MapView>
       <FAB
-            style={styles.fab}
-            icon={()=>
-            <View style={styles.iconContainer}>
-              <Icon name="plus" size={30} color="black" />
-            </View>
-            }
-            
-          />
+        style={styles.fab}
+        icon={() => (
+          <View style={styles.iconContainer}>
+            <Icon name="plus" size={30} color="black" />
+          </View>
+        )}
+      />
       {isDirection && (
         <>
           <FAB
             style={styles.fabMe}
-            icon={()=>
-            <View style={styles.iconContainer}>
-              <Icon name="home" size={30} color="black" />
-            </View>
-            }
+            icon={() => (
+              <View style={styles.iconContainer}>
+                <Icon name="home" size={30} color="black" />
+              </View>
+            )}
             onPress={deltaToMe}
           />
           {/* <FAB
@@ -243,16 +246,16 @@ export default function MapComponent({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: "relative"
+    position: "relative",
   },
   map: {
     width: "100%",
     height: "100%",
-    alignItems: "center"
+    alignItems: "center",
   },
   callout: {
     alignItems: "center",
-    textAlign: "center"
+    textAlign: "center",
   },
   buttonContainer: {
     position: "absolute",
@@ -264,7 +267,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 2,
     elevation: 5,
-    borderRadius: 10
+    borderRadius: 10,
   },
   buttonStartNavigation: {
     position: "absolute",
@@ -278,13 +281,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 2,
     elevation: 5,
-    borderRadius: 10
+    borderRadius: 10,
   },
   coordinatesContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 16,
     left: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -293,30 +296,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   fab: {
-    position: 'absolute',
+    position: "absolute",
     margin: 16,
     right: 0,
     bottom: 0,
     zIndex: 1,
-    borderRadius:100,
-    backgroundColor: 'lightyellow',
+    borderRadius: 100,
+    backgroundColor: "lightyellow",
   },
   fabMe: {
-    position: 'absolute',
+    position: "absolute",
     margin: 16,
     right: 0,
-    backgroundColor: 'turquoise',
+    backgroundColor: "turquoise",
     borderRadius: 100,
     bottom: 60,
-    justifyContent:'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   iconContainer: {
-    justifyContent: 'center',
+    justifyContent: "center",
     width: 30,
     height: 30,
-    bottom:3,
-    alignSelf:'center',
-    alignItems: 'center',
+    bottom: 3,
+    alignSelf: "center",
+    alignItems: "center",
   },
 });
