@@ -123,9 +123,11 @@ function ChoosePointScreen({ route, navigation }) {
 									onPress={() => {
 										if (route.params.type === "Origin") {
 											dispatch(setOrigin(""))
+											setInputValue("")
 										}
 										if (route.params.type === "Destination") {
 											dispatch(setDestination(""))
+											setInputValue("")
 										}
 									}}
 									{...props}
