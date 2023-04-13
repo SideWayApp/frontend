@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Image,
   Text,
   Button,
@@ -86,6 +87,11 @@ function MapComponent({wayPoints,isDirection,isGotDirection,setIsGotDirection}) 
     }
   };  
 
+  const handleNavigation = () => {
+    console.log("clicked...!!")
+  };
+
+
     const handleMapPress = async (event) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
       if (isClicked){
@@ -112,12 +118,20 @@ function MapComponent({wayPoints,isDirection,isGotDirection,setIsGotDirection}) 
         onRegionChangeComplete={handleRegionChangeComplete}
         onPress={handleMapPress}
       >
-        {isClicked && (
-            <Marker
-              coordinate={coordinates}
-              title={`${coordinates.latitude.toFixed(4)},${coordinates.longitude.toFixed(4)}`}
-              description = {clickedAddress}
-            />
+        {isClicked && !isDirection &&(
+          <Marker coordinate={coordinates}>
+            <Callout>
+              <View>
+                <Text>{`${coordinates.latitude.toFixed(4)}, ${coordinates.longitude.toFixed(4)}`}</Text>
+                <Text>{clickedAddress}</Text>
+              </View>
+              <TouchableWithoutFeedback onPress={(event) => { event.stopPropagation(); handleNavigation(); }}>
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>Navigation to here</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            </Callout>
+          </Marker>
         )}
         {isDirection && moveTo() && (
           <>
@@ -174,6 +188,20 @@ const styles = StyleSheet.create({
     bottom:3,
     alignSelf:'center',
     alignItems: 'center',
+  },
+  button: {
+    backgroundColor: 'lightblue',
+    padding: 10,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#000',
+  },
+  navigationButton: {
+    zIndex: 100,
+  },
+  buttonText: {
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
