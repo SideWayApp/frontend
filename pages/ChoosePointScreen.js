@@ -22,7 +22,7 @@ function ChoosePointScreen({ route, navigation }) {
 
 	useEffect(() => {
 		getLocation()
-	}, [])
+	}, [location])
 
 	function OriginOrDestination(value) {
 		if (route.params.type === "Origin") {
@@ -49,7 +49,7 @@ function ChoosePointScreen({ route, navigation }) {
 				location.coords.longitude
 			)
 			OriginOrDestination(getAdd)
-			navigation.goBack()
+			navigation.navigate("Home")
 		} catch (error) {
 			console.error("Could not found", error)
 		}
