@@ -43,7 +43,12 @@ const HomeScreen = () => {
           setIsGotDirection={setIsGotDirection}
         />
       )}
-      {isDirection && <InstructionsComponent instructions={wayPoints} />}
+      {isDirection && (
+        <InstructionsComponent
+          instructions={wayPoints}
+          setIsDirections={setIsDirection}
+        />
+      )}
       <MapComponent
         wayPoints={wayPoints}
         isDirection={isDirection}

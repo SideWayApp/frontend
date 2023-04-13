@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as Location from "expo-location";
 
-const InstructionsComponent = ({ instructions }) => {
+const InstructionsComponent = ({ instructions, setIsDirections }) => {
   const [displayedInstructions, setDisplayedInstructions] = useState("");
 
   const getNextInstruction = (currentLatitude, currentLongitude) => {
@@ -73,13 +73,22 @@ const InstructionsComponent = ({ instructions }) => {
       {instructions.length > 0 && (
         <Text style={styles.text}>{displayedInstructions}</Text>
       )}
+
+      <TouchableOpacity
+        style={{ backgroundColor: "green", height: "20%" }}
+        onPress={() => {
+          setIsDirections(false);
+        }}
+      >
+        <Text style={styles.text}>Stop Directions</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: "10%",
+    height: "20%",
     justifyContent: "center",
   },
   text: {
