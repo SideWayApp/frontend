@@ -90,6 +90,7 @@ function ChoosePointScreen({ route, navigation }) {
 									style={styles.suggestion}
 									onPress={() => OriginOrDestination(item)}
 								>
+									<Icon name="map-marker" />
 									{item}
 								</Text>
 							</TouchableOpacity>
