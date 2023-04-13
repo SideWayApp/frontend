@@ -188,10 +188,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "#eee",
 		borderBottomWidth: 1,
 		borderBottomColor: "#ccc",
-		transition: "background-color 0.3s ease-in-out",
-		"&:hover": {
-			backgroundColor: "blue",
-		},
 	},
 	noSuggestions: {
 		padding: 10,
