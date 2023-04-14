@@ -119,17 +119,17 @@ function MapComponent({wayPoints,isDirection,isGotDirection,setIsGotDirection}) 
         onPress={handleMapPress}
       >
         {isClicked && !isDirection &&(
-          <Marker coordinate={coordinates}>
-            <Callout>
+          <Marker coordinate={coordinates} pinColor="#F59F0C">
+            <Callout onPress={handleNavigation}>
               <View>
                 <Text>{`${coordinates.latitude.toFixed(4)}, ${coordinates.longitude.toFixed(4)}`}</Text>
                 <Text>{clickedAddress}</Text>
               </View>
-              <TouchableWithoutFeedback onPress={(event) => { event.stopPropagation(); handleNavigation(); }}>
+              <TouchableOpacity>
                 <View style={styles.button}>
                   <Text style={styles.buttonText}>Navigation to here</Text>
                 </View>
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
             </Callout>
           </Marker>
         )}
@@ -190,6 +190,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
+    zIndex: 999,
     backgroundColor: 'lightblue',
     padding: 10,
     borderRadius: 15,
@@ -197,7 +198,7 @@ const styles = StyleSheet.create({
     borderColor: '#000',
   },
   navigationButton: {
-    zIndex: 100,
+    zIndex: 999,
   },
   buttonText: {
     fontWeight: 'bold',
