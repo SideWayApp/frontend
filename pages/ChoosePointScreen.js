@@ -92,6 +92,7 @@ function ChoosePointScreen({ route, navigation }) {
 								>
 									<Icon name="map-marker" />
 									{item}
+									<Icon name="arrow-top-right-thin" />
 								</Text>
 							</TouchableOpacity>
 						)}
