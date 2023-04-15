@@ -142,10 +142,6 @@ function ChoosePointScreen({ route, navigation }) {
 							trailing={(props) => <Icon name="map-marker" {...props} />}
 							onPress={getAddress}
 						/>
-						<Button
-							title="Choose on map"
-							trailing={(props) => <Icon name="map" {...props} />}
-						/>
 					</View>
 					<View style={styles.section}>
 						<Text style={{ marginBottom: 10 }}>Recent</Text>
