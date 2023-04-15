@@ -35,6 +35,7 @@ function MapComponent({
 	const dispatch = useDispatch()
 
 	const mapRef = useRef(null)
+  const markerRef = useRef(null);
 
 	const [location, setLocation] = useState(null)
 
@@ -123,6 +124,11 @@ function MapComponent({
 		}
 	}
 
+  const handleOnLayout = () => {
+    markerRef.current.showCallout();
+  };
+
+
 	return (
 		<View style={styles.container}>
 			<MapView
@@ -134,7 +140,7 @@ function MapComponent({
 				onPress={handleMapPress}
 			>
 				{isClicked && !isDirection && (
-					<Marker coordinate={coordinates} pinColor="#F59F0C">
+					<Marker coordinate={coordinates} pinColor="#F59F0C" ref={markerRef} onLayout={handleOnLayout}>
 						<Callout onPress={handleNavigation}>
 							<View>
 								<Text>{`${coordinates.latitude.toFixed(
