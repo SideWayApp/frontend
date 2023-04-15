@@ -4,7 +4,6 @@ import {Marker} from 'react-native-maps';
 import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 
 export default function CurrentUserLocationComponent({location}){
-  console.log(location)
   return (
     <Marker
         coordinate={{

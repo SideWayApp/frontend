@@ -4,7 +4,6 @@ import {Marker} from 'react-native-maps';
 
 export default function BaseMarkersComponent({wayPoints}){
     const lastIndex = Object.values(wayPoints).length-1;
-    console.log(lastIndex + "From BaseMarkers")
     return (
         <>
         <Marker 

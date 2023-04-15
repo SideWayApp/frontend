@@ -92,6 +92,7 @@ function ChoosePointScreen({ route, navigation }) {
 								>
 									<Icon name="map-marker" />
 									{item}
+									<Icon name="arrow-top-right-thin" />
 								</Text>
 							</TouchableOpacity>
 						)}
@@ -141,10 +142,6 @@ function ChoosePointScreen({ route, navigation }) {
 							title="Your current location"
 							trailing={(props) => <Icon name="map-marker" {...props} />}
 							onPress={getAddress}
-						/>
-						<Button
-							title="Choose on map"
-							trailing={(props) => <Icon name="map" {...props} />}
 						/>
 					</View>
 					<View style={styles.section}>
