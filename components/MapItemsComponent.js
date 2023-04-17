@@ -42,8 +42,8 @@ export default function MapItemsComponent({ region }) {
             }}
           >
             <View style={styles.markerContainer}>
-              {mapItem.type === "camera" && <Icon name="camera" />}
-              {mapItem.type !== "camera" && <Icon name="alert-octagon" />}
+              {mapItem.type === "Camera" && <Icon name="camera" />}
+              {mapItem.type !== "Camera" && <Icon name="alert-octagon" />}
             </View>
             <Callout tooltip>
               <View style={styles.calloutContainer}>

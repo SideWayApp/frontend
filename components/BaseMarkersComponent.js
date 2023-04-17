@@ -12,6 +12,7 @@ export default function BaseMarkersComponent({wayPoints}){
                 longitude: wayPoints[0].longitude
             }}
             title="Origin"
+            pinColor="#008080"
         />
         <Marker
             coordinate={{
@@ -19,6 +20,7 @@ export default function BaseMarkersComponent({wayPoints}){
                 longitude: wayPoints[lastIndex].longitude,
             }}
             title="Destination"
+            pinColor="#FF7F50"
         />
     </>
   );
