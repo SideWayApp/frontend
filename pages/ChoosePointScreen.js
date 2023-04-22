@@ -19,6 +19,7 @@ function ChoosePointScreen({ route, navigation }) {
 	const [inputValue, setInputValue] = useState("")
 	const [filteredSuggestions, setFilteredSuggestions] = useState([])
 	const [showSuggestions, setShowSuggestions] = useState(false)
+	const [isBtnSubmitDisabled, setIsBtnSubmitDisabled] = useState(true)
 
 	useEffect(() => {
 		getLocation()
@@ -77,6 +78,7 @@ function ChoosePointScreen({ route, navigation }) {
 		setInputValue(suggestion)
 		setFilteredSuggestions([])
 		setShowSuggestions(false)
+		setIsBtnSubmitDisabled(false)
 	}
 	const renderSuggestions = () => {
 		if (showSuggestions && inputValue) {
@@ -85,15 +87,19 @@ function ChoosePointScreen({ route, navigation }) {
 					<FlatList
 						data={filteredSuggestions}
 						renderItem={({ item }) => (
-							<TouchableOpacity onPress={() => onClick(item)}>
-								<Text
-									style={styles.suggestion}
-									onPress={() => OriginOrDestination(item)}
-								>
-									<Icon name="map-marker" />
-									{item}
-									<Icon name="arrow-top-right-thin" />
-								</Text>
+							<TouchableOpacity>
+								<View style={styles.suggestion}>
+									<Icon style={{ alignSelf: "center" }} name="map-marker" />
+									<Text onPress={() => OriginOrDestination(item)}>{item}</Text>
+									<View style={{ flex: 1, alignItems: "flex-end" }}>
+										<Icon
+											onPress={() => {
+												onClick(item)
+											}}
+											name="arrow-top-right-thin"
+										/>
+									</View>
+								</View>
 							</TouchableOpacity>
 						)}
 						keyExtractor={(item) => item}
@@ -137,6 +143,13 @@ function ChoosePointScreen({ route, navigation }) {
 							)}
 						/>
 						{renderSuggestions()}
+
+						<Button
+							title="submit"
+							trailing={(props) => <Icon name="check" {...props} />}
+							disabled={isBtnSubmitDisabled}
+							onPress={() => OriginOrDestination(inputValue)}
+						/>
 
 						<Button
 							title="Your current location"
@@ -188,6 +201,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#eee",
 		borderBottomWidth: 1,
 		borderBottomColor: "#ccc",
+		flexDirection: "row",
 	},
 	noSuggestions: {
 		padding: 10,
