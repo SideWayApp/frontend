@@ -24,6 +24,7 @@ import CurrentUserLocationComponent from "./CurrentUserLocationComponent"
 import BackNavigationFabComponent from "./BackNavigationFabComponent"
 import { useSelector, useDispatch } from "react-redux"
 import { setDestination } from "../Redux/DirectionsStore/actions"
+import { Polyline } from 'react-native-maps';
 
 function MapComponent({
 	wayPoints,
@@ -165,12 +166,13 @@ function MapComponent({
 				)}
 				<MapItemsComponent region={region} />
 			</MapView>
-			{isDirection && (
-				<BackNavigationFabComponent
-					moveTo={moveTo}
-					setIsGotDirection={setIsGotDirection}
-				/>
-			)}
+			{/* {isDirection && (
+				
+			)} */}
+			<BackNavigationFabComponent
+				moveTo={moveTo}
+				setIsGotDirection={setIsGotDirection}
+			/>
 			<FAB
 				style={styles.fab}
 				icon={() => (

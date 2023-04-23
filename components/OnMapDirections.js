@@ -1,19 +1,12 @@
 import { GOOGLE_API_KEY } from "@env";
+import { Polyline } from 'react-native-maps';
 import MapViewDirections from "react-native-maps-directions";
 
 export default function OnMapDirections({wayPoints}){
-  const lastIndex = wayPoints.length-1;
+  console.log(wayPoints.length)
   return (
-    <MapViewDirections
-          origin={{
-              latitude: wayPoints[0].latitude,
-              longitude: wayPoints[0].longitude,
-          }}
-          destination={{
-              latitude: wayPoints[lastIndex].latitude,
-              longitude: wayPoints[lastIndex].longitude,
-          }}
-          waypoints={wayPoints}
+    <Polyline
+          coordinates={wayPoints}
           apikey={GOOGLE_API_KEY}
           strokeWidth={3}
           mode="WALKING"
