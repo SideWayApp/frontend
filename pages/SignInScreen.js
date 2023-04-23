@@ -15,9 +15,9 @@ import {
 } from "../components/AuthFormsComponents";
 import { globalStyles } from "../Styles/GlobalStyles";
 import { useNavigation } from "@react-navigation/native";
-import { login } from "../axios";
+import { getUserData, login } from "../axios";
 import { useSelector, useDispatch } from "react-redux";
-import { setToken, getToken } from "../Redux/authenticationReducer/authActions";
+import { setToken } from "../Redux/authenticationReducer/authActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function SignInScreen() {

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Marker, Callout } from "react-native-maps";
 import { fetchObjectsInRegion } from "../axios";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import MapItemMarker from "./MapItemMarker";
 // "alert-octagon", "camera"
 
 const minDisplayDelta = {
@@ -41,10 +42,11 @@ export default function MapItemsComponent({ region }) {
               longitude: parseFloat(mapItem.x),
             }}
           >
-            <View style={styles.markerContainer}>
+            {/* <View style={styles.markerContainer}>
               {mapItem.type === "Camera" && <Icon name="camera" />}
               {mapItem.type !== "Camera" && <Icon name="alert-octagon" />}
-            </View>
+            </View> */}
+            <MapItemMarker mapItem={mapItem} />
             <Callout tooltip>
               <View style={styles.calloutContainer}>
                 <Text style={styles.calloutTitle}>{mapItem.type}</Text>
