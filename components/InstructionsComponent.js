@@ -7,7 +7,7 @@ const InstructionsComponent = ({ instructions, setIsDirections }) => {
 
   const getNextInstruction = (currentLatitude, currentLongitude) => {
     for (let i = 0; i < instructions.length; i++) {
-      const { latitude, longitude, instruction } = instructions[i];
+      const { latitude, longitude } = instructions[i];
       const distance = getDistance(
         currentLatitude,
         currentLongitude,
@@ -38,9 +38,9 @@ const InstructionsComponent = ({ instructions, setIsDirections }) => {
     return d * 1000; // Distance in meters
   };
 
-  function deg2rad(deg) {
+  const deg2rad = (deg) => {
     return deg * (Math.PI / 180);
-  }
+  };
 
   useEffect(() => {
     setDisplayedInstructions(instructions[0].instruction);
@@ -70,12 +70,13 @@ const InstructionsComponent = ({ instructions, setIsDirections }) => {
   }, []);
   return (
     <View style={styles.container}>
-      {instructions.length > 0 && (
-        <Text style={styles.text}>{displayedInstructions}</Text>
-      )}
-
+      <View style={styles.instructionsContainer}>
+        {instructions.length > 0 && (
+          <Text style={styles.text}>{displayedInstructions}</Text>
+        )}
+      </View>
       <TouchableOpacity
-        style={{ backgroundColor: "green", height: "20%" }}
+        style={styles.stopBnt}
         onPress={() => {
           setIsDirections(false);
         }}
@@ -88,7 +89,16 @@ const InstructionsComponent = ({ instructions, setIsDirections }) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: "20%",
+    height: "15%",
+    justifyContent: "center",
+  },
+  instructionsContainer: {
+    height: "60%",
+    justifyContent: "center",
+  },
+  stopBnt: {
+    backgroundColor: "green",
+    height: "40%",
     justifyContent: "center",
   },
   text: {
