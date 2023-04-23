@@ -98,8 +98,7 @@ export const signUpUser = async (userData) => {
   try {
     const urlRoute = `${API_BASE_URL}/api/authentication/register`;
     const res = await axios.post(urlRoute, userData);
-    console.log(res.data);
-    return "done";
+    return res.data.accessToken;
   } catch (error) {
     console.log(error);
   }
