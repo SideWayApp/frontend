@@ -25,7 +25,6 @@ const HomeScreen = () => {
       const asyncToken = await AsyncStorage.getItem("token");
       if (asyncToken !== null) {
         const user = await getUserData(asyncToken);
-        console.log(user.preferences);
         dispatch(setUser(user));
       }
     };

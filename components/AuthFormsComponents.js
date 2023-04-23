@@ -106,15 +106,18 @@ const Prefrences = ({ setPreference }) => {
         case "Clean":
           newPreferences.clean = isChecked;
           break;
-        case "Safe":
-          newPreferences.safe = isChecked;
+        case "Security":
+          newPreferences.security = isChecked;
           break;
         case "Scenery":
           newPreferences.scenery = isChecked;
           break;
 
         case "Accessibility":
-          newPreferences.accessible = isChecked;
+          newPreferences.accessibility = isChecked;
+          break;
+        case "Speed":
+          newPreferences.speed = isChecked;
           break;
         default:
           break;
@@ -131,19 +134,21 @@ const Prefrences = ({ setPreference }) => {
       }}
     >
       <ModalCheckbox onPress={onPress} title="Clean" />
-      <ModalCheckbox onPress={onPress} title="Safe" />
+      <ModalCheckbox onPress={onPress} title="Security" />
       <ModalCheckbox onPress={onPress} title="Scenery" />
       <ModalCheckbox onPress={onPress} title="Accessiblity" />
+      <ModalCheckbox onPress={onPress} title="Speed" />
     </View>
   );
 };
 
 export const PrefrencesModal = ({ isVisible, onClose, handleSkip }) => {
   const [prefrences, setPreference] = useState({
-    accessible: true,
+    accessibility: false,
     clean: false,
     scenery: false,
-    safe: true,
+    security: false,
+    speed: false,
   });
   return (
     <Modal
