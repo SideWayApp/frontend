@@ -12,7 +12,7 @@ export default function BackNavigationFabComponent(props){
             <Icon name="navigation-variant" size={30} color="black" />
           </View>
         }
-        onPress={props.moveTo}
+        onPress={props.moveTo(props.location)}
         onPress={()=>props.setIsGotDirection(true)}
       />
   )

@@ -43,6 +43,7 @@ function MapComponent({
 	const [coordinates, setCoordinates] = useState(null)
 	const [isClicked, setIsClicked] = useState(false)
 	const [clickedAddress, setClickedAddress] = useState("")
+	const [isFabLocationPressed, setIsFabLocationPressed] = useState(false);
 
 	useEffect(() => {
 		const getLocation = async () => {
@@ -73,7 +74,7 @@ function MapComponent({
 		setRegion(newRegion)
 	}
 
-	const moveTo = async () => {
+	const moveTo = async (location) => {
 		const camera = await mapRef.current.getCamera()
 		if (camera) {
 			const newLatitudeDelta = 0.0015
@@ -157,7 +158,7 @@ function MapComponent({
 						</Callout>
 					</Marker>
 				)}
-				{isDirection && moveTo() && (
+				{isDirection && moveTo(location) && (
 					<>
 						<BaseMarkersComponent wayPoints={wayPoints} />
 						<OnMapDirections wayPoints={wayPoints} />
@@ -165,14 +166,13 @@ function MapComponent({
 					</>
 				)}
 				<MapItemsComponent region={region} />
+			{moveTo(location) && <CurrentUserLocationComponent location={location} />}
 			</MapView>
-			{/* {isDirection && (
-				
-			)} */}
 			<BackNavigationFabComponent
 				moveTo={moveTo}
+				location={location}
 				setIsGotDirection={setIsGotDirection}
-			/>
+				/>
 			<FAB
 				style={styles.fab}
 				icon={() => (
