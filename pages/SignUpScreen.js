@@ -15,6 +15,10 @@ import {
 import { globalStyles } from "../Styles/GlobalStyles";
 import { useNavigation } from "@react-navigation/native";
 import { signUpUser } from "../axios";
+import { useSelector, useDispatch } from "react-redux";
+import { setToken } from "../Redux/authenticationReducer/authActions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const SignUpScreen = () => {
   const navigation = useNavigation();
   const [signUpData, setSignUpData] = useState({
@@ -31,6 +35,8 @@ const SignUpScreen = () => {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+
   const handleSignUp = () => {
     setSignUpData((prev) => ({ ...prev, gender: gender, age: age }));
     const validation = validateSignUpData();
@@ -57,7 +63,9 @@ const SignUpScreen = () => {
       },
       preferences: preferences,
     };
-    const res = await signUpUser(user);
+    const token = await signUpUser(user);
+    dispatch(setToken(token));
+    await AsyncStorage.setItem("token", token);
     setLoading(false);
 
     navigation.navigate("Home");
