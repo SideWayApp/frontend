@@ -12,13 +12,12 @@ import { useDispatch } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 import * as Location from "expo-location"
 import { getAddressFromLatLng, getStreetsStartingWith } from "../axios"
+import AutoCompleteComponent from "../components/AutoCompleteComponent"
 
 function ChoosePointScreen({ route, navigation }) {
 	const dispatch = useDispatch()
 	const [location, setLocation] = useState("")
 	const [inputValue, setInputValue] = useState("")
-	const [filteredSuggestions, setFilteredSuggestions] = useState([])
-	const [showSuggestions, setShowSuggestions] = useState(false)
 	const [isBtnSubmitDisabled, setIsBtnSubmitDisabled] = useState(true)
 
 	useEffect(() => {
@@ -56,94 +55,19 @@ function ChoosePointScreen({ route, navigation }) {
 		}
 	}
 
-	const onChange = async (inputValue) => {
-		if (inputValue === "") {
-			setInputValue("")
-			return
-		} else {
-			try {
-				setInputValue(inputValue)
-				const filteredSuggestions = await getStreetsStartingWith(inputValue)
-				setFilteredSuggestions(filteredSuggestions)
-				setShowSuggestions(true)
-			} catch (error) {
-				console.error(error)
-				setFilteredSuggestions([])
-				setShowSuggestions(false)
-			}
-		}
-	}
-
-	const onClick = (suggestion) => {
-		setInputValue(suggestion)
-		setFilteredSuggestions([])
-		setShowSuggestions(false)
-		setIsBtnSubmitDisabled(false)
-	}
-	const renderSuggestions = () => {
-		if (showSuggestions && inputValue) {
-			if (filteredSuggestions.length) {
-				return (
-					<FlatList
-						data={filteredSuggestions}
-						renderItem={({ item }) => (
-							<TouchableOpacity>
-								<View style={styles.suggestion}>
-									<Icon style={{ alignSelf: "center" }} name="map-marker" />
-									<Text onPress={() => OriginOrDestination(item)}>{item}</Text>
-									<View style={{ flex: 1, alignItems: "flex-end" }}>
-										<Icon
-											onPress={() => {
-												onClick(item)
-											}}
-											name="arrow-top-right-thin"
-										/>
-									</View>
-								</View>
-							</TouchableOpacity>
-						)}
-						keyExtractor={(item) => item}
-					/>
-				)
-			} else {
-				return <Text style={styles.noSuggestions}>No suggestions available.</Text>
-			}
-		}
-		return null
-	}
-
 	return (
 		<View style={styles.container}>
 			<Stack spacing={0}>
 				<View style={styles.column}>
 					<View style={styles.view}>
-						<TextInput
-							label={route.params.type}
-							style={styles.input}
-							onChangeText={onChange}
-							value={inputValue}
-							placeholder="Search"
-							variant="outlined"
-							leading={(props) => <Icon name="magnify" {...props} />}
-							trailing={(props) => (
-								<Icon
-									name="close"
-									onPress={() => {
-										if (route.params.type === "Origin") {
-											dispatch(setOrigin(""))
-											setInputValue("")
-										}
-										if (route.params.type === "Destination") {
-											dispatch(setDestination(""))
-											setInputValue("")
-										}
-									}}
-									{...props}
-								/>
-							)}
-						/>
-						{renderSuggestions()}
-
+						<AutoCompleteComponent
+							type={route.params.type}
+							styleInput={styles.input}
+							OriginOrDestination={OriginOrDestination}
+							setIsBtnSubmitDisabled={setIsBtnSubmitDisabled}
+							inputValue={inputValue}
+							setInputValue={setInputValue}
+						></AutoCompleteComponent>
 						<Button
 							title="submit"
 							trailing={(props) => <Icon name="check" {...props} />}
@@ -159,6 +83,7 @@ function ChoosePointScreen({ route, navigation }) {
 					</View>
 					<View style={styles.section}>
 						<Text style={{ marginBottom: 10 }}>Recent</Text>
+
 						<ListItem
 							title="List Item"
 							trailing={(props) => <Icon name="star" {...props} />}
@@ -195,16 +120,6 @@ const styles = StyleSheet.create({
 	},
 	view: {
 		gap: 10,
-	},
-	suggestion: {
-		padding: 10,
-		backgroundColor: "#eee",
-		borderBottomWidth: 1,
-		borderBottomColor: "#ccc",
-		flexDirection: "row",
-	},
-	noSuggestions: {
-		padding: 10,
 	},
 })
 export default ChoosePointScreen
