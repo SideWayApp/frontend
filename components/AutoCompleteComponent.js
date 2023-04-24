@@ -1,6 +1,6 @@
 import { React, useState } from "react"
 import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native"
-import { TextInput, Text } from "@react-native-material/core"
+import { TextInput, Text, ActivityIndicator } from "@react-native-material/core"
 import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 import { getStreetsStartingWith } from "../axios"
 
@@ -14,6 +14,7 @@ function AutoCompleteComponent({
 }) {
 	const [filteredSuggestions, setFilteredSuggestions] = useState([])
 	const [showSuggestions, setShowSuggestions] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
 
 	const onClick = (suggestion) => {
 		setInputValue(suggestion)
@@ -27,9 +28,11 @@ function AutoCompleteComponent({
 			return
 		} else {
 			try {
+				setIsLoading(true)
 				setInputValue(inputValue)
 				const filteredSuggestions = await getStreetsStartingWith(inputValue)
 				setFilteredSuggestions(filteredSuggestions)
+				setIsLoading(false)
 				setShowSuggestions(true)
 			} catch (error) {
 				console.error(error)
@@ -41,28 +44,32 @@ function AutoCompleteComponent({
 	const renderSuggestions = () => {
 		if (showSuggestions && inputValue) {
 			if (filteredSuggestions.length) {
-				return (
-					<FlatList
-						data={filteredSuggestions}
-						renderItem={({ item }) => (
-							<TouchableOpacity>
-								<View style={styles.suggestion}>
-									<Icon style={{ alignSelf: "center" }} name="map-marker" />
-									<Text onPress={() => OriginOrDestination(item)}>{item}</Text>
-									<View style={{ flex: 1, alignItems: "flex-end" }}>
-										<Icon
-											onPress={() => {
-												onClick(item)
-											}}
-											name="arrow-top-right-thin"
-										/>
+				if (isLoading) {
+					return <ActivityIndicator />
+				} else {
+					return (
+						<FlatList
+							data={filteredSuggestions}
+							renderItem={({ item }) => (
+								<TouchableOpacity>
+									<View style={styles.suggestion}>
+										<Icon style={{ alignSelf: "center" }} name="map-marker" />
+										<Text onPress={() => OriginOrDestination(item)}>{item}</Text>
+										<View style={{ flex: 1, alignItems: "flex-end" }}>
+											<Icon
+												onPress={() => {
+													onClick(item)
+												}}
+												name="arrow-top-right-thin"
+											/>
+										</View>
 									</View>
-								</View>
-							</TouchableOpacity>
-						)}
-						keyExtractor={(item) => item}
-					/>
-				)
+								</TouchableOpacity>
+							)}
+							keyExtractor={(item) => item}
+						/>
+					)
+				}
 			} else {
 				return <Text style={styles.noSuggestions}>No suggestions available.</Text>
 			}

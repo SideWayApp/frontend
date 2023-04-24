@@ -6,6 +6,7 @@ import {
 	Button,
 	ListItem,
 	Text,
+	ActivityIndicator,
 } from "@react-native-material/core"
 import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 import { useDispatch } from "react-redux"
@@ -19,6 +20,7 @@ function ChoosePointScreen({ route, navigation }) {
 	const [location, setLocation] = useState("")
 	const [inputValue, setInputValue] = useState("")
 	const [isBtnSubmitDisabled, setIsBtnSubmitDisabled] = useState(true)
+	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
 
 	useEffect(() => {
 		getLocation()
@@ -43,6 +45,7 @@ function ChoosePointScreen({ route, navigation }) {
 	}
 
 	const getAddress = async () => {
+		setIsLoadingLocation(true)
 		try {
 			const getAdd = await getAddressFromLatLng(
 				location.coords.latitude,
@@ -74,12 +77,19 @@ function ChoosePointScreen({ route, navigation }) {
 							disabled={isBtnSubmitDisabled}
 							onPress={() => OriginOrDestination(inputValue)}
 						/>
-
 						<Button
 							title="Your current location"
 							trailing={(props) => <Icon name="map-marker" {...props} />}
+							loading={isLoadingLocation}
 							onPress={getAddress}
-						/>
+						>
+							{isLoadingLocation ? <ActivityIndicator /> : null}
+						</Button>
+						{/* <Button
+							title="Your current location"
+							trailing={(props) => <Icon name="map-marker" {...props} />}
+							onPress={getAddress}
+						/> */}
 					</View>
 					<View style={styles.section}>
 						<Text style={{ marginBottom: 10 }}>Recent</Text>
