@@ -74,30 +74,31 @@ function MapComponent({
 		setRegion(newRegion)
 	}
 
-	const moveTo = async (location) => {
-		const camera = await mapRef.current.getCamera()
-		if (camera) {
-			const newLatitudeDelta = 0.0015
-			const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO
-			const newPosition = {
-				latitude: location.coords.latitude,
-				longitude: location.coords.longitude,
-				latitudeDelta: newLatitudeDelta,
-				longitudeDelta: newLongitudeDelta,
+	const moveTo = async () => {
+		if (location !== null){
+			const camera = await mapRef.current.getCamera()
+			if (camera) {
+				const newLatitudeDelta = 0.0015
+				const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO
+				const newPosition = {
+					latitude: location.coords.latitude,
+					longitude: location.coords.longitude,
+					latitudeDelta: newLatitudeDelta,
+					longitudeDelta: newLongitudeDelta,
+				}
+				camera.center = {
+					latitude: location.coords.latitude,
+					longitude: location.coords.longitude,
+				}
+				camera.pitch = 90
+				if (isGotDirection) {
+					mapRef.current.animateCamera(camera, { duration: 1000 })
+					mapRef.current.animateToRegion(newPosition)
+					setIsGotDirection(false)
+				}
 			}
-			camera.center = {
-				latitude: location.coords.latitude,
-				longitude: location.coords.longitude,
-			}
-			camera.pitch = 90
-			if (isGotDirection) {
-				mapRef.current.animateCamera(camera, { duration: 1000 })
-				mapRef.current.animateToRegion(newPosition)
-				setIsGotDirection(false)
-			}
-		}
+		}	
 	}
-
 	const handleNavigation = async () => {
 		try {
 			let dest = await getAddressFromLatLng(
@@ -158,7 +159,7 @@ function MapComponent({
 						</Callout>
 					</Marker>
 				)}
-				{isDirection && moveTo(location) && (
+				{isDirection && moveTo() && (
 					<>
 						<BaseMarkersComponent wayPoints={wayPoints} />
 						<OnMapDirections wayPoints={wayPoints} />
@@ -166,7 +167,6 @@ function MapComponent({
 					</>
 				)}
 				<MapItemsComponent region={region} />
-			{moveTo(location) && <CurrentUserLocationComponent location={location} />}
 			</MapView>
 			<BackNavigationFabComponent
 				moveTo={moveTo}
