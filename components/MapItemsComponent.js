@@ -2,8 +2,8 @@ import { View, Text, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Marker, Callout } from "react-native-maps";
 import { fetchObjectsInRegion } from "../axios";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import MapItemMarker from "./MapItemMarker";
+import { useSelector } from "react-redux";
 // "alert-octagon", "camera"
 
 const minDisplayDelta = {
@@ -13,22 +13,24 @@ const minDisplayDelta = {
 
 export default function MapItemsComponent({ region }) {
   const [mapItems, setMapItem] = useState([]);
-
+  const user = useSelector((state) => state.auth.user);
   useEffect(() => {
     // Fetch objects based on the current region
-    const fetchObjects = async () => {
-      const objects = await fetchObjectsInRegion(region);
+    const fetchObjects = async (preferences) => {
+      const objects = await fetchObjectsInRegion(region, preferences);
       setMapItem(objects);
     };
+
     if (
-      region.latitudeDelta <= minDisplayDelta.latitudeDelta ||
-      region.longitudeDelta <= minDisplayDelta.longitudeDelta
+      user &&
+      (region.latitudeDelta <= minDisplayDelta.latitudeDelta ||
+        region.longitudeDelta <= minDisplayDelta.longitudeDelta)
     ) {
-      fetchObjects();
+      fetchObjects(user.preferences);
     } else {
       setMapItem([]);
     }
-  }, [region]);
+  }, [region, user]);
   return (
     <>
       {mapItems.map((mapItem, index) => {
@@ -42,10 +44,6 @@ export default function MapItemsComponent({ region }) {
               longitude: parseFloat(mapItem.x),
             }}
           >
-            {/* <View style={styles.markerContainer}>
-              {mapItem.type === "Camera" && <Icon name="camera" />}
-              {mapItem.type !== "Camera" && <Icon name="alert-octagon" />}
-            </View> */}
             <MapItemMarker mapItem={mapItem} />
             <Callout tooltip>
               <View style={styles.calloutContainer}>
