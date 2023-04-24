@@ -85,11 +85,6 @@ function ChoosePointScreen({ route, navigation }) {
 						>
 							{isLoadingLocation ? <ActivityIndicator /> : null}
 						</Button>
-						{/* <Button
-							title="Your current location"
-							trailing={(props) => <Icon name="map-marker" {...props} />}
-							onPress={getAddress}
-						/> */}
 					</View>
 					<View style={styles.section}>
 						<Text style={{ marginBottom: 10 }}>Recent</Text>
