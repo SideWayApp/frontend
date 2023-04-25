@@ -30,7 +30,7 @@ const DirectionsComponent = (props) => {
 			const res = await getWayPointsAndInstructions(
 				origin,
 				destination,
-				props.preference
+				props.preferences
 			)
 			props.setWayPoints(res)
 			props.setIsDirection(true)
