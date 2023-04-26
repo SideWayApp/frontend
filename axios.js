@@ -157,8 +157,6 @@ export const addRecent = async (item, token) => {
 		const res = await axios.put(urlRoute, item, {
 			headers: { Authorization: `Bearer ${token}` },
 		})
-		console.log("Success = " + res.data)
-
 		return res.data
 	} catch (error) {
 		console.log(error, "addRecent failed in axios")

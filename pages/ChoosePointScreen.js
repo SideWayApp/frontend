@@ -12,7 +12,7 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 import { useDispatch, useSelector } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 import * as Location from "expo-location"
-import { getAddressFromLatLng, addRecent } from "../axios"
+import { getAddressFromLatLng, addRecent, getUserData } from "../axios"
 import AutoCompleteComponent from "../components/AutoCompleteComponent"
 import ListDirectionsComponent from "../components/ListDirectionsComponent"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -25,6 +25,7 @@ function ChoosePointScreen({ route, navigation }) {
 	const [inputValue, setInputValue] = useState("")
 	const [isBtnSubmitDisabled, setIsBtnSubmitDisabled] = useState(true)
 	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
+	const [list, setList] = useState([])
 
 	useEffect(() => {
 		getLocation()
@@ -35,6 +36,8 @@ function ChoosePointScreen({ route, navigation }) {
 		if (asyncToken !== null) {
 			const u = await getUserData(asyncToken)
 			dispatch(setUser(u))
+			setList(user.recents)
+			console.log(list)
 		}
 	}
 
@@ -113,7 +116,7 @@ function ChoosePointScreen({ route, navigation }) {
 					<View style={styles.section}>
 						<ListDirectionsComponent
 							title="Recent"
-							list={user.recents}
+							list={list}
 						></ListDirectionsComponent>
 
 						<Text style={{ marginBottom: 10 }}>Recent</Text>
