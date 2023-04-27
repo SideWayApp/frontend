@@ -139,13 +139,15 @@ export const getUserData = async (token) => {
     );
 
     return user.data;
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const fetchObjectsInRegion = async (region, preferences) => {
   try {
     const data = { region: region, preferences: preferences };
-    const items = await axios.post(`${API_BASE_URL}/api/items/region`, region);
+    const items = await axios.post(`${API_BASE_URL}/api/items/region`, data);
     return items.data;
   } catch (error) {
     console.log(error);
