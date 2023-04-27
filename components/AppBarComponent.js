@@ -25,7 +25,7 @@ function AppBarComponent({ showBackButton }) {
       style={styles.appbar}
       leading={(props) => {
         if (isHomeInPage) {
-          if (user === null) {
+          if (user === null || user === undefined) {
             return (
               <IconButton
                 icon={(props) => <Icon name="account" {...props} />}
