@@ -29,6 +29,7 @@ function ChoosePointScreen({ route, navigation }) {
 
 	useEffect(() => {
 		getLocation()
+		console.log(user.recents)
 	}, [location])
 
 	const fetchAsyncToken = async () => {
