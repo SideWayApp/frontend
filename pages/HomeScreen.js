@@ -26,9 +26,12 @@ const HomeScreen = () => {
     const fetchAsyncToken = async () => {
       const asyncToken = await AsyncStorage.getItem("token");
       if (asyncToken !== null) {
+        console.log("Home fails sometimes");
         const user = await getUserData(asyncToken);
-        dispatch(setUser(user));
-        setPreference(user.preferences);
+        if (user) {
+          dispatch(setUser(user));
+          setPreference(user.preferences);
+        }
       }
     };
     fetchAsyncToken();

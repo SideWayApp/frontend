@@ -139,7 +139,9 @@ export const getUserData = async (token) => {
     );
 
     return user.data;
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const fetchObjectsInRegion = async (region, preferences) => {
