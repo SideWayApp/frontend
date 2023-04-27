@@ -13,6 +13,7 @@ const HomeScreen = () => {
   const { origin, destination } = useSelector((state) => state);
   const [preference, setPreference] = useState("fastest");
   const [wayPoints, setWayPoints] = useState([]);
+  const [polyline, setPolyline] = useState(null);
   const [isDirection, setIsDirection] = useState(false);
   const [isGotDirection, setIsGotDirection] = useState(false);
 
@@ -39,6 +40,7 @@ const HomeScreen = () => {
           destination={destination}
           preference={preference}
           setWayPoints={setWayPoints}
+          setPolyline={setPolyline}
           setIsDirection={setIsDirection}
           setIsGotDirection={setIsGotDirection}
         />
@@ -51,6 +53,7 @@ const HomeScreen = () => {
       )}
       <MapComponent
         wayPoints={wayPoints}
+        polyline={polyline}
         isDirection={isDirection}
         setIsGotDirection={setIsGotDirection}
         isGotDirection={isGotDirection}
