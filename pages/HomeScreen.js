@@ -18,6 +18,7 @@ const HomeScreen = () => {
   const [isGotDirection, setIsGotDirection] = useState(false);
 
   const token = useSelector((state) => state.auth.token);
+  const user = useSelector((state) => state.auth.user);
 
   const dispatch = useDispatch();
 
@@ -27,6 +28,7 @@ const HomeScreen = () => {
       if (asyncToken !== null) {
         const user = await getUserData(asyncToken);
         dispatch(setUser(user));
+        setPreference(user.preferences);
       }
     };
     fetchAsyncToken();
