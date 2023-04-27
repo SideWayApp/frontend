@@ -137,17 +137,9 @@ export const getUserData = async (token) => {
 			`${API_BASE_URL}/api/authentication/user`,
 			config
 		)
-
 		return user.data
-	} catch (e) {}
-}
-
-export const fetchObjectsInRegion = async (region) => {
-	try {
-		const itmes = await axios.post(`${API_BASE_URL}/api/items/region`, region)
-		return itmes.data
-	} catch (error) {
-		console.log(error)
+	} catch (e) {
+		console.log(e)
 	}
 }
 
@@ -160,5 +152,14 @@ export const addRecent = async (item, token) => {
 		return res.data
 	} catch (error) {
 		console.log(error, "addRecent failed in axios")
+	}
+}
+export const fetchObjectsInRegion = async (region, preferences) => {
+	try {
+		const data = { region: region, preferences: preferences }
+		const items = await axios.post(`${API_BASE_URL}/api/items/region`, data)
+		return items.data
+	} catch (error) {
+		console.log(error)
 	}
 }
