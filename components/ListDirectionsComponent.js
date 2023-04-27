@@ -16,9 +16,9 @@ function ListDirectionsComponent({ title, list }) {
 	return (
 		<View>
 			<Text style={{ marginBottom: 10 }}>{title}</Text>
-			{list.map((listItem) => (
+			{list.map((listItem, i) => (
 				<ListItem
-					key={listItem}
+					key={listItem + i}
 					title={listItem}
 					trailing={(props) => <Icon name="star-plus-outline" {...props} />}
 				/>
