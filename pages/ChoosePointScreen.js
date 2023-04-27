@@ -16,11 +16,12 @@ import { getAddressFromLatLng, addRecent, getUserData } from "../axios"
 import AutoCompleteComponent from "../components/AutoCompleteComponent"
 import ListDirectionsComponent from "../components/ListDirectionsComponent"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { setUser } from "../Redux/authenticationReducer/authActions"
 
 function ChoosePointScreen({ route, navigation }) {
 	const dispatch = useDispatch()
-	const token = useSelector((state) => state.auth.token)
 	const user = useSelector((state) => state.auth.user)
+	const token = useSelector((state) => state.auth.token)
 	const [location, setLocation] = useState("")
 	const [inputValue, setInputValue] = useState("")
 	const [isBtnSubmitDisabled, setIsBtnSubmitDisabled] = useState(true)
@@ -29,16 +30,16 @@ function ChoosePointScreen({ route, navigation }) {
 
 	useEffect(() => {
 		getLocation()
-		console.log(user.recents)
-	}, [location])
+		setList(user.recents)
+	}, [location, fetchAsyncToken])
 
 	const fetchAsyncToken = async () => {
 		const asyncToken = await AsyncStorage.getItem("token")
 		if (asyncToken !== null) {
 			const u = await getUserData(asyncToken)
+			console.log(u, user)
 			dispatch(setUser(u))
 			setList(user.recents)
-			console.log(list)
 		}
 	}
 
