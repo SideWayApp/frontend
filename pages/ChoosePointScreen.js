@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react"
-import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native"
+import { View, StyleSheet } from "react-native"
 import {
 	TextInput,
 	Stack,
@@ -9,29 +9,53 @@ import {
 	ActivityIndicator,
 } from "@react-native-material/core"
 import Icon from "@expo/vector-icons/MaterialCommunityIcons"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 import * as Location from "expo-location"
-import { getAddressFromLatLng, getStreetsStartingWith } from "../axios"
+import { getAddressFromLatLng, addRecent, getUserData } from "../axios"
 import AutoCompleteComponent from "../components/AutoCompleteComponent"
+import ListDirectionsComponent from "../components/ListDirectionsComponent"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { setUser } from "../Redux/authenticationReducer/authActions"
 
 function ChoosePointScreen({ route, navigation }) {
 	const dispatch = useDispatch()
+	const user = useSelector((state) => state.auth.user)
+	const token = useSelector((state) => state.auth.token)
 	const [location, setLocation] = useState("")
 	const [inputValue, setInputValue] = useState("")
 	const [isBtnSubmitDisabled, setIsBtnSubmitDisabled] = useState(true)
 	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
+	const [list, setList] = useState([])
 
 	useEffect(() => {
 		getLocation()
-	}, [location])
+		setList(user.recents)
+	}, [location, fetchAsyncToken])
+
+	const fetchAsyncToken = async () => {
+		const asyncToken = await AsyncStorage.getItem("token")
+		if (asyncToken !== null) {
+			const u = await getUserData(asyncToken)
+			console.log(u, user)
+			dispatch(setUser(u))
+			setList(user.recents)
+		}
+	}
 
 	function OriginOrDestination(value) {
+		const data = {
+			recent: value,
+		}
 		if (route.params.type === "Origin") {
 			dispatch(setOrigin(value))
+			addRecent(data, token)
+			fetchAsyncToken()
 		}
 		if (route.params.type === "Destination") {
 			dispatch(setDestination(value))
+			addRecent(data, token)
+			fetchAsyncToken()
 		}
 		navigation.goBack()
 	}
@@ -52,6 +76,11 @@ function ChoosePointScreen({ route, navigation }) {
 				location.coords.longitude
 			)
 			OriginOrDestination(getAdd)
+			const data = {
+				recent: getAdd,
+			}
+			addRecent(data, token)
+			fetchAsyncToken()
 			navigation.navigate("Home")
 		} catch (error) {
 			console.error("Could not found", error)
@@ -87,6 +116,11 @@ function ChoosePointScreen({ route, navigation }) {
 						</Button>
 					</View>
 					<View style={styles.section}>
+						<ListDirectionsComponent
+							title="Recent"
+							list={list}
+						></ListDirectionsComponent>
+
 						<Text style={{ marginBottom: 10 }}>Recent</Text>
 
 						<ListItem
