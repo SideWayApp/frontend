@@ -1,10 +1,8 @@
 import { React, useState, useEffect } from "react"
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, ScrollView, SafeAreaView } from "react-native"
 import {
-	TextInput,
 	Stack,
 	Button,
-	ListItem,
 	Text,
 	ActivityIndicator,
 } from "@react-native-material/core"
@@ -22,16 +20,21 @@ function ChoosePointScreen({ route, navigation }) {
 	const dispatch = useDispatch()
 	const user = useSelector((state) => state.auth.user)
 	const token = useSelector((state) => state.auth.token)
-	const [location, setLocation] = useState("")
+	const [location, setLocation] = useState(null)
 	const [inputValue, setInputValue] = useState("")
 	const [isBtnSubmitDisabled, setIsBtnSubmitDisabled] = useState(true)
 	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
 	const [list, setList] = useState([])
 
 	useEffect(() => {
-		getLocation()
+		if (location) {
+			getAddress()
+		}
+	}, [location])
+
+	useEffect(() => {
 		setList(user.recents)
-	}, [location, fetchAsyncToken])
+	}, [user])
 
 	const fetchAsyncToken = async () => {
 		const asyncToken = await AsyncStorage.getItem("token")
@@ -44,24 +47,20 @@ function ChoosePointScreen({ route, navigation }) {
 	}
 
 	function OriginOrDestination(value) {
-		const data = {
-			recent: value,
-		}
 		if (route.params.type === "Origin") {
 			dispatch(setOrigin(value))
-			addRecent(data, token)
-			fetchAsyncToken()
+			addToArray(value)
 		}
 		if (route.params.type === "Destination") {
 			dispatch(setDestination(value))
-			addRecent(data, token)
-			fetchAsyncToken()
+			addToArray(value)
 		}
 		navigation.goBack()
 	}
 	const getLocation = async () => {
+		setIsLoadingLocation(true)
 		try {
-			let currentLocation = await Location.getCurrentPositionAsync({})
+			const currentLocation = await Location.getCurrentPositionAsync({})
 			setLocation(currentLocation)
 		} catch (error) {
 			console.error(error)
@@ -69,76 +68,89 @@ function ChoosePointScreen({ route, navigation }) {
 	}
 
 	const getAddress = async () => {
-		setIsLoadingLocation(true)
 		try {
-			const getAdd = await getAddressFromLatLng(
-				location.coords.latitude,
-				location.coords.longitude
-			)
-			OriginOrDestination(getAdd)
-			const data = {
-				recent: getAdd,
+			if (location !== null) {
+				const getAdd = await getAddressFromLatLng(
+					location.coords.latitude,
+					location.coords.longitude
+				)
+				OriginOrDestination(getAdd)
+				navigation.navigate("Home")
 			}
-			addRecent(data, token)
-			fetchAsyncToken()
-			navigation.navigate("Home")
 		} catch (error) {
 			console.error("Could not found", error)
 		}
 	}
 
+	function addToArray(value) {
+		const data = {
+			recent: value,
+		}
+
+		if (!list.includes(data.recent) && list.length < 5) {
+			addRecent(data, token)
+			setTimeout(() => {
+				fetchAsyncToken()
+			}, 500)
+		}
+		if (list.length > 5) {
+			const newList = [...list]
+			newList.shift()
+			newList.push(newItem)
+			setList(newList)
+		}
+	}
+
 	return (
-		<View style={styles.container}>
-			<Stack spacing={0}>
-				<View style={styles.column}>
-					<View style={styles.view}>
-						<AutoCompleteComponent
-							type={route.params.type}
-							styleInput={styles.input}
-							OriginOrDestination={OriginOrDestination}
-							setIsBtnSubmitDisabled={setIsBtnSubmitDisabled}
-							inputValue={inputValue}
-							setInputValue={setInputValue}
-						></AutoCompleteComponent>
-						<Button
-							title="submit"
-							trailing={(props) => <Icon name="check" {...props} />}
-							disabled={isBtnSubmitDisabled}
-							onPress={() => OriginOrDestination(inputValue)}
-						/>
-						<Button
-							title="Your current location"
-							trailing={(props) => <Icon name="map-marker" {...props} />}
-							loading={isLoadingLocation}
-							onPress={getAddress}
-						>
-							{isLoadingLocation ? <ActivityIndicator /> : null}
-						</Button>
-					</View>
-					<View style={styles.section}>
-						<ListDirectionsComponent
-							title="Recent"
-							list={list}
-						></ListDirectionsComponent>
-
-						<Text style={{ marginBottom: 10 }}>Recent</Text>
-
-						<ListItem
-							title="List Item"
-							trailing={(props) => <Icon name="star" {...props} />}
-						/>
-						<ListItem
-							title="List Item"
-							trailing={(props) => <Icon name="star" {...props} />}
-						/>
-						<ListItem
-							title="List Item"
-							trailing={(props) => <Icon name="star" {...props} />}
-						/>
-					</View>
+		<SafeAreaView>
+			<ScrollView>
+				<View style={styles.container}>
+					<ScrollView></ScrollView>
+					<Stack spacing={0}>
+						<View style={styles.column}>
+							<View style={styles.view}>
+								<AutoCompleteComponent
+									type={route.params.type}
+									styleInput={styles.input}
+									OriginOrDestination={OriginOrDestination}
+									setIsBtnSubmitDisabled={setIsBtnSubmitDisabled}
+									inputValue={inputValue}
+									setInputValue={setInputValue}
+								></AutoCompleteComponent>
+								<Button
+									title="submit"
+									trailing={(props) => <Icon name="check" {...props} />}
+									disabled={isBtnSubmitDisabled}
+									onPress={() => OriginOrDestination(inputValue)}
+								/>
+								<Button
+									title="Your current location"
+									trailing={(props) => <Icon name="map-marker" {...props} />}
+									loading={isLoadingLocation}
+									onPress={getLocation}
+								>
+									{isLoadingLocation ? <ActivityIndicator /> : null}
+								</Button>
+							</View>
+							<View style={styles.section}>
+								<ListDirectionsComponent
+									title="Recent"
+									list={list}
+									iconName={"star-plus-outline"}
+								></ListDirectionsComponent>
+							</View>
+							<View style={styles.section}>
+								<ListDirectionsComponent
+									title="Favorites"
+									list={[]}
+									iconName={""}
+								></ListDirectionsComponent>
+							</View>
+						</View>
+					</Stack>
 				</View>
-			</Stack>
-		</View>
+			</ScrollView>
+		</SafeAreaView>
 	)
 }
 const styles = StyleSheet.create({

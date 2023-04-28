@@ -10,17 +10,15 @@ import {
 } from "@react-native-material/core"
 import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 
-function ListDirectionsComponent({ title, list }) {
-	// const [list, setList] = useState(["a", "b", "c", "d"])
-
+function ListDirectionsComponent({ title, list, iconName }) {
 	return (
 		<View>
 			<Text style={{ marginBottom: 10 }}>{title}</Text>
-			{list.map((listItem, i) => (
+			{list.reverse().map((listItem, i) => (
 				<ListItem
 					key={listItem + i}
 					title={listItem}
-					trailing={(props) => <Icon name="star-plus-outline" {...props} />}
+					trailing={(props) => <Icon name={iconName} {...props} />}
 				/>
 			))}
 		</View>
