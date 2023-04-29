@@ -190,8 +190,9 @@ export const deleteRecent = async (item, token) => {
 export const deleteFavorite = async (item, token) => {
 	try {
 		const urlRoute = `${API_BASE_URL}/api/authentication/deleteFavorite`
-		const res = await axios.delete(urlRoute, item, {
+		const res = await axios.delete(urlRoute, {
 			headers: { Authorization: `Bearer ${token}` },
+			data: { favorite: item },
 		})
 		return res.data
 	} catch (error) {
