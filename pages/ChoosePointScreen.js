@@ -1,5 +1,11 @@
 import { React, useState, useEffect } from "react"
-import { View, StyleSheet, ScrollView, SafeAreaView } from "react-native"
+import {
+	View,
+	StyleSheet,
+	ScrollView,
+	SafeAreaView,
+	FlatList,
+} from "react-native"
 import {
 	Stack,
 	Button,
@@ -10,7 +16,13 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 import { useDispatch, useSelector } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 import * as Location from "expo-location"
-import { getAddressFromLatLng, addRecent, getUserData } from "../axios"
+import {
+	getAddressFromLatLng,
+	addRecent,
+	getUserData,
+	addFavorite,
+	deleteRecent,
+} from "../axios"
 import AutoCompleteComponent from "../components/AutoCompleteComponent"
 import ListDirectionsComponent from "../components/ListDirectionsComponent"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -24,7 +36,8 @@ function ChoosePointScreen({ route, navigation }) {
 	const [inputValue, setInputValue] = useState("")
 	const [isBtnSubmitDisabled, setIsBtnSubmitDisabled] = useState(true)
 	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
-	const [list, setList] = useState([])
+	const [listRecents, setListRecents] = useState([])
+	const [listFavorites, setListFavorites] = useState([])
 
 	useEffect(() => {
 		if (location) {
@@ -33,16 +46,16 @@ function ChoosePointScreen({ route, navigation }) {
 	}, [location])
 
 	useEffect(() => {
-		setList(user.recents)
+		if (user) {
+			const temp = [...user.recents]
+			setListRecents(temp)
+		}
 	}, [user])
 
 	const fetchAsyncToken = async () => {
-		const asyncToken = await AsyncStorage.getItem("token")
-		if (asyncToken !== null) {
-			const u = await getUserData(asyncToken)
-			console.log(u, user)
+		if (token) {
+			const u = await getUserData(token)
 			dispatch(setUser(u))
-			setList(user.recents)
 		}
 	}
 
@@ -82,31 +95,29 @@ function ChoosePointScreen({ route, navigation }) {
 		}
 	}
 
-	function addToArray(value) {
+	async function addToArray(value) {
 		const data = {
 			recent: value,
 		}
-
-		if (!list.includes(data.recent) && list.length < 5) {
-			addRecent(data, token)
-			setTimeout(() => {
-				fetchAsyncToken()
-			}, 500)
+		if (listRecents.includes(data.recent)) {
+			return
 		}
-		if (list.length > 5) {
-			const newList = [...list]
-			newList.shift()
-			newList.push(newItem)
-			setList(newList)
+		if (!listRecents.includes(data.recent) && user.recents.length < 5) {
+			await addRecent(data, token)
+			await fetchAsyncToken()
+		}
+		if (listRecents.length >= 5) {
+			await deleteRecent(listRecents[0], token)
+			await addRecent(data, token)
+			await fetchAsyncToken()
 		}
 	}
 
 	return (
 		<SafeAreaView>
-			<ScrollView>
-				<View style={styles.container}>
-					<ScrollView></ScrollView>
-					<Stack spacing={0}>
+			<View style={styles.container}>
+				<FlatList
+					ListHeaderComponent={
 						<View style={styles.column}>
 							<View style={styles.view}>
 								<AutoCompleteComponent
@@ -116,7 +127,7 @@ function ChoosePointScreen({ route, navigation }) {
 									setIsBtnSubmitDisabled={setIsBtnSubmitDisabled}
 									inputValue={inputValue}
 									setInputValue={setInputValue}
-								></AutoCompleteComponent>
+								/>
 								<Button
 									title="submit"
 									trailing={(props) => <Icon name="check" {...props} />}
@@ -135,21 +146,25 @@ function ChoosePointScreen({ route, navigation }) {
 							<View style={styles.section}>
 								<ListDirectionsComponent
 									title="Recent"
-									list={list}
+									list={listRecents}
 									iconName={"star-plus-outline"}
-								></ListDirectionsComponent>
+									func={OriginOrDestination}
+								/>
 							</View>
-							<View style={styles.section}>
+							{/* <View style={styles.section}>
 								<ListDirectionsComponent
 									title="Favorites"
-									list={[]}
+									list={listFavorites}
 									iconName={""}
-								></ListDirectionsComponent>
-							</View>
+									func={addFavorite}
+								/>
+							</View> */}
 						</View>
-					</Stack>
-				</View>
-			</ScrollView>
+					}
+					data={[{ key: "dummy" }]}
+					renderItem={() => null}
+				/>
+			</View>
 		</SafeAreaView>
 	)
 }
