@@ -163,3 +163,27 @@ export const fetchObjectsInRegion = async (region, preferences) => {
     console.log(error);
   }
 };
+
+export const deleteRecent = async (item, token) => {
+  try {
+    const urlRoute = `${API_BASE_URL}/api/authentication/deleteRecent`;
+    const res = await axios.delete(urlRoute, item, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error, "deleteRecent failed in axios");
+  }
+};
+
+export const deleteFavorite = async (item, token) => {
+  try {
+    const urlRoute = `${API_BASE_URL}/api/authentication/deleteFavorite`;
+    const res = await axios.delete(urlRoute, item, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error, "deleteFavorite failed in axios");
+  }
+};
