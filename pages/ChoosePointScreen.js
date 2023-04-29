@@ -98,7 +98,7 @@ function ChoosePointScreen({ route, navigation }) {
 			await fetchAsyncToken()
 		}
 		if (listRecents.length >= 5) {
-			await deleteRecent(listRecents[0], token)
+			await deleteRecent(listRecents[listRecents.length - 1], token)
 			await addRecent(data, token)
 			await fetchAsyncToken()
 		}
