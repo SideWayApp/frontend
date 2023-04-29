@@ -1,17 +1,6 @@
 import { React, useState, useEffect } from "react"
-import {
-	View,
-	StyleSheet,
-	ScrollView,
-	SafeAreaView,
-	FlatList,
-} from "react-native"
-import {
-	Stack,
-	Button,
-	Text,
-	ActivityIndicator,
-} from "@react-native-material/core"
+import { View, StyleSheet, SafeAreaView, FlatList } from "react-native"
+import { Button, ActivityIndicator } from "@react-native-material/core"
 import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 import { useDispatch, useSelector } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
@@ -22,10 +11,10 @@ import {
 	getUserData,
 	addFavorite,
 	deleteRecent,
+	deleteFavorite,
 } from "../axios"
 import AutoCompleteComponent from "../components/AutoCompleteComponent"
 import ListDirectionsComponent from "../components/ListDirectionsComponent"
-import AsyncStorage from "@react-native-async-storage/async-storage"
 import { setUser } from "../Redux/authenticationReducer/authActions"
 
 function ChoosePointScreen({ route, navigation }) {
@@ -47,8 +36,10 @@ function ChoosePointScreen({ route, navigation }) {
 
 	useEffect(() => {
 		if (user) {
-			const temp = [...user.recents]
-			setListRecents(temp)
+			const tempRec = [...user.recents]
+			setListRecents(tempRec)
+			const tempFav = [...user.favorites]
+			setListFavorites(tempFav)
 		}
 	}, [user])
 
@@ -62,11 +53,11 @@ function ChoosePointScreen({ route, navigation }) {
 	function OriginOrDestination(value) {
 		if (route.params.type === "Origin") {
 			dispatch(setOrigin(value))
-			addToArray(value)
+			addToRecArray(value)
 		}
 		if (route.params.type === "Destination") {
 			dispatch(setDestination(value))
-			addToArray(value)
+			addToRecArray(value)
 		}
 		navigation.goBack()
 	}
@@ -95,7 +86,7 @@ function ChoosePointScreen({ route, navigation }) {
 		}
 	}
 
-	async function addToArray(value) {
+	async function addToRecArray(value) {
 		const data = {
 			recent: value,
 		}
@@ -111,6 +102,24 @@ function ChoosePointScreen({ route, navigation }) {
 			await addRecent(data, token)
 			await fetchAsyncToken()
 		}
+	}
+
+	async function addToFavArray(value) {
+		const data = {
+			favorite: value,
+		}
+		if (!listFavorites.includes(data.favorite) && user.favorites.length < 5) {
+			await addFavorite(data, token)
+			await fetchAsyncToken()
+			setListFavorites([...listFavorites, data.favorite])
+		}
+	}
+
+	async function deleteFromFavArray(value) {
+		await deleteFavorite(value, token)
+		await fetchAsyncToken()
+		const newListFavorites = listFavorites.filter((item) => item !== value)
+		setListFavorites(newListFavorites)
 	}
 
 	return (
@@ -145,20 +154,22 @@ function ChoosePointScreen({ route, navigation }) {
 							</View>
 							<View style={styles.section}>
 								<ListDirectionsComponent
+									title="Favorites"
+									list={listFavorites}
+									iconName={"delete"}
+									func={OriginOrDestination}
+									producer={deleteFromFavArray}
+								/>
+							</View>
+							<View style={styles.section}>
+								<ListDirectionsComponent
 									title="Recent"
 									list={listRecents}
 									iconName={"star-plus-outline"}
 									func={OriginOrDestination}
+									producer={addToFavArray}
 								/>
 							</View>
-							{/* <View style={styles.section}>
-								<ListDirectionsComponent
-									title="Favorites"
-									list={listFavorites}
-									iconName={""}
-									func={addFavorite}
-								/>
-							</View> */}
 						</View>
 					}
 					data={[{ key: "dummy" }]}
