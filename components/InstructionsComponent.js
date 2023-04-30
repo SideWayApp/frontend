@@ -68,6 +68,17 @@ const InstructionsComponent = ({ instructions, setIsDirections }) => {
     };
     asyncLocation();
   }, []);
+
+  // useEffect(() => {
+  //   let i = 1;
+  //   const interval = setInterval(() => {
+  //     setDisplayedInstructions(instructions[i++].instruction);
+  //   }, 1000);
+
+  //   if (i >= instructions.length - 1) {
+  //     clearInterval(interval);
+  //   }
+  // }, []);
   return (
     <View style={styles.container}>
       <View style={styles.instructionsContainer}>
