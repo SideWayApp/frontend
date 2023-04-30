@@ -1,19 +1,20 @@
 import { React, useState, useEffect } from "react"
-import { View, StyleSheet, ScrollView, SafeAreaView } from "react-native"
-import {
-	Stack,
-	Button,
-	Text,
-	ActivityIndicator,
-} from "@react-native-material/core"
+import { View, StyleSheet, SafeAreaView, FlatList } from "react-native"
+import { Button, ActivityIndicator } from "@react-native-material/core"
 import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 import { useDispatch, useSelector } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 import * as Location from "expo-location"
-import { getAddressFromLatLng, addRecent, getUserData } from "../axios"
+import {
+	getAddressFromLatLng,
+	addRecent,
+	getUserData,
+	addFavorite,
+	deleteRecent,
+	deleteFavorite,
+} from "../axios"
 import AutoCompleteComponent from "../components/AutoCompleteComponent"
 import ListDirectionsComponent from "../components/ListDirectionsComponent"
-import AsyncStorage from "@react-native-async-storage/async-storage"
 import { setUser } from "../Redux/authenticationReducer/authActions"
 
 function ChoosePointScreen({ route, navigation }) {
@@ -24,7 +25,8 @@ function ChoosePointScreen({ route, navigation }) {
 	const [inputValue, setInputValue] = useState("")
 	const [isBtnSubmitDisabled, setIsBtnSubmitDisabled] = useState(true)
 	const [isLoadingLocation, setIsLoadingLocation] = useState(false)
-	const [list, setList] = useState([])
+	const [listRecents, setListRecents] = useState([])
+	const [listFavorites, setListFavorites] = useState([])
 
 	useEffect(() => {
 		if (location) {
@@ -33,27 +35,29 @@ function ChoosePointScreen({ route, navigation }) {
 	}, [location])
 
 	useEffect(() => {
-		setList(user.recents)
+		if (user) {
+			const tempRec = [...user.recents]
+			setListRecents(tempRec)
+			const tempFav = [...user.favorites]
+			setListFavorites(tempFav)
+		}
 	}, [user])
 
 	const fetchAsyncToken = async () => {
-		const asyncToken = await AsyncStorage.getItem("token")
-		if (asyncToken !== null) {
-			const u = await getUserData(asyncToken)
-			console.log(u, user)
+		if (token) {
+			const u = await getUserData(token)
 			dispatch(setUser(u))
-			setList(user.recents)
 		}
 	}
 
 	function OriginOrDestination(value) {
 		if (route.params.type === "Origin") {
 			dispatch(setOrigin(value))
-			addToArray(value)
+			addToRecArray(value)
 		}
 		if (route.params.type === "Destination") {
 			dispatch(setDestination(value))
-			addToArray(value)
+			addToRecArray(value)
 		}
 		navigation.goBack()
 	}
@@ -82,31 +86,47 @@ function ChoosePointScreen({ route, navigation }) {
 		}
 	}
 
-	function addToArray(value) {
+	async function addToRecArray(value) {
 		const data = {
 			recent: value,
 		}
+		if (listRecents.includes(data.recent)) {
+			return
+		}
+		if (!listRecents.includes(data.recent) && user.recents.length < 5) {
+			await addRecent(data, token)
+			await fetchAsyncToken()
+		}
+		if (listRecents.length >= 5) {
+			await deleteRecent(listRecents[listRecents.length - 1], token)
+			await addRecent(data, token)
+			await fetchAsyncToken()
+		}
+	}
 
-		if (!list.includes(data.recent) && list.length < 5) {
-			addRecent(data, token)
-			setTimeout(() => {
-				fetchAsyncToken()
-			}, 500)
+	async function addToFavArray(value) {
+		const data = {
+			favorite: value,
 		}
-		if (list.length > 5) {
-			const newList = [...list]
-			newList.shift()
-			newList.push(newItem)
-			setList(newList)
+		if (!listFavorites.includes(data.favorite) && user.favorites.length < 5) {
+			await addFavorite(data, token)
+			await fetchAsyncToken()
+			setListFavorites([...listFavorites, data.favorite])
 		}
+	}
+
+	async function deleteFromFavArray(value) {
+		await deleteFavorite(value, token)
+		await fetchAsyncToken()
+		const newListFavorites = listFavorites.filter((item) => item !== value)
+		setListFavorites(newListFavorites)
 	}
 
 	return (
 		<SafeAreaView>
-			<ScrollView>
-				<View style={styles.container}>
-					<ScrollView></ScrollView>
-					<Stack spacing={0}>
+			<View style={styles.container}>
+				<FlatList
+					ListHeaderComponent={
 						<View style={styles.column}>
 							<View style={styles.view}>
 								<AutoCompleteComponent
@@ -116,7 +136,7 @@ function ChoosePointScreen({ route, navigation }) {
 									setIsBtnSubmitDisabled={setIsBtnSubmitDisabled}
 									inputValue={inputValue}
 									setInputValue={setInputValue}
-								></AutoCompleteComponent>
+								/>
 								<Button
 									title="submit"
 									trailing={(props) => <Icon name="check" {...props} />}
@@ -134,22 +154,28 @@ function ChoosePointScreen({ route, navigation }) {
 							</View>
 							<View style={styles.section}>
 								<ListDirectionsComponent
-									title="Recent"
-									list={list}
-									iconName={"star-plus-outline"}
-								></ListDirectionsComponent>
+									title="Favorites"
+									list={listFavorites}
+									iconName={"delete"}
+									func={OriginOrDestination}
+									producer={deleteFromFavArray}
+								/>
 							</View>
 							<View style={styles.section}>
 								<ListDirectionsComponent
-									title="Favorites"
-									list={[]}
-									iconName={""}
-								></ListDirectionsComponent>
+									title="Recent"
+									list={listRecents}
+									iconName={"star-plus-outline"}
+									func={OriginOrDestination}
+									producer={addToFavArray}
+								/>
 							</View>
 						</View>
-					</Stack>
-				</View>
-			</ScrollView>
+					}
+					data={[{ key: "dummy" }]}
+					renderItem={() => null}
+				/>
+			</View>
 		</SafeAreaView>
 	)
 }
