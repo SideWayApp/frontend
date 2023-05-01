@@ -1,6 +1,6 @@
 import axios from "axios";
 // import { API_BASE_URL } from "@env"
-const API_BASE_URL = "http://10.0.0.10:8080";
+// const API_BASE_URL = "http://10.0.0.10:8080";
 
 export const getStreetsStartingWith = async (letters) => {
   const data = { letters };
