@@ -1,6 +1,6 @@
 import axios from "axios";
 // import { API_BASE_URL } from "@env"
-// const API_BASE_URL = "http://10.0.0.10:8080";
+const API_BASE_URL = "http://10.0.0.10:8080";
 
 export const getStreetsStartingWith = async (letters) => {
   const data = { letters };
@@ -155,6 +155,17 @@ export const addRecent = async (item, token) => {
     console.log(error, "addRecent failed in axios");
   }
 };
+export const addFavorite = async (item, token) => {
+  try {
+    const urlRoute = `${API_BASE_URL}/api/authentication/addFavorite`;
+    const res = await axios.put(urlRoute, item, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error, "addFavorite failed in axios");
+  }
+};
 export const fetchObjectsInRegion = async (region, preferences) => {
   try {
     const data = { region: region, preferences: preferences };
@@ -167,8 +178,9 @@ export const fetchObjectsInRegion = async (region, preferences) => {
 export const deleteRecent = async (item, token) => {
   try {
     const urlRoute = `${API_BASE_URL}/api/authentication/deleteRecent`;
-    const res = await axios.delete(urlRoute, item, {
+    const res = await axios.delete(urlRoute, {
       headers: { Authorization: `Bearer ${token}` },
+      data: { recent: item },
     });
     return res.data;
   } catch (error) {
@@ -179,8 +191,9 @@ export const deleteRecent = async (item, token) => {
 export const deleteFavorite = async (item, token) => {
   try {
     const urlRoute = `${API_BASE_URL}/api/authentication/deleteFavorite`;
-    const res = await axios.delete(urlRoute, item, {
+    const res = await axios.delete(urlRoute, {
       headers: { Authorization: `Bearer ${token}` },
+      data: { favorite: item },
     });
     return res.data;
   } catch (error) {
