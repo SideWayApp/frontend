@@ -42,14 +42,17 @@ function AppBarComponent({ showBackButton }) {
                   </Text>
                 )}
                 color="white"
-                onPress={() => console.log("create user feed")}
+                onPress={() => {
+                  navigation.navigate("Home", { openProfileModal: true });
+                  console.log("Profile clicked");
+                }}
               />
             );
           }
         } else {
           return (
             <IconButton
-              icon={(props) => <Icon name="keyboard-backspace" {...props} />}
+              icon={(props) => <Icon name="arrow-left" {...props} />}
               color="white"
               onPress={() => navigation.goBack()}
             />
@@ -59,7 +62,7 @@ function AppBarComponent({ showBackButton }) {
       trailing={(props) => (
         <IconButton
           onPress={handleMenuPreesed}
-          icon={(props) => <Icon name="dots-horizontal" {...props} />}
+          icon={(props) => <Icon name="logout" {...props} />}
           {...props}
         />
       )}
