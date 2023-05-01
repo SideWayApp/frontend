@@ -8,6 +8,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getUserData } from "../axios";
 import { setUser } from "../Redux/authenticationReducer/authActions";
 import InstructionsComponent from "../components/InstructionsComponent";
+import { useRoute } from "@react-navigation/native";
+
+import {
+  ProfileModal,
+  PrefrencesModal,
+  EditProfileModal,
+} from "../components/AuthFormsComponents";
 
 const HomeScreen = () => {
   const { origin, destination } = useSelector((state) => state);
@@ -16,11 +23,53 @@ const HomeScreen = () => {
   const [polyline, setPolyline] = useState(null);
   const [isDirection, setIsDirection] = useState(false);
   const [isGotDirection, setIsGotDirection] = useState(false);
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
+  const [isEditProfileModalVisible, setIsEditProfileModalVisible] =
+    useState(false);
+  const [isEditPrefrencesModalVisible, setIsEditPrefrencesModalVisible] =
+    useState(false);
+
+  const route = useRoute();
 
   const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.user);
 
   const dispatch = useDispatch();
+
+  const handleProfileModalClose = () => {
+    setIsProfileModalVisible(false);
+  };
+
+  const handlePrefrencesModalClose = () => {
+    setIsEditPrefrencesModalVisible(false);
+  };
+
+  const handleEditProfileModalClose = () => {
+    setIsEditProfileModalVisible(false);
+  };
+
+  useEffect(() => {
+    if (
+      route.params?.openEditProfileModal &&
+      route.params.openEditProfileModal === true
+    ) {
+      handleProfileModalClose();
+      setIsEditProfileModalVisible(true);
+    }
+    if (
+      route.params?.openPrefrencesModal &&
+      route.params.openPrefrencesModal === true
+    ) {
+      handleProfileModalClose();
+      setIsEditPrefrencesModalVisible(true);
+    }
+    if (
+      route.params?.openProfileModal &&
+      route.params.openProfileModal === true
+    ) {
+      setIsProfileModalVisible(true);
+    }
+  }, [route.params]);
 
   useEffect(() => {
     const fetchAsyncToken = async () => {
@@ -38,7 +87,22 @@ const HomeScreen = () => {
   }, [token]);
 
   return (
-    <View style={styles.container}>
+    <View
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <EditProfileModal
+        isVisible={isEditProfileModalVisible}
+        onClose={handleEditProfileModalClose}
+      />
+      <PrefrencesModal
+        isVisible={isEditPrefrencesModalVisible}
+        onClose={handlePrefrencesModalClose}
+      />
+      <ProfileModal
+        isVisible={isProfileModalVisible}
+        onClose={handleProfileModalClose}
+      />
       {!isDirection && (
         <DirectionsComponent
           origin={origin}

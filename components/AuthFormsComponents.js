@@ -6,10 +6,14 @@ import {
   View,
   Modal,
   Alert,
+  TextInput,
+  SafeAreaView,
 } from "react-native";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import SelectDropdown from "react-native-select-dropdown";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
 const genderOptions = ["Male", "Female"];
 
@@ -143,6 +147,7 @@ const Prefrences = ({ setPreference }) => {
 };
 
 export const PrefrencesModal = ({ isVisible, onClose, handleSkip }) => {
+  const navigation = useNavigation();
   const [prefrences, setPreference] = useState({
     accessibility: false,
     clean: false,
@@ -160,9 +165,15 @@ export const PrefrencesModal = ({ isVisible, onClose, handleSkip }) => {
     >
       <ModalTitle title="Set up your prefrences" />
       <Prefrences setPreference={setPreference} />
-      <ModalSubmitButton onPress={() => onClose(prefrences)} title="Submit" />
+      <ModalSubmitButton
+        onPress={() => {
+          onClose(prefrences);
+          navigation.navigate("Home", { openPrefrencesModal: false });
+        }}
+        title="Submit"
+      />
       <TouchableOpacity
-        style={modalStyles.skipButton}
+        style={modalStyles.closeButton}
         onPress={() => {
           handleSkip();
         }}
@@ -173,8 +184,10 @@ export const PrefrencesModal = ({ isVisible, onClose, handleSkip }) => {
   );
 };
 
-export const SignInModal = ({ isVisible, onClose, handleSkip }) => {
+export const ProfileModal = ({ isVisible, onClose }) => {
   const user = useSelector((state) => state.auth.user);
+  const navigation = useNavigation();
+
   return (
     <Modal
       onBackdropPress={onClose}
@@ -186,16 +199,79 @@ export const SignInModal = ({ isVisible, onClose, handleSkip }) => {
       {user && (
         <>
           <ModalTitle title={`Hello ${user.signUpData.name}`} />
-          <BorderLineButton title="Update your prefrencess" />
-          <BorderLineButton title="Edit your information" />
+          <BorderLineButton
+            title="Update your prefrencess"
+            onPress={() => {
+              console.log("Update your prefrencess pressed");
+              navigation.navigate("Home", { openProfileModal: false });
+              navigation.navigate("Home", { openPrefrencesModal: true });
+            }}
+          />
+          <BorderLineButton
+            title="Edit your information"
+            onPress={() => {
+              console.log("Edit your information pressed");
+              navigation.navigate("Home", { openProfileModal: false });
+              navigation.navigate("Home", { openEditProfileModal: true });
+            }}
+          />
 
           <TouchableOpacity
-            style={modalStyles.skipButton}
+            style={modalStyles.closeButton}
             onPress={() => {
-              handleSkip();
+              onClose();
+              navigation.navigate("Home", { openProfileModal: false });
             }}
           >
-            <Text style={modalStyles.skipText}>Continue</Text>
+            <Text style={modalStyles.skipText}>Close</Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </Modal>
+  );
+};
+
+export const EditProfileModal = ({ isVisible, onClose }) => {
+  const user = useSelector((state) => state.auth.user);
+  const navigation = useNavigation();
+  const [number, onChangeNumber] = React.useState("");
+
+  return (
+    <Modal
+      onBackdropPress={onClose}
+      visible={isVisible}
+      onRequestClose={onClose}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
+      {user && (
+        <>
+          <ModalTitle title={`Edit Profile`} />
+          <SafeAreaView>
+            <TextInput
+              style={modalStyles.input}
+              value={user.signUpData.name}
+              placeholder="Full Name"
+            />
+            <TextInput
+              style={modalStyles.input}
+              value={""}
+              placeholder="Email"
+            />
+            <TextInput
+              style={modalStyles.input}
+              value={""}
+              placeholder="Password"
+            />
+          </SafeAreaView>
+          <TouchableOpacity
+            style={modalStyles.closeButton}
+            onPress={() => {
+              onClose();
+              navigation.navigate("Home", { openProfileModal: false });
+            }}
+          >
+            <Text style={modalStyles.skipText}>Close</Text>
           </TouchableOpacity>
         </>
       )}
@@ -234,8 +310,8 @@ export const StyledAlert = ({ error, setError }) => {
 };
 
 const modalStyles = StyleSheet.create({
-  skipButton: {
-    marginTop: 20,
+  closeButton: {
+    marginTop: "90%",
   },
   skipText: {
     textAlign: "center",
@@ -291,6 +367,12 @@ const modalStyles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
   },
 });
 
