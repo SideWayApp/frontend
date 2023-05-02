@@ -158,7 +158,7 @@ function ChoosePointScreen({ route, navigation }) {
 									list={listFavorites}
 									iconName={"delete"}
 									func={OriginOrDestination}
-									producer={deleteFromFavArray}
+									consumer={deleteFromFavArray}
 								/>
 							</View>
 							<View style={styles.section}>
@@ -167,7 +167,7 @@ function ChoosePointScreen({ route, navigation }) {
 									list={listRecents}
 									iconName={"star-plus-outline"}
 									func={OriginOrDestination}
-									producer={addToFavArray}
+									consumer={addToFavArray}
 								/>
 							</View>
 						</View>
