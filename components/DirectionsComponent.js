@@ -24,8 +24,16 @@ const DirectionsComponent = (props) => {
 	const handleGetDirections = async () => {
 		setIsLoading(true)
 		try {
-			if (!origin || !destination) {
+			if (origin === "Origin" || destination === "Destination") {
+				console.log(origin, destination)
 				console.log("Problem in origin or destination...")
+				Alert.alert(
+					"Origin or Destination are empty or invalid",
+					"Please try again",
+					[{ text: "OK" }],
+					{ cancelable: false }
+				)
+				setIsLoading(false)
 				return
 			}
 			const res = await getWayPointsAndInstructions(
@@ -61,7 +69,10 @@ const DirectionsComponent = (props) => {
 										"Sign in please",
 										[
 											{
-												text: "Cancel",
+												text: "Sign in",
+												onPress: () => {
+													navigation.navigate("Sign In")
+												},
 											},
 
 											{ text: "OK" },
