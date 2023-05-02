@@ -6,6 +6,7 @@ import SignInScreen from "./pages/SignInScreen"
 import SignUpScreen from "./pages/SignUpScreen"
 import AppBarComponent from "./components/AppBarComponent"
 import ChoosePointScreen from "./pages/ChoosePointScreen"
+import ReportScreen from "./pages/ReportScreen"
 import { Provider } from "react-redux"
 import store from "./Redux/store"
 
@@ -33,6 +34,11 @@ export default function App() {
 					<Stack.Screen
 						name="Choose Point"
 						component={ChoosePointScreen}
+						options={{ header: () => <AppBarComponent /> }}
+					/>
+					<Stack.Screen
+						name="Report"
+						component={ReportScreen}
 						options={{ header: () => <AppBarComponent /> }}
 					/>
 				</Stack.Navigator>
