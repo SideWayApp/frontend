@@ -7,8 +7,8 @@ import { useSelector } from "react-redux";
 // "alert-octagon", "camera"
 
 const minDisplayDelta = {
-  latitudeDelta: 0.005,
-  longitudeDelta: 0.005,
+  latitudeDelta: 0.01,
+  longitudeDelta: 0.01,
 };
 
 export default function MapItemsComponent({ region }) {
@@ -18,9 +18,18 @@ export default function MapItemsComponent({ region }) {
     // Fetch objects based on the current region
     const fetchObjects = async (preferences) => {
       const objects = await fetchObjectsInRegion(region, preferences);
+      console.log("Object: " + objects.length);
       setMapItem(objects);
     };
-
+    console.log(region);
+    console.log(
+      "latitude: ",
+      region.latitudeDelta <= minDisplayDelta.latitudeDelta
+    );
+    console.log(
+      "longitude: ",
+      region.longitudeDelta <= minDisplayDelta.longitudeDelta
+    );
     if (
       user &&
       (region.latitudeDelta <= minDisplayDelta.latitudeDelta ||
@@ -28,6 +37,7 @@ export default function MapItemsComponent({ region }) {
     ) {
       fetchObjects(user.preferences);
     } else {
+      console.log("else");
       setMapItem([]);
     }
   }, [region, user]);
@@ -38,10 +48,10 @@ export default function MapItemsComponent({ region }) {
           <Marker
             title={mapItem.type}
             description={mapItem.streetName}
-            key={mapItem.y + mapItem.x}
+            key={mapItem.longitude + mapItem.latitude + index}
             coordinate={{
-              latitude: parseFloat(mapItem.y),
-              longitude: parseFloat(mapItem.x),
+              latitude: mapItem.latitude,
+              longitude: mapItem.longitude,
             }}
           >
             <MapItemMarker mapItem={mapItem} />
