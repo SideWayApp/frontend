@@ -74,7 +74,7 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchAsyncToken = async () => {
       const asyncToken = await AsyncStorage.getItem("token");
-      if (asyncToken !== null) {
+      if (asyncToken) {
         console.log("Home fails sometimes");
         const user = await getUserData(asyncToken);
         if (user) {
