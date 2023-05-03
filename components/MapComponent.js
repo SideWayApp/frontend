@@ -190,6 +190,7 @@ function MapComponent({
             <Icon name="plus" size={30} color="black" />
           </View>
         )}
+        animated={false}
       />
     </View>
   );
