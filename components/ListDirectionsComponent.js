@@ -3,7 +3,7 @@ import { View } from "react-native"
 import { ListItem, Text } from "@react-native-material/core"
 import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 
-function ListDirectionsComponent({ title, list, iconName, func, producer }) {
+function ListDirectionsComponent({ title, list, iconName, func, consumer }) {
 	return (
 		<View>
 			<Text style={{ marginBottom: 10 }}>{title}</Text>
@@ -22,8 +22,8 @@ function ListDirectionsComponent({ title, list, iconName, func, producer }) {
 							name={iconName}
 							onPress={(event) => {
 								event.stopPropagation()
-								if (func) {
-									producer(listItem)
+								if (consumer) {
+									consumer(listItem)
 								}
 							}}
 							{...props}

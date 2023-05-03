@@ -26,6 +26,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { setDestination } from "../Redux/DirectionsStore/actions";
 import { Polyline } from "react-native-maps";
 
+import { useNavigation, useRoute } from "@react-navigation/native"
+
 function MapComponent({
   wayPoints,
   polyline,
@@ -35,6 +37,8 @@ function MapComponent({
 }) {
   const { destination } = useSelector((state) => state.directions);
   const dispatch = useDispatch();
+
+  const navigation = useNavigation()
 
   const mapRef = useRef(null);
   const markerRef = useRef(null);
@@ -180,6 +184,7 @@ function MapComponent({
       />
       <FAB
         style={styles.fab}
+        onPress={() => navigation.navigate("Report") }
         icon={() => (
           <View style={styles.iconContainer}>
             <Icon name="plus" size={30} color="black" />
