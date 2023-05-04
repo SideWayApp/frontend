@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text,Alert,TouchableOpacity,TextInput } from "react-native";
+import {getAddressFromLatLng} from '../axios'
 
 import { Button } from "react-native-paper";
 
@@ -30,7 +31,16 @@ const ReportScreen = () =>{
     };
 
     const handleWarningPress = () => {
-        Alert.alert('WARNING icon pressed!');
+        Alert.alert("Is this road dangerous?","Thank you for your report",[
+            {
+                text:"Yes",
+                onPress:()=>Alert.alert("YES pressed")
+            },
+            {
+                text:"No",
+                onPress:()=>Alert.alert("NO pressed")
+            }
+        ]);
     };
 
     const handleFloodPress = () => {
@@ -60,23 +70,68 @@ const ReportScreen = () =>{
     };
 
     const handleConstractionPress = () => {
-        Alert.alert('ROAD-CONSTRACTION icon pressed!');
+        Alert.alert("Those this road is in constarction?","Thank you for your report",[
+            {
+                text:"Yes",
+                onPress:()=>Alert.alert("YES pressed")
+            },
+            {
+                text:"No",
+                onPress:()=>Alert.alert("NO pressed")
+            }
+        ]);
     };
 
     const handlePoopPress = () => {
-        Alert.alert('POOP icon pressed!');
+        AAlert.alert("There is dog poop on the way?","Thank you for your report",[
+            {
+                text:"Yes",
+                onPress:()=>Alert.alert("YES pressed")
+            },
+            {
+                text:"No",
+                onPress:()=>Alert.alert("NO pressed")
+            }
+        ]);
     };
 
     const handleNoLightPress = () => {
-        Alert.alert('NO-LIGHT icon pressed!');
+        Alert.alert("No lights?","Thank you for your report",[
+            {
+                text:"Yes",
+                onPress:()=>Alert.alert("YES pressed")
+            },
+            {
+                text:"No",
+                onPress:()=>Alert.alert("NO pressed")
+            }
+        ]);
     };
 
     const handleTrashPress = () => {
-        Alert.alert('TRASH icon pressed!');
+        Alert.alert("Is this road dirty?","Thank you for your report",[
+            {
+                text:"Yes",
+                onPress:()=>Alert.alert("YES pressed")
+            },
+            {
+                text:"No",
+                onPress:()=>Alert.alert("NO pressed")
+            }
+        ]);
     };
 
     const handleHotTempPress = () => {
-        Alert.alert('HOT-TEMPERTURE icon pressed!');
+        Alert.alert("No shadow?","Thank you for your report",[
+            {
+                text:"Yes",
+                onPress:()=>Alert.alert("YES pressed")
+            },
+            {
+                text:"No",
+                onPress:()=>Alert.alert("NO pressed")
+            }
+        ]);
     };
 
 
