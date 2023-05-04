@@ -4,20 +4,29 @@ import { View, StyleSheet, Text,Alert,TouchableOpacity,TextInput } from "react-n
 import { Button } from "react-native-paper";
 
 import Icon from '../components/IconComponent'
-import forbiddenIcon from '../images/forbidden.png';
+import forbiddenIcon from '../images/no-entry.png';
 import warningIcon from '../images/warning.png'
 import floodIcon from '../images/water.png'
-import protestIcon from '../images/protest.png'
-import roadConstractionIcon from '../images/road-construction.png'
+import protestIcon from '../images/demonstration.png'
+import roadConstractionIcon from '../images/under-construction.png'
 import poopIcon from '../images/poop.png'
 import noLightIcon from '../images/no-light.png'
-import trashIcon from '../images/trash.png'
+import trashIcon from '../images/garbage-bin.png'
 import hotTempIcon from '../images/hot-temperature.png'
 
 const ReportScreen = () =>{
     const [text, onChangeText] = useState('your location');
     const handleForbiddenPress = () => {
-        Alert.alert('FORBIDDEN icon pressed!');
+        Alert.alert("Is this road is blocked?","Thank you for your report",[
+            {
+                text:"Yes",
+                onPress:()=>Alert.alert("YES pressed")
+            },
+            {
+                text:"No",
+                onPress:()=>Alert.alert("NO pressed")
+            }
+        ]);
     };
 
     const handleWarningPress = () => {
@@ -25,11 +34,29 @@ const ReportScreen = () =>{
     };
 
     const handleFloodPress = () => {
-        Alert.alert('FLOOD icon pressed!');
+        Alert.alert("Is this road is flooded?","Thank you for your report",[
+            {
+                text:"Yes",
+                onPress:()=>Alert.alert("YES pressed")
+            },
+            {
+                text:"No",
+                onPress:()=>Alert.alert("NO pressed")
+            }
+        ]);
     };
 
     const handleProtestPress = () => {
-        Alert.alert('PROTEST icon pressed!');
+        Alert.alert("Is there is a protest?","Thank you for your report",[
+            {
+                text:"Yes",
+                onPress:()=>Alert.alert("YES pressed")
+            },
+            {
+                text:"No",
+                onPress:()=>Alert.alert("NO pressed")
+            }
+        ]);
     };
 
     const handleConstractionPress = () => {
@@ -80,12 +107,12 @@ return(
         <View style={styles.grid}>
             <TouchableOpacity
              style={styles.button}>
-                <Icon source={forbiddenIcon} style={styles.button} onPress={handleWarningPress}/>
+                <Icon source={forbiddenIcon} style={styles.button} onPress={handleForbiddenPress }/>
             </TouchableOpacity>
 
             <TouchableOpacity
              style={styles.button}>
-                <Icon source={warningIcon} style={styles.button} onPress={handleForbiddenPress}/>
+                <Icon source={warningIcon} style={styles.button} onPress={handleWarningPress}/>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -138,7 +165,7 @@ const styles = StyleSheet.create({
     },
     grid: {
         marginTop:40,
-        marginRight: 25,
+        marginRight: 30,
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
@@ -148,7 +175,7 @@ const styles = StyleSheet.create({
         height: 100,
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 10,
+        marginBottom: 20,
         borderRadius: 50,
       },
     title: {
