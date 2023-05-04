@@ -18,18 +18,8 @@ export default function MapItemsComponent({ region }) {
     // Fetch objects based on the current region
     const fetchObjects = async (preferences) => {
       const objects = await fetchObjectsInRegion(region, preferences);
-      console.log("Object: " + objects.length);
       setMapItem(objects);
     };
-    console.log(region);
-    console.log(
-      "latitude: ",
-      region.latitudeDelta <= minDisplayDelta.latitudeDelta
-    );
-    console.log(
-      "longitude: ",
-      region.longitudeDelta <= minDisplayDelta.longitudeDelta
-    );
     if (
       user &&
       (region.latitudeDelta <= minDisplayDelta.latitudeDelta ||
@@ -37,7 +27,6 @@ export default function MapItemsComponent({ region }) {
     ) {
       fetchObjects(user.preferences);
     } else {
-      console.log("else");
       setMapItem([]);
     }
   }, [region, user]);
