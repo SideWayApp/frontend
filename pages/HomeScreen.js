@@ -40,7 +40,8 @@ const HomeScreen = () => {
     setIsProfileModalVisible(false);
   };
 
-  const handlePrefrencesModalClose = () => {
+  const handlePrefrencesModalClose = (pref) => {
+    console.log(pref);
     setIsEditPrefrencesModalVisible(false);
   };
 
