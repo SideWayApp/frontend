@@ -20,6 +20,7 @@ import BackNavigationFabComponent from "./BackNavigationFabComponent";
 import { useSelector, useDispatch } from "react-redux";
 import { setDestination } from "../Redux/DirectionsStore/actions";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import MapClickedMarker from "./MapClickedMarker";
 
 function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
   const dispatch = useDispatch();
@@ -164,26 +165,13 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
         onPress={handleMapPress}
       >
         {isMapClicked && !isDirection && (
-          <Marker
-            coordinate={coordinates}
-            pinColor="#F59F0C"
-            ref={markerRef}
-            onLayout={handleOnLayout}
-          >
-            <Callout tooltip onPress={handleNavigation}>
-              <View>
-                <Text>{`${coordinates.latitude.toFixed(
-                  4
-                )}, ${coordinates.longitude.toFixed(4)}`}</Text>
-                <Text>{clickedAddress}</Text>
-              </View>
-              <TouchableOpacity>
-                <View style={styles.button}>
-                  <Text style={styles.buttonText}>Navigation to here</Text>
-                </View>
-              </TouchableOpacity>
-            </Callout>
-          </Marker>
+          <MapClickedMarker
+            handleNavigation={handleNavigation}
+            handleOnLayout={handleOnLayout}
+            coordinates={coordinates}
+            markerRef={markerRef}
+            clickedAddress={clickedAddress}
+          />
         )}
         {isDirection && (
           <>
