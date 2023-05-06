@@ -193,7 +193,7 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
             </Callout>
           </Marker>
         )}
-        {isDirection && goToCurrentLocation() && (
+        {isDirection && (
           <>
             <BaseMarkersComponent wayPoints={wayPoints} />
             <OnMapDirections wayPoints={wayPoints} polylinePoints={polyline} />
