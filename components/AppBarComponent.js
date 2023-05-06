@@ -72,10 +72,11 @@ function AppBarComponent({ showBackButton }) {
 
 const styles = StyleSheet.create({
   appbar: {
-    height: 50,
-    justifyContent: "center",
-    marginTop: 50,
+    height: 90,
+    justifyContent: "flex-end",
+    // marginTop: 50,
     marginBottom: 5,
+    backgroundColor: "#89477b",
   },
 });
 
