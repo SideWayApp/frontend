@@ -215,6 +215,7 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
             <Icon name="plus" size={30} color="black" />
           </View>
         )}
+        animated={false}
       />
     </View>
   );
