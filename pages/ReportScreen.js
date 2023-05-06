@@ -3,6 +3,10 @@ import { View, StyleSheet, Text,Alert,TouchableOpacity,TextInput } from "react-n
 import {getAddressFromLatLng} from '../axios'
 
 import { Button } from "react-native-paper";
+import { useNavigation, useRoute } from "@react-navigation/native"
+import { useSelector, useDispatch } from "react-redux"
+import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
+import Stack from "@react-native-material/core"
 
 import Icon from '../components/IconComponent'
 import forbiddenIcon from '../images/no-entry.png';
@@ -17,6 +21,10 @@ import hotTempIcon from '../images/hot-temperature.png'
 
 const ReportScreen = () =>{
     const [text, onChangeText] = useState('your location');
+    const navigation = useNavigation()
+    const origin = useSelector((state) => state.directions)
+    const user = useSelector((state) => state.auth.user)
+
     const handleForbiddenPress = () => {
         Alert.alert("Is this road is blocked?","Thank you for your report",[
             {
@@ -83,7 +91,7 @@ const ReportScreen = () =>{
     };
 
     const handlePoopPress = () => {
-        AAlert.alert("There is dog poop on the way?","Thank you for your report",[
+        Alert.alert("There is dog poop on the way?","Thank you for your report",[
             {
                 text:"Yes",
                 onPress:()=>Alert.alert("YES pressed")
@@ -146,19 +154,39 @@ return(
             <Text style={styles.title}> Report  </Text>
         </View>
     
-        <View >
-            <TextInput
-                style={styles.searchContainer}
-                onChangeText={onChangeText}
-                value={text}
-            />
-            <Button
-            style={styles.searchContainer}
-            onPress={()=>Alert.alert('button pressed')}
-            >
-                <Text style={styles.searchContainer}>Choose on map</Text>
-            </Button>
-        </View>
+        <View style={{ flexDirection: "row" }}>
+					<View style={{ width: "91%" }}>
+						<Button
+                        style={styles.row_button}
+							title={origin}
+							variant="outlined"
+							value={origin}
+							onPress={() => {
+								if (user) {
+									navigation.navigate("Choose Point", { type: "Origin" })
+								} else {
+									Alert.alert(
+										"Not logged in",
+										"Sign in please",
+										[
+											{
+												text: "Cancel",
+											},
+
+											{ text: "OK" },
+										],
+										{ cancelable: false }
+									)
+								}
+							}}
+							uppercase={false}
+							color="black"
+						>
+                            <Text style={styles.button_title}  >Choose your location</Text>
+                        </Button>
+					</View>
+                </View>
+            
         <View style={styles.grid}>
             <TouchableOpacity
              style={styles.button}>
@@ -225,6 +253,22 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'space-between',
       },
+      row_button: {
+        backgroundColor: '#ADD8E6',
+        borderRadius: 8,
+        height: 48,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 8,
+        marginHorizontal: 16,
+      },
+      button_title:{
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color:'black',
+        marginTop: 5,
+    },
       button: {
         width: '30%',
         height: 100,
@@ -245,16 +289,16 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     searchContainer: {
-        position: 'relative',
+        position: 'absolute',
         alignItems: 'center',
-        width: "90%",
+        width: "100%",
         shadowColor: "black",
         color:"black",
-        shadowOffset: { width: 2, height: 2 },
+        shadowOffset: { width: 6, height: 6 },
         shadowOpacity: 0.5,
         shadowRadius: 4,
         elevation: 4,
-        padding: 8,
+        padding: 25,
         borderRadius: 8,
         top: 10,
         marginTop:10,
