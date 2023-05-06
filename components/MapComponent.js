@@ -82,24 +82,15 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
 
   const goToCurrentLocation = async () => {
     if (location) {
-      const camera = await mapRef.current.getCamera();
-      if (camera) {
-        const newLatitudeDelta = 0.0025;
-        const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
-        const newPosition = {
-          latitude: location.latitude,
-          longitude: location.longitude,
-          latitudeDelta: newLatitudeDelta,
-          longitudeDelta: newLongitudeDelta,
-        };
-        camera.center = {
-          latitude: location.latitude,
-          longitude: location.longitude,
-        };
-        camera.pitch = 90;
-        // mapRef.current.animateCamera(camera, { duration: 1000 });
-        mapRef.current.animateToRegion(newPosition);
-      }
+      const newLatitudeDelta = 0.0025;
+      const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+      const newPosition = {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        latitudeDelta: newLatitudeDelta,
+        longitudeDelta: newLongitudeDelta,
+      };
+      mapRef.current.animateToRegion(newPosition);
     }
   };
 
