@@ -14,6 +14,7 @@ export default function BackNavigationFabComponent(props){
         }
         onPress={props.moveTo()}
         onPress={()=>props.setIsGotDirection(true)}
+        animated={false}
       />
   )
 }
