@@ -40,14 +40,14 @@ const SignUpScreen = () => {
   const handleSignUp = () => {
     setSignUpData((prev) => ({ ...prev, gender: gender, age: age }));
     const validation = validateSignUpData();
-    // if (validation === null) {
-    setIsModalVisible(true);
-    //  } else {
-    //   console.log(validation);
-    //   setError(true);
-    //   setErrorMessage(validation);
-    //   setLoading(false);
-    // }
+    if (validation === null) {
+      setIsModalVisible(true);
+    } else {
+      console.log(validation);
+      setError(true);
+      setErrorMessage(validation);
+      setLoading(false);
+    }
   };
   const handleModalClose = async (preferences) => {
     setLoading(true);
@@ -68,7 +68,7 @@ const SignUpScreen = () => {
     await AsyncStorage.setItem("token", token);
     setLoading(false);
 
-    navigation.navigate("Home");
+    navigation.navigate("How It Works");
   };
 
   const handleSkip = async () => {
