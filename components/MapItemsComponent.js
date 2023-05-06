@@ -7,8 +7,8 @@ import { useSelector } from "react-redux";
 // "alert-octagon", "camera"
 
 const minDisplayDelta = {
-  latitudeDelta: 0.01,
-  longitudeDelta: 0.01,
+  latitudeDelta: 0.05,
+  longitudeDelta: 0.05,
 };
 
 export default function MapItemsComponent({ region }) {

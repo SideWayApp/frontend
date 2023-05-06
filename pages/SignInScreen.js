@@ -44,7 +44,7 @@ function SignInScreen() {
         dispatch(setToken(token));
         await AsyncStorage.setItem("token", token);
         // setIsModalVisible(true);
-        navigation.navigate("Home");
+        navigation.navigate("How It Works");
       } else {
         console.log("wrong email or password");
       }
