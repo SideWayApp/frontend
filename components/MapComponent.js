@@ -11,7 +11,7 @@ import { FAB } from "react-native-paper";
 const { width, height } = Dimensions.get("window");
 import * as Location from "expo-location";
 import MapItemsComponent from "./MapItemsComponent";
-import { getAddressFromLatLng } from "../axios";
+import { getAddressFromLatLng,getAddressFromCoordinates } from "../axios";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import BaseMarkersComponent from "./BaseMarkersComponent";
 import OnMapDirections from "./OnMapDirections";
@@ -143,7 +143,7 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
       setCoordinates({ latitude, longitude });
     }
     try {
-      const address = await getAddressFromLatLng(latitude, longitude);
+      const address = await getAddressFromCoordinates(latitude, longitude);
       setClickedAddress(address);
     } catch (error) {
       console.log(error);
