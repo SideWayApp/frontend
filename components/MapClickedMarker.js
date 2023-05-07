@@ -19,8 +19,8 @@ const MapClickedMarker = ({
       <Callout onPress={handleNavigation}>
         <View>
           <Text>{`${coordinates.latitude.toFixed(
-            4
-          )}, ${coordinates.longitude.toFixed(4)}`}</Text>
+            6
+          )}, ${coordinates.longitude.toFixed(6)}`}</Text>
           <Text>{clickedAddress}</Text>
         </View>
         <TouchableOpacity>

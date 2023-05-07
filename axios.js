@@ -33,6 +33,26 @@ export const getAddressFromLatLng = async (latitude, longitude) => {
   }
 };
 
+
+export const getAddressFromCoordinates = async (latitude, longitude) => {
+  const data = {
+    latitude: latitude,
+    longitude: longitude,
+  };
+
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/directions/getAddressFromCoordinates`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to fetch Address");
+  }
+};
+
+
 export const getWayPointsAndInstructions = async (
   origin,
   destination,
