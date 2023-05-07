@@ -20,6 +20,7 @@ import BackNavigationFabComponent from "./BackNavigationFabComponent";
 import { useSelector, useDispatch } from "react-redux";
 import { setDestination } from "../Redux/DirectionsStore/actions";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import MapClickedMarker from "./MapClickedMarker";
 
 function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
   const dispatch = useDispatch();
@@ -28,36 +29,37 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
   const markerRef = useRef(null);
   const [location, setLocation] = useState(null);
   const [coordinates, setCoordinates] = useState(null);
-  const [isClicked, setIsClicked] = useState(false);
+  const [isMapClicked, setIsMapClicked] = useState(false);
   const [clickedAddress, setClickedAddress] = useState("");
-  const [isFabLocationPressed, setIsFabLocationPressed] = useState(false);
 
   useEffect(() => {
     const asyncLocation = async () => {
-      const locationSubscription = await Location.watchPositionAsync(
-        {
-          accuracy: Location.Accuracy.High,
-          timeInterval: 5000,
-          distanceInterval: 10,
-        },
-        (curLocation) => {
-          const { latitude, longitude } = curLocation.coords;
-          // do something with the latitude and longitude
-          console.log("location is " + latitude + " and " + longitude);
-          setLocation(curLocation.coords);
-        }
-      );
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Please grant permission...");
+        return;
+      } else {
+        const locationSubscription = await Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.High,
+            timeInterval: 5000,
+            distanceInterval: 10,
+          },
+          (curLocation) => {
+            const { latitude, longitude } = curLocation.coords;
+            // do something with the latitude and longitude
+            console.log("location is " + latitude + " and " + longitude);
+            setLocation(curLocation.coords);
+          }
+        );
+      }
     };
     asyncLocation();
   }, []);
 
   // useEffect(() => {
   //   const getLocation = async () => {
-  //     let { status } = await Location.requestForegroundPermissionsAsync();
-  //     if (status !== "granted") {
-  //       console.log("Please grant permission...");
-  //       return;
-  //     }
+
   //     let currentLocation = await Location.getCurrentPositionAsync({});
   //     setLocation(currentLocation);
   //   };
@@ -134,10 +136,10 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
 
   const handleMapPress = async (event) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
-    if (isClicked) {
-      setIsClicked(false);
+    if (isMapClicked) {
+      setIsMapClicked(false);
     } else {
-      setIsClicked(true);
+      setIsMapClicked(true);
       setCoordinates({ latitude, longitude });
     }
     try {
@@ -162,27 +164,14 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
         onRegionChangeComplete={handleRegionChangeComplete}
         onPress={handleMapPress}
       >
-        {isClicked && !isDirection && (
-          <Marker
-            coordinate={coordinates}
-            pinColor="#F59F0C"
-            ref={markerRef}
-            onLayout={handleOnLayout}
-          >
-            <Callout onPress={handleNavigation}>
-              <View>
-                <Text>{`${coordinates.latitude.toFixed(
-                  6
-                )}, ${coordinates.longitude.toFixed(6)}`}</Text>
-                <Text>{clickedAddress}</Text>
-              </View>
-              <TouchableOpacity>
-                <View style={styles.button}>
-                  <Text style={styles.buttonText}>Navigation to here</Text>
-                </View>
-              </TouchableOpacity>
-            </Callout>
-          </Marker>
+        {isMapClicked && !isDirection && (
+          <MapClickedMarker
+            handleNavigation={handleNavigation}
+            handleOnLayout={handleOnLayout}
+            coordinates={coordinates}
+            markerRef={markerRef}
+            clickedAddress={clickedAddress}
+          />
         )}
         {isDirection && (
           <>
