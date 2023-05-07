@@ -6,7 +6,7 @@ const MapItemMarker = ({ mapItem }) => {
   let icon = "alert-octagon";
 
   switch (mapItem.type) {
-    case "Beache":
+    case "Beach":
       icon = "beach";
       break;
     case "Camera":
