@@ -11,7 +11,7 @@ import { FAB } from "react-native-paper";
 const { width, height } = Dimensions.get("window");
 import * as Location from "expo-location";
 import MapItemsComponent from "./MapItemsComponent";
-import { getAddressFromLatLng } from "../axios";
+import { getAddressFromLatLng,getAddressFromCoordinates } from "../axios";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import BaseMarkersComponent from "./BaseMarkersComponent";
 import OnMapDirections from "./OnMapDirections";
@@ -141,7 +141,7 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
       setCoordinates({ latitude, longitude });
     }
     try {
-      const address = await getAddressFromLatLng(latitude, longitude);
+      const address = await getAddressFromCoordinates(latitude, longitude);
       setClickedAddress(address);
     } catch (error) {
       console.log(error);
@@ -172,8 +172,8 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
             <Callout onPress={handleNavigation}>
               <View>
                 <Text>{`${coordinates.latitude.toFixed(
-                  4
-                )}, ${coordinates.longitude.toFixed(4)}`}</Text>
+                  6
+                )}, ${coordinates.longitude.toFixed(6)}`}</Text>
                 <Text>{clickedAddress}</Text>
               </View>
               <TouchableOpacity>
