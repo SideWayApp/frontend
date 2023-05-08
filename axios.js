@@ -1,5 +1,11 @@
 import axios from "axios";
 import { API_BASE_URL } from "@env";
+import store from "./Redux/store";
+// const token = useSelector((state) => state.auth.token);
+import { setToken, setUser } from "./Redux/authenticationReducer/authActions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// const token = store.getState().auth;
 
 export const getStreetsStartingWith = async (letters) => {
   const data = { letters };
@@ -33,7 +39,6 @@ export const getAddressFromLatLng = async (latitude, longitude) => {
   }
 };
 
-
 export const getAddressFromCoordinates = async (latitude, longitude) => {
   const data = {
     latitude: latitude,
@@ -51,7 +56,6 @@ export const getAddressFromCoordinates = async (latitude, longitude) => {
     throw new Error("Failed to fetch Address");
   }
 };
-
 
 export const getWayPointsAndInstructions = async (
   origin,
@@ -110,15 +114,14 @@ export const getDirectionsOne = async (origin, destination, preference) => {
     throw new Error("Failed to fetch directions");
   }
 };
-/*    origin: "Louis Marshall 41, Tel Aviv",
-    destination: "Ahi Dakar 1, Tel Aviv",
-    preference: "clean",*/
 
 export const signUpUser = async (userData) => {
   try {
     const urlRoute = `${API_BASE_URL}/api/authentication/register`;
     const res = await axios.post(urlRoute, userData);
-    return res.data.accessToken;
+    store.dispatch(setToken(res.data));
+    await AsyncStorage.setItem("token", JSON.stringify(res.data));
+    return "Success";
   } catch (error) {
     console.log(error);
   }
@@ -128,8 +131,9 @@ export const login = async (data) => {
   try {
     const urlRoute = `${API_BASE_URL}/api/authentication/login`;
     const res = await axios.post(urlRoute, data);
-    console.log(res.status);
-    return res.data.accessToken;
+    store.dispatch(setToken(res.data));
+    await AsyncStorage.setItem("token", JSON.stringify(res.data));
+    return "Success";
   } catch (e) {
     console.log("login", e);
     return null;
@@ -146,17 +150,20 @@ export const logout = async (token) => {
   }
 };
 
-export const getUserData = async (token) => {
+export const getUserData = async () => {
+  const token = store.getState().auth.token;
   try {
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token.accessToken}`,
       },
     };
     const user = await axios.get(
       `${API_BASE_URL}/api/authentication/user`,
       config
     );
+    // store.dispatch(setUser(user.data));
+    store.dispatch(setUser(user.data));
     return user.data;
   } catch (e) {
     console.log(e);

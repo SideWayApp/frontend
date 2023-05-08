@@ -39,10 +39,10 @@ function SignInScreen() {
         password: password,
       };
       const token = await login(data);
-      if (token !== null) {
+      if (token === "Success") {
         console.log(token);
-        dispatch(setToken(token));
-        await AsyncStorage.setItem("token", token);
+        // dispatch(setToken(token));
+        // await AsyncStorage.setItem("token", token);
         // setIsModalVisible(true);
         navigation.navigate("How It Works");
       } else {
