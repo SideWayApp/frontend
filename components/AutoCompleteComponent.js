@@ -84,9 +84,11 @@ function AutoCompleteComponent({
 						onPress={() => {
 							if (type === "Origin") {
 								setInputValue("")
+								setIsBtnSubmitDisabled(true)
 							}
 							if (type === "Destination") {
 								setInputValue("")
+								setIsBtnSubmitDisabled(true)
 							}
 						}}
 						{...props}
