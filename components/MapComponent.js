@@ -189,7 +189,7 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
       />
       <FAB
         style={styles.fab}
-        onPress={() => navigation.navigate("Report")}
+        onPress={() => navigation.navigate("Report",{location:location})}
         icon={() => (
           <View style={styles.iconContainer}>
             <Icon name="plus" size={30} color="black" />
