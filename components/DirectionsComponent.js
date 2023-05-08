@@ -41,6 +41,8 @@ const DirectionsComponent = (props) => {
 				destination,
 				props.preference
 			)
+			props.setDuration(res.duration);
+			props.setDistance(res.distance);
 			props.setWayPoints(res.arr)
 			props.setPolyline(res.points)
 			props.setIsDirection(true)
