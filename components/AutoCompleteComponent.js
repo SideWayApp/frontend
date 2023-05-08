@@ -7,7 +7,6 @@ import { getStreetsStartingWith } from "../axios"
 function AutoCompleteComponent({
 	type,
 	styleInput,
-	OriginOrDestination,
 	setIsBtnSubmitDisabled,
 	inputValue,
 	setInputValue,
@@ -54,15 +53,8 @@ function AutoCompleteComponent({
 								<TouchableOpacity>
 									<View style={styles.suggestion}>
 										<Icon style={{ alignSelf: "center" }} name="map-marker" />
-										<Text onPress={() => OriginOrDestination(item)}>{item}</Text>
-										<View style={{ flex: 1, alignItems: "flex-end" }}>
-											<Icon
-												onPress={() => {
-													onClick(item)
-												}}
-												name="arrow-top-right-thin"
-											/>
-										</View>
+										<Text onPress={() => onClick(item)}>{item}</Text>
+										<View style={{ flex: 1, alignItems: "flex-end" }}></View>
 									</View>
 								</TouchableOpacity>
 							)}

@@ -132,7 +132,6 @@ function ChoosePointScreen({ route, navigation }) {
 								<AutoCompleteComponent
 									type={route.params.type}
 									styleInput={styles.input}
-									OriginOrDestination={OriginOrDestination}
 									setIsBtnSubmitDisabled={setIsBtnSubmitDisabled}
 									inputValue={inputValue}
 									setInputValue={setInputValue}
