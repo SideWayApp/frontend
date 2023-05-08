@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text,Alert,TouchableOpacity,TextInput ,Modal ,Pressable } from "react-native";
-import {getAddressFromLatLng} from '../axios'
+import {getAddressFromLatLng ,addMapItem} from '../axios'
 
 import { Button } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native"
@@ -27,15 +27,33 @@ const ReportScreen = () =>{
     const [modalVisible, setModalVisible] = useState(false);
     const [modalQuestion, setModalQuestion] = useState('')
     const route = useRoute();
+    const [streetName, setStreetName] =useState('');
+    const altitude = route.params.location.altitude
+    const longitude = route.params.location.longitude
+    const [location,setLocation] = useState('sol belo')
+
+
 
     const handleIconPress = (question) =>{
         setModalVisible(true)
         setModalQuestion(question)
+
+        const data = {
+            type: "check",
+            hebrew:"בדיקה",
+            formatedStreetName:"check",
+            city:"check",
+            longitude:longitude,
+            altitude:altitude 
+        }
+        addMapItem(data)
     }
 
 useEffect(()=>{
     setModalVisible(false);
     setModalQuestion(null);
+    setStreetName(getAddressFromLatLng(altitude,longitude))
+
 },[])
 
 return(
@@ -52,28 +70,14 @@ return(
 							variant="outlined"
 							value={origin}
 							onPress={() => {
-								if (user) {
-									navigation.navigate("Choose Point", { type: "Origin" })
-								} else {
-									Alert.alert(
-										"Not logged in",
-										"Sign in please",
-										[
-											{
-												text: "Cancel",
-											},
-
-											{ text: "OK" },
-										],
-										{ cancelable: false }
-									)
-								}
+								
 							}}
 							uppercase={false}
 							color="black"
 						>
-                            <Text style={styles.button_title}  >Choose your location</Text>
+                            <Text style={styles.button_title}  >Choose on map</Text>
                         </Button>
+                        {/* <Text style={[styles.button_title,styles.row_button]}>{location}</Text> */}
 					</View>
                 </View>
             
@@ -83,12 +87,11 @@ return(
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
                 setModalVisible(!modalVisible);
                 }}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>{modalQuestion} </Text>
+                        <Text style={styles.modalQuestion}>{modalQuestion}</Text>
                         <View  style={{flexDirection: 'row'}}>
                             <Pressable
                                 style={[styles.button1, styles.buttonClose]}
@@ -103,6 +106,7 @@ return(
                                 <Text style={styles.textStyle}>no</Text>
                             </Pressable>
                         </View>
+                        <Text style={styles.modalThanks}>Thank you for your report! </Text>
                     </View>
                 </View>
             </Modal>
@@ -259,10 +263,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     },
-    modalText: {
+    modalThanks: {
+    marginBottom: 15,
+    marginTop:15,
+    textAlign: 'center',    
+    fontSize:12
+
+    },
+    modalQuestion: {
     marginBottom: 15,
     textAlign: 'center',
+    fontWeight:"bold",
+    fontSize:25
     },
+
 })
   
 export default ReportScreen;
