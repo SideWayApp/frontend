@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text,Alert,TouchableOpacity,TextInput ,Modal ,Pressable } from "react-native";
-import {getAddressFromLatLng ,addMapItem} from '../axios'
+import {getAddressFromCoordinates ,addMapItem} from '../axios'
 
 import { Button } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native"
@@ -28,7 +28,7 @@ const ReportScreen = () =>{
     const [modalQuestion, setModalQuestion] = useState('')
     const route = useRoute();
     const [streetName, setStreetName] =useState('');
-    const altitude = route.params.location.altitude
+    const latitude = route.params.location.latitude
     const longitude = route.params.location.longitude
     const [location,setLocation] = useState('sol belo')
 
@@ -39,21 +39,23 @@ const ReportScreen = () =>{
         setModalQuestion(question)
 
         const data = {
-            type: "check",
-            hebrew:"בדיקה",
-            formatedStreetName:"check",
-            city:"check",
-            longitude:longitude,
-            altitude:altitude 
+            "type": "check",
+            "hebrew":"בדיקה",
+            "formatedStreetName":"check",
+            "city":"check",
+            "longitude":longitude,
+            "latitude":latitude,
+            "creator":user.email,
+            "exists":true
         }
         addMapItem(data)
+        console.log(streetName._j)
     }
 
 useEffect(()=>{
     setModalVisible(false);
     setModalQuestion(null);
-    setStreetName(getAddressFromLatLng(altitude,longitude))
-
+    setStreetName(getAddressFromCoordinates(latitude,longitude))
 },[])
 
 return(
