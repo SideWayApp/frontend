@@ -21,7 +21,7 @@ const HomeScreen = () => {
   const [preference, setPreference] = useState("fastest");
   const [wayPoints, setWayPoints] = useState([]);
   const [polyline, setPolyline] = useState(null);
-  const [duration,setDuration] = useState("");
+  const [duration, setDuration] = useState("");
   const [distance, setDistance] = useState("");
   const [isDirection, setIsDirection] = useState(false);
   const [isGotDirection, setIsGotDirection] = useState(false);

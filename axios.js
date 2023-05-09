@@ -136,7 +136,29 @@ export const login = async (data) => {
     return "Success";
   } catch (e) {
     console.log("login", e);
+    if (e.status === 403) {
+      await refreshToken();
+    }
     return null;
+  }
+};
+
+const refreshToken = async () => {
+  try {
+    const tokens = store.getState().auth.token;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${tokens.refreshToken}`,
+      },
+    };
+    const data = await axios.get(
+      `${API_BASE_URL}/api/authentication/refreshToken`,
+      config
+    );
+    await AsyncStorage.setItem("token", JSON.stringify(data.data));
+    store.dispatch(setToken(data.data));
+  } catch (e) {
+    console.log("refresh", e);
   }
 };
 
@@ -165,7 +187,10 @@ export const getUserData = async () => {
     store.dispatch(setUser(user.data));
     return user.data;
   } catch (e) {
-    console.log(e);
+    console.log("getUserData", e.response.status);
+    if (e.response.status === 403) {
+      await refreshToken();
+    }
   }
 };
 
@@ -227,13 +252,12 @@ export const deleteFavorite = async (item, token) => {
   }
 };
 
-export const addMapItem = async (data)=>{
-  try{
+export const addMapItem = async (data) => {
+  try {
     const urlRoute = `${API_BASE_URL}/api/items/add`;
-    const res = await axios.post(urlRoute,data);
+    const res = await axios.post(urlRoute, data);
     return res.data;
-
-  }catch(error){
+  } catch (error) {
     console.log(error, "addMapItem failed in axios");
   }
-}
+};
