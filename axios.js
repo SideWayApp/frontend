@@ -162,7 +162,6 @@ export const getUserData = async () => {
       `${API_BASE_URL}/api/authentication/user`,
       config
     );
-    // store.dispatch(setUser(user.data));
     store.dispatch(setUser(user.data));
     return user.data;
   } catch (e) {
