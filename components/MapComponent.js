@@ -1,11 +1,5 @@
 import React, { useState, useRef, useEffect, Fragment } from "react";
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import { FAB } from "react-native-paper";
 const { width, height } = Dimensions.get("window");
@@ -17,7 +11,7 @@ import BaseMarkersComponent from "./BaseMarkersComponent";
 import OnMapDirections from "./OnMapDirections";
 // import CurrentUserLocationComponent from "./CurrentUserLocationComponent"
 import BackNavigationFabComponent from "./BackNavigationFabComponent";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setDestination } from "../Redux/DirectionsStore/actions";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import MapClickedMarker from "./MapClickedMarker";
@@ -52,7 +46,23 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
         latitudeDelta: newLatitudeDelta,
         longitudeDelta: newLongitudeDelta,
       };
-      mapRef.current.animateToRegion(newPosition);
+      // mapRef.current.animateToRegion(newPosition);
+
+      const { heading } = location;
+      console.log(location);
+
+      mapRef.current.animateCamera(
+        {
+          center: {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          },
+          heading: heading,
+          pitch: 0,
+          zoom: 15,
+        },
+        { duration: 1000 }
+      );
     }
   };
 
