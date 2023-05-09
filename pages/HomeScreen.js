@@ -21,6 +21,8 @@ const HomeScreen = () => {
   const [preference, setPreference] = useState("fastest");
   const [wayPoints, setWayPoints] = useState([]);
   const [polyline, setPolyline] = useState(null);
+  const [duration,setDuration] = useState("");
+  const [distance, setDistance] = useState("");
   const [isDirection, setIsDirection] = useState(false);
   const [isGotDirection, setIsGotDirection] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
@@ -124,11 +126,15 @@ const HomeScreen = () => {
           setPolyline={setPolyline}
           setIsDirection={setIsDirection}
           setIsGotDirection={setIsGotDirection}
+          setDistance={setDistance}
+          setDuration={setDuration}
         />
       )}
       {isDirection && (
         <InstructionsComponent
           instructions={wayPoints}
+          duration={duration}
+          distance={distance}
           setIsDirections={setIsDirection}
         />
       )}

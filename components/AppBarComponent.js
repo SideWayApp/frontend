@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     // marginTop: 50,
     marginBottom: 5,
-    backgroundColor: "#9AD321",
+    backgroundColor: "#89477b",
   },
 });
 

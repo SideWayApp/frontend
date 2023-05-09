@@ -226,3 +226,14 @@ export const deleteFavorite = async (item, token) => {
     console.log(error, "deleteFavorite failed in axios");
   }
 };
+
+export const addMapItem = async (data)=>{
+  try{
+    const urlRoute = `${API_BASE_URL}/api/items/add`;
+    const res = await axios.post(urlRoute,data);
+    return res.data;
+
+  }catch(error){
+    console.log(error, "addMapItem failed in axios");
+  }
+}
