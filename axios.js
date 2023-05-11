@@ -184,6 +184,7 @@ export const getUserData = async () => {
       `${API_BASE_URL}/api/authentication/user`,
       config
     );
+    // store.dispatch(setUser(user.data));
     store.dispatch(setUser(user.data));
     return user.data;
   } catch (e) {
@@ -252,12 +253,23 @@ export const deleteFavorite = async (item, token) => {
   }
 };
 
-export const addMapItem = async (data) => {
-  try {
+export const addMapItem = async (data)=>{
+  try{
     const urlRoute = `${API_BASE_URL}/api/items/add`;
-    const res = await axios.post(urlRoute, data);
+    const res = await axios.post(urlRoute,data);
     return res.data;
-  } catch (error) {
+
+  }catch(error){
     console.log(error, "addMapItem failed in axios");
   }
-};
+}
+
+export const addMapItemFromLatLong = async (data)=>{
+  try{
+    const urlRoute = `${API_BASE_URL}/api/items/addFromLatLong`;
+    const res = await axios.post(urlRoute,data);
+    return res.data;
+  }catch(error){
+    console.log(error, "addMapItem failed in axios");
+  }
+}

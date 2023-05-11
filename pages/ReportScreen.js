@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text,Alert,TouchableOpacity,TextInput ,Modal ,Pressable } from "react-native";
-import {getAddressFromCoordinates ,addMapItem} from '../axios'
+import {addMapItemFromLatLong} from '../axios'
 
 import { Button } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native"
@@ -27,35 +27,31 @@ const ReportScreen = () =>{
     const [modalVisible, setModalVisible] = useState(false);
     const [modalQuestion, setModalQuestion] = useState('')
     const route = useRoute();
-    const [streetName, setStreetName] =useState('');
     const latitude = route.params.location.latitude
     const longitude = route.params.location.longitude
-    const [location,setLocation] = useState('sol belo')
+    const [type,setType] = useState("") 
 
-
-
-    const handleIconPress = (question) =>{
-        setModalVisible(true)
-        setModalQuestion(question)
-
+    const submitReport = ()=>{
         const data = {
-            "type": "check",
-            "hebrew":"בדיקה",
-            "formatedStreetName":"check",
-            "city":"check",
+            "type": type,
             "longitude":longitude,
             "latitude":latitude,
             "creator":user.email,
-            "exists":true
+            "exists":true                
         }
-        addMapItem(data)
-        console.log(streetName._j)
+
+        addMapItemFromLatLong(data);
     }
+
+    const handleIconPress = (question,type) =>{
+        setModalVisible(true)
+        setModalQuestion(question)
+        setType(type)
+    } 
 
 useEffect(()=>{
     setModalVisible(false);
     setModalQuestion(null);
-    setStreetName(getAddressFromCoordinates(latitude,longitude))
 },[])
 
 return(
@@ -97,7 +93,10 @@ return(
                         <View  style={{flexDirection: 'row'}}>
                             <Pressable
                                 style={[styles.button1, styles.buttonClose]}
-                                onPress={() => setModalVisible(!modalVisible)
+                                onPress={() => {
+                                    setModalVisible(!modalVisible)
+                                    submitReport()
+                                }
                                 }>
                                 <Text style={styles.textStyle}>Yes</Text>
                             </Pressable>
@@ -105,7 +104,7 @@ return(
                                 style={[styles.button1, styles.buttonClose]}
                                 onPress={() => setModalVisible(!modalVisible)
                                 }>
-                                <Text style={styles.textStyle}>no</Text>
+                                <Text style={styles.textStyle}>No</Text>
                             </Pressable>
                         </View>
                         <Text style={styles.modalThanks}>Thank you for your report! </Text>
@@ -115,41 +114,41 @@ return(
 
             <TouchableOpacity
              style={styles.button}>
-                <Icon source={forbiddenIcon} style={styles.button} onPress={()=>handleIconPress("Is this road is blocked?") }/>
+                <Icon source={forbiddenIcon} style={styles.button} onPress={()=>handleIconPress("Is this road is blocked?" ,"blocked") }/>
             </TouchableOpacity>
 
             <TouchableOpacity
              style={styles.button}>
-                <Icon source={warningIcon} style={styles.button} onPress={()=>handleIconPress("Is this road dangerous?")}/>
+                <Icon source={warningIcon} style={styles.button} onPress={()=>handleIconPress("Is this road dangerous?", "danger")}/>
             </TouchableOpacity>
 
             <TouchableOpacity
              style={styles.button}>
-                <Icon source={floodIcon} style={styles.button} onPress={()=>handleIconPress("Is this road flooded?")}/>
+                <Icon source={floodIcon} style={styles.button} onPress={()=>handleIconPress("Is this road flooded?","flood")}/>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.button}>
-                <Icon source={protestIcon} style={styles.button} onPress={()=>handleIconPress("Is there is a protest?")}/>
+                <Icon source={protestIcon} style={styles.button} onPress={()=>handleIconPress("Is there is a protest?" ,"protest")}/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button}>
-                <Icon source={roadConstractionIcon} style={styles.button} onPress={()=>handleIconPress("Those this road is in constarction?") }/>
+                <Icon source={roadConstractionIcon} style={styles.button} onPress={()=>handleIconPress("Those this road is in constarction?","constraction") }/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button}>
-                <Icon source={poopIcon} style={styles.button} onPress={()=>handleIconPress("There is dog poop on the way?")}/>
+                <Icon source={poopIcon} style={styles.button} onPress={()=>handleIconPress("There is dog poop on the way?","dog poop")}/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} >
-                <Icon source={noLightIcon} style={styles.button} onPress={()=>handleIconPress("No lights?")}/>
+                <Icon source={noLightIcon} style={styles.button} onPress={()=>handleIconPress("No lights?", "no lights")}/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} >
-                <Icon source={trashIcon} style={styles.button} onPress={()=>handleIconPress("Is this road dirty?")}/>
+                <Icon source={trashIcon} style={styles.button} onPress={()=>handleIconPress("Is this road dirty?","dirty")}/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} >
-                <Icon source={hotTempIcon} style={styles.button} onPress={()=>handleIconPress("No shadow?")}/>
+                <Icon source={hotTempIcon} style={styles.button} onPress={()=>handleIconPress("No shadow?","No shadow")}/>
             </TouchableOpacity>
         </View>
     </View>

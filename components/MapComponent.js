@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { setDestination } from "../Redux/DirectionsStore/actions";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import MapClickedMarker from "./MapClickedMarker";
+import CurrentUserLocationComponent from "./CurrentUserLocationComponent";
 
 function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
   const dispatch = useDispatch();
@@ -126,11 +127,11 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
               };
               setInitialPosition(data);
               setRegion(data);
+              // do something with the latitude and longitude
+              console.log("location is " + latitude + " and " + longitude);
+              console.log(curLocation.coords.heading);
+              setLocation({ latitude: latitude, longitude: longitude });
             }
-
-            // do something with the latitude and longitude
-            console.log("location is " + latitude + " and " + longitude);
-            setLocation(curLocation.coords);
           }
         );
       }
@@ -150,6 +151,7 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
             onRegionChangeComplete={handleRegionChangeComplete}
             onPress={handleMapPress}
           >
+            {location && <CurrentUserLocationComponent location={location} />}
             {isMapClicked && !isDirection && (
               <MapClickedMarker
                 handleNavigation={handleNavigation}
