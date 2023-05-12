@@ -54,13 +54,14 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
 
       mapRef.current.animateCamera(
         {
-          center: {
-            latitude: location.latitude,
-            longitude: location.longitude,
-          },
+          center: newPosition,
+          // {
+          //   latitude: location.latitude,
+          //   longitude: location.longitude,
+          // },
           heading: heading,
-          pitch: 0,
-          zoom: 15,
+          // pitch: 0,
+          zoom: 21,
         },
         { duration: 1000 }
       );
