@@ -92,15 +92,8 @@ function ChoosePointScreen({ route, navigation }) {
 		if (listRecents.includes(data.recent)) {
 			return
 		}
-		if (!listRecents.includes(data.recent) && user.recents.length < 5) {
-			await addRecent(data, token)
-			await updateUser()
-		}
-		// if (listRecents.length >= 5) {
-		// 	await deleteRecent(listRecents[listRecents.length - 1], token)
-		// 	await addRecent(data, token)
-		// 	await updateUser()
-		// }
+		await addRecent(data, token)
+		await updateUser()
 	}
 
 	async function addToFavArray(value) {
