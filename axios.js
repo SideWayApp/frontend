@@ -164,9 +164,17 @@ const refreshToken = async () => {
 
 export const logout = async (token) => {
   try {
-    const res = await axios.post(`${API_BASE_URL}/api/authentication/logout`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const tokens = store.getState().auth.token;
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${tokens.refreshToken}`,
+      },
+    };
+    const res = await axios.post(
+      `${API_BASE_URL}/api/authentication/logout`,
+      config
+    );
   } catch (e) {
     console.log("logout", e);
   }
@@ -253,23 +261,22 @@ export const deleteFavorite = async (item, token) => {
   }
 };
 
-export const addMapItem = async (data)=>{
-  try{
+export const addMapItem = async (data) => {
+  try {
     const urlRoute = `${API_BASE_URL}/api/items/add`;
-    const res = await axios.post(urlRoute,data);
+    const res = await axios.post(urlRoute, data);
     return res.data;
-
-  }catch(error){
+  } catch (error) {
     console.log(error, "addMapItem failed in axios");
   }
-}
+};
 
-export const addMapItemFromLatLong = async (data)=>{
-  try{
+export const addMapItemFromLatLong = async (data) => {
+  try {
     const urlRoute = `${API_BASE_URL}/api/items/addFromLatLong`;
-    const res = await axios.post(urlRoute,data);
+    const res = await axios.post(urlRoute, data);
     return res.data;
-  }catch(error){
+  } catch (error) {
     console.log(error, "addMapItem failed in axios");
   }
-}
+};
