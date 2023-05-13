@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text,Alert,TouchableOpacity,TextInput } from "react-native";
-import {getAddressFromLatLng} from '../axios'
+import { View, StyleSheet, Text,Alert,TouchableOpacity,TextInput ,Modal ,Pressable } from "react-native";
+import {addMapItemFromLatLong} from '../axios'
 
 import { Button } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native"
@@ -24,128 +24,34 @@ const ReportScreen = () =>{
     const navigation = useNavigation()
     const origin = useSelector((state) => state.directions)
     const user = useSelector((state) => state.auth.user)
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalQuestion, setModalQuestion] = useState('')
+    const route = useRoute();
+    const latitude = route.params.location.latitude
+    const longitude = route.params.location.longitude
+    const [type,setType] = useState("") 
 
-    const handleForbiddenPress = () => {
-        Alert.alert("Is this road is blocked?","Thank you for your report",[
-            {
-                text:"Yes",
-                onPress:()=>Alert.alert("YES pressed")
-            },
-            {
-                text:"No",
-                onPress:()=>Alert.alert("NO pressed")
-            }
-        ]);
-    };
+    const submitReport = ()=>{
+        const data = {
+            "type": type,
+            "longitude":longitude,
+            "latitude":latitude,
+            "creator":user.email,
+            "exists":true                
+        }
 
-    const handleWarningPress = () => {
-        Alert.alert("Is this road dangerous?","Thank you for your report",[
-            {
-                text:"Yes",
-                onPress:()=>Alert.alert("YES pressed")
-            },
-            {
-                text:"No",
-                onPress:()=>Alert.alert("NO pressed")
-            }
-        ]);
-    };
+        addMapItemFromLatLong(data);
+    }
 
-    const handleFloodPress = () => {
-        Alert.alert("Is this road is flooded?","Thank you for your report",[
-            {
-                text:"Yes",
-                onPress:()=>Alert.alert("YES pressed")
-            },
-            {
-                text:"No",
-                onPress:()=>Alert.alert("NO pressed")
-            }
-        ]);
-    };
-
-    const handleProtestPress = () => {
-        Alert.alert("Is there is a protest?","Thank you for your report",[
-            {
-                text:"Yes",
-                onPress:()=>Alert.alert("YES pressed")
-            },
-            {
-                text:"No",
-                onPress:()=>Alert.alert("NO pressed")
-            }
-        ]);
-    };
-
-    const handleConstractionPress = () => {
-        Alert.alert("Those this road is in constarction?","Thank you for your report",[
-            {
-                text:"Yes",
-                onPress:()=>Alert.alert("YES pressed")
-            },
-            {
-                text:"No",
-                onPress:()=>Alert.alert("NO pressed")
-            }
-        ]);
-    };
-
-    const handlePoopPress = () => {
-        Alert.alert("There is dog poop on the way?","Thank you for your report",[
-            {
-                text:"Yes",
-                onPress:()=>Alert.alert("YES pressed")
-            },
-            {
-                text:"No",
-                onPress:()=>Alert.alert("NO pressed")
-            }
-        ]);
-    };
-
-    const handleNoLightPress = () => {
-        Alert.alert("No lights?","Thank you for your report",[
-            {
-                text:"Yes",
-                onPress:()=>Alert.alert("YES pressed")
-            },
-            {
-                text:"No",
-                onPress:()=>Alert.alert("NO pressed")
-            }
-        ]);
-    };
-
-    const handleTrashPress = () => {
-        Alert.alert("Is this road dirty?","Thank you for your report",[
-            {
-                text:"Yes",
-                onPress:()=>Alert.alert("YES pressed")
-            },
-            {
-                text:"No",
-                onPress:()=>Alert.alert("NO pressed")
-            }
-        ]);
-    };
-
-    const handleHotTempPress = () => {
-        Alert.alert("No shadow?","Thank you for your report",[
-            {
-                text:"Yes",
-                onPress:()=>Alert.alert("YES pressed")
-            },
-            {
-                text:"No",
-                onPress:()=>Alert.alert("NO pressed")
-            }
-        ]);
-    };
-
-
+    const handleIconPress = (question,type) =>{
+        setModalVisible(true)
+        setModalQuestion(question)
+        setType(type)
+    } 
 
 useEffect(()=>{
-
+    setModalVisible(false);
+    setModalQuestion(null);
 },[])
 
 return(
@@ -162,69 +68,87 @@ return(
 							variant="outlined"
 							value={origin}
 							onPress={() => {
-								if (user) {
-									navigation.navigate("Choose Point", { type: "Origin" })
-								} else {
-									Alert.alert(
-										"Not logged in",
-										"Sign in please",
-										[
-											{
-												text: "Cancel",
-											},
-
-											{ text: "OK" },
-										],
-										{ cancelable: false }
-									)
-								}
+								
 							}}
 							uppercase={false}
 							color="black"
 						>
-                            <Text style={styles.button_title}  >Choose your location</Text>
+                            <Text style={styles.button_title}  >Choose on map</Text>
                         </Button>
+                        {/* <Text style={[styles.button_title,styles.row_button]}>{location}</Text> */}
 					</View>
                 </View>
             
         <View style={styles.grid}>
+            <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+                setModalVisible(!modalVisible);
+                }}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalQuestion}>{modalQuestion}</Text>
+                        <View  style={{flexDirection: 'row'}}>
+                            <Pressable
+                                style={[styles.button1, styles.buttonClose]}
+                                onPress={() => {
+                                    setModalVisible(!modalVisible)
+                                    submitReport()
+                                }
+                                }>
+                                <Text style={styles.textStyle}>Yes</Text>
+                            </Pressable>
+                            <Pressable
+                                style={[styles.button1, styles.buttonClose]}
+                                onPress={() => setModalVisible(!modalVisible)
+                                }>
+                                <Text style={styles.textStyle}>No</Text>
+                            </Pressable>
+                        </View>
+                        <Text style={styles.modalThanks}>Thank you for your report! </Text>
+                    </View>
+                </View>
+            </Modal>
+
             <TouchableOpacity
              style={styles.button}>
-                <Icon source={forbiddenIcon} style={styles.button} onPress={handleForbiddenPress }/>
+                <Icon source={forbiddenIcon} style={styles.button} onPress={()=>handleIconPress("Is this road is blocked?" ,"blocked") }/>
             </TouchableOpacity>
 
             <TouchableOpacity
              style={styles.button}>
-                <Icon source={warningIcon} style={styles.button} onPress={handleWarningPress}/>
+                <Icon source={warningIcon} style={styles.button} onPress={()=>handleIconPress("Is this road dangerous?", "danger")}/>
             </TouchableOpacity>
 
             <TouchableOpacity
              style={styles.button}>
-                <Icon source={floodIcon} style={styles.button} onPress={handleFloodPress}/>
+                <Icon source={floodIcon} style={styles.button} onPress={()=>handleIconPress("Is this road flooded?","flood")}/>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.button}>
-                <Icon source={protestIcon} style={styles.button} onPress={handleProtestPress}/>
+                <Icon source={protestIcon} style={styles.button} onPress={()=>handleIconPress("Is there is a protest?" ,"protest")}/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button}>
-                <Icon source={roadConstractionIcon} style={styles.button} onPress={handleConstractionPress}/>
+                <Icon source={roadConstractionIcon} style={styles.button} onPress={()=>handleIconPress("Those this road is in constarction?","constraction") }/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button}>
-                <Icon source={poopIcon} style={styles.button} onPress={handlePoopPress}/>
+                <Icon source={poopIcon} style={styles.button} onPress={()=>handleIconPress("There is dog poop on the way?","dog poop")}/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} >
-                <Icon source={noLightIcon} style={styles.button} onPress={handleNoLightPress}/>
+                <Icon source={noLightIcon} style={styles.button} onPress={()=>handleIconPress("No lights?", "no lights")}/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} >
-                <Icon source={trashIcon} style={styles.button} onPress={handleTrashPress}/>
+                <Icon source={trashIcon} style={styles.button} onPress={()=>handleIconPress("Is this road dirty?","dirty")}/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} >
-                <Icon source={hotTempIcon} style={styles.button} onPress={handleHotTempPress}/>
+                <Icon source={hotTempIcon} style={styles.button} onPress={()=>handleIconPress("No shadow?","No shadow")}/>
             </TouchableOpacity>
         </View>
     </View>
@@ -261,6 +185,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: 8,
         marginHorizontal: 16,
+      },
+      button1: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        marginBottom: 5,
       },
       button_title:{
         fontSize: 16,
@@ -304,6 +234,50 @@ const styles = StyleSheet.create({
         marginTop:10,
         backgroundColor:'#ddd'
     },
-});
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    buttonOpen: {
+        backgroundColor: '#F194FF',
+    },
+    buttonClose: {
+    backgroundColor: '#2196F3',
+    marginRight:5,
+    },
+    textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    },
+    modalThanks: {
+    marginBottom: 15,
+    marginTop:15,
+    textAlign: 'center',    
+    fontSize:12
+
+    },
+    modalQuestion: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontWeight:"bold",
+    fontSize:25
+    },
+
+})
   
 export default ReportScreen;

@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getUserData } from "../axios";
-import { setUser } from "../Redux/authenticationReducer/authActions";
+import { setToken, setUser } from "../Redux/authenticationReducer/authActions";
 import InstructionsComponent from "../components/InstructionsComponent";
 import { useRoute } from "@react-navigation/native";
 
@@ -21,6 +21,8 @@ const HomeScreen = () => {
   const [preference, setPreference] = useState("fastest");
   const [wayPoints, setWayPoints] = useState([]);
   const [polyline, setPolyline] = useState(null);
+  const [duration, setDuration] = useState("");
+  const [distance, setDistance] = useState("");
   const [isDirection, setIsDirection] = useState(false);
   const [isGotDirection, setIsGotDirection] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
@@ -40,7 +42,8 @@ const HomeScreen = () => {
     setIsProfileModalVisible(false);
   };
 
-  const handlePrefrencesModalClose = () => {
+  const handlePrefrencesModalClose = (pref) => {
+    console.log(pref);
     setIsEditPrefrencesModalVisible(false);
   };
 
@@ -75,15 +78,26 @@ const HomeScreen = () => {
     const fetchAsyncToken = async () => {
       const asyncToken = await AsyncStorage.getItem("token");
       if (asyncToken) {
-        console.log("Home fails sometimes");
-        const user = await getUserData(asyncToken);
-        if (user) {
-          dispatch(setUser(user));
-          setPreference(user.preferences);
-        }
+        const tokens = JSON.parse(asyncToken);
+        dispatch(setToken(tokens));
       }
     };
     fetchAsyncToken();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setPreference(user.preferences);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      await getUserData(token);
+    };
+    if (token) {
+      fetchUser();
+    }
   }, [token]);
 
   return (
@@ -112,11 +126,15 @@ const HomeScreen = () => {
           setPolyline={setPolyline}
           setIsDirection={setIsDirection}
           setIsGotDirection={setIsGotDirection}
+          setDistance={setDistance}
+          setDuration={setDuration}
         />
       )}
       {isDirection && (
         <InstructionsComponent
           instructions={wayPoints}
+          duration={duration}
+          distance={distance}
           setIsDirections={setIsDirection}
         />
       )}

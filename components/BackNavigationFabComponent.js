@@ -15,6 +15,7 @@ export default function BackNavigationFabComponent({ moveTo }) {
       onPress={() => {
         moveTo();
       }}
+      animated={false}
     />
   );
 }

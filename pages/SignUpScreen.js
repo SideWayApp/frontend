@@ -63,12 +63,11 @@ const SignUpScreen = () => {
       },
       preferences: preferences,
     };
-    const token = await signUpUser(user);
-    dispatch(setToken(token));
-    await AsyncStorage.setItem("token", token);
-    setLoading(false);
-
-    navigation.navigate("How It Works");
+    const res = await signUpUser(user);
+    if (res === "Success") {
+      setLoading(false);
+      navigation.navigate("How It Works");
+    }
   };
 
   const handleSkip = async () => {
@@ -84,7 +83,7 @@ const SignUpScreen = () => {
     };
 
     const res = await signUpUser(user);
-    navigation.navigate("Home");
+    if (res === "Success") navigation.navigate("How It Works");
   };
 
   const validateSignUpData = () => {

@@ -6,13 +6,13 @@ const MapItemMarker = ({ mapItem }) => {
   let icon = "alert-octagon";
 
   switch (mapItem.type) {
-    case "Beaches":
+    case "Beach":
       icon = "beach";
       break;
     case "Camera":
       icon = "camera";
       break;
-    case "Dangerous Buildings":
+    case "Dangerous Building":
       icon = "home-variant";
       break;
     case "Defibrillator":
@@ -33,7 +33,7 @@ const MapItemMarker = ({ mapItem }) => {
     case "Polluted Area":
       icon = "cloud-alert";
       break;
-    case "Public Shelter":
+    case "Shelter":
       icon = "home-group";
       break;
     case "Public WIFI Hotspots":

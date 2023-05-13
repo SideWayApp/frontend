@@ -1,25 +1,21 @@
 import React, { useState, useRef, useEffect, Fragment } from "react";
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import { FAB } from "react-native-paper";
 const { width, height } = Dimensions.get("window");
 import * as Location from "expo-location";
 import MapItemsComponent from "./MapItemsComponent";
-import { getAddressFromLatLng } from "../axios";
+import { getAddressFromLatLng, getAddressFromCoordinates } from "../axios";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import BaseMarkersComponent from "./BaseMarkersComponent";
 import OnMapDirections from "./OnMapDirections";
 // import CurrentUserLocationComponent from "./CurrentUserLocationComponent"
 import BackNavigationFabComponent from "./BackNavigationFabComponent";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setDestination } from "../Redux/DirectionsStore/actions";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import MapClickedMarker from "./MapClickedMarker";
+import CurrentUserLocationComponent from "./CurrentUserLocationComponent";
 
 function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
   const dispatch = useDispatch();
@@ -28,53 +24,14 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
   const markerRef = useRef(null);
   const [location, setLocation] = useState(null);
   const [coordinates, setCoordinates] = useState(null);
-  const [isClicked, setIsClicked] = useState(false);
+  const [isMapClicked, setIsMapClicked] = useState(false);
   const [clickedAddress, setClickedAddress] = useState("");
-  const [isFabLocationPressed, setIsFabLocationPressed] = useState(false);
-
-  useEffect(() => {
-    const asyncLocation = async () => {
-      const locationSubscription = await Location.watchPositionAsync(
-        {
-          accuracy: Location.Accuracy.High,
-          timeInterval: 5000,
-          distanceInterval: 10,
-        },
-        (curLocation) => {
-          const { latitude, longitude } = curLocation.coords;
-          // do something with the latitude and longitude
-          console.log("location is " + latitude + " and " + longitude);
-          setLocation(curLocation.coords);
-        }
-      );
-    };
-    asyncLocation();
-  }, []);
-
-  // useEffect(() => {
-  //   const getLocation = async () => {
-  //     let { status } = await Location.requestForegroundPermissionsAsync();
-  //     if (status !== "granted") {
-  //       console.log("Please grant permission...");
-  //       return;
-  //     }
-  //     let currentLocation = await Location.getCurrentPositionAsync({});
-  //     setLocation(currentLocation);
-  //   };
-  //   getLocation();
-  // }, []);
-
+  const [initialPosition, setInitialPosition] = useState(null);
+  const [region, setRegion] = useState(null);
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.02;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-  const INITIAL_POSITION = {
-    latitude: 32.05169730746334,
-    longitude: 34.76187512527052,
-    latitudeDelta: LATITUDE_DELTA,
-    longitudeDelta: LONGITUDE_DELTA,
-  };
 
-  const [region, setRegion] = useState(INITIAL_POSITION);
   const handleRegionChangeComplete = (newRegion) => {
     // Update the current region
     setRegion(newRegion);
@@ -82,53 +39,35 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
 
   const goToCurrentLocation = async () => {
     if (location) {
-      const camera = await mapRef.current.getCamera();
-      if (camera) {
-        const newLatitudeDelta = 0.0025;
-        const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
-        const newPosition = {
-          latitude: location.latitude,
-          longitude: location.longitude,
-          latitudeDelta: newLatitudeDelta,
-          longitudeDelta: newLongitudeDelta,
-        };
-        camera.center = {
-          latitude: location.latitude,
-          longitude: location.longitude,
-        };
-        camera.pitch = 90;
-        // mapRef.current.animateCamera(camera, { duration: 1000 });
-        mapRef.current.animateToRegion(newPosition);
-      }
+      const newLatitudeDelta = 0.0025;
+      const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+      const newPosition = {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        latitudeDelta: newLatitudeDelta,
+        longitudeDelta: newLongitudeDelta,
+      };
+      // mapRef.current.animateToRegion(newPosition);
+
+      const { heading } = location;
+      console.log(location);
+
+      mapRef.current.animateCamera(
+        {
+          center: newPosition,
+          // {
+          //   latitude: location.latitude,
+          //   longitude: location.longitude,
+          // },
+          heading: heading,
+          // pitch: 0,
+          zoom: 21,
+        },
+        { duration: 1000 }
+      );
     }
   };
 
-  // const moveTo = async () => {
-  //   if (location !== null) {
-  //     const camera = await mapRef.current.getCamera();
-  //     console.log(camera);
-  //     if (camera) {
-  //       const newLatitudeDelta = 0.0015;
-  //       const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
-  //       const newPosition = {
-  //         latitude: location.coords.latitude,
-  //         longitude: location.coords.longitude,
-  //         latitudeDelta: newLatitudeDelta,
-  //         longitudeDelta: newLongitudeDelta,
-  //       };
-  //       camera.center = {
-  //         latitude: location.coords.latitude,
-  //         longitude: location.coords.longitude,
-  //       };
-  //       camera.pitch = 90;
-  //       if (isGotDirection) {
-  //         mapRef.current.animateCamera(camera, { duration: 1000 });
-  //         mapRef.current.animateToRegion(newPosition);
-  //         setIsGotDirection(false);
-  //       }
-  //     }
-  //   }
-  // };
   const handleNavigation = async () => {
     try {
       let dest = await getAddressFromLatLng(
@@ -143,14 +82,14 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
 
   const handleMapPress = async (event) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
-    if (isClicked) {
-      setIsClicked(false);
+    if (isMapClicked) {
+      setIsMapClicked(false);
     } else {
-      setIsClicked(true);
+      setIsMapClicked(true);
       setCoordinates({ latitude, longitude });
     }
     try {
-      const address = await getAddressFromLatLng(latitude, longitude);
+      const address = await getAddressFromCoordinates(latitude, longitude);
       setClickedAddress(address);
     } catch (error) {
       console.log(error);
@@ -161,62 +100,99 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
     markerRef.current.showCallout();
   };
 
+  useEffect(() => {
+    if (isDirection) goToCurrentLocation();
+  }, [isDirection]);
+
+  useEffect(() => {
+    const asyncLocation = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Please grant permission...");
+        return;
+      } else {
+        const locationSubscription = await Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.High,
+            timeInterval: 5000,
+            distanceInterval: 10,
+          },
+          (curLocation) => {
+            const { latitude, longitude } = curLocation.coords;
+            if (!initialPosition) {
+              const data = {
+                latitude: latitude,
+                longitude: longitude,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+              };
+              setInitialPosition(data);
+              setRegion(data);
+              // do something with the latitude and longitude
+              console.log("location is " + latitude + " and " + longitude);
+              console.log(curLocation.coords.heading);
+              setLocation({ latitude: latitude, longitude: longitude });
+            }
+          }
+        );
+      }
+    };
+    asyncLocation();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <MapView
-        mapPadding={{ top: 0, right: 0, bottom: 0, left: 50 }}
-        style={styles.map}
-        initialRegion={INITIAL_POSITION}
-        ref={mapRef}
-        onRegionChangeComplete={handleRegionChangeComplete}
-        onPress={handleMapPress}
-      >
-        {isClicked && !isDirection && (
-          <Marker
-            coordinate={coordinates}
-            pinColor="#F59F0C"
-            ref={markerRef}
-            onLayout={handleOnLayout}
+      {initialPosition && (
+        <>
+          <MapView
+            mapPadding={{ top: 0, right: 0, bottom: 0, left: 50 }}
+            style={styles.map}
+            initialRegion={initialPosition}
+            ref={mapRef}
+            onRegionChangeComplete={handleRegionChangeComplete}
+            onPress={handleMapPress}
           >
-            <Callout onPress={handleNavigation}>
-              <View>
-                <Text>{`${coordinates.latitude.toFixed(
-                  4
-                )}, ${coordinates.longitude.toFixed(4)}`}</Text>
-                <Text>{clickedAddress}</Text>
+            {location && <CurrentUserLocationComponent location={location} />}
+            {isMapClicked && !isDirection && (
+              <MapClickedMarker
+                handleNavigation={handleNavigation}
+                handleOnLayout={handleOnLayout}
+                coordinates={coordinates}
+                markerRef={markerRef}
+                clickedAddress={clickedAddress}
+              />
+            )}
+            {isDirection && (
+              <>
+                <BaseMarkersComponent wayPoints={wayPoints} />
+                <OnMapDirections
+                  wayPoints={wayPoints}
+                  polylinePoints={polyline}
+                />
+                {/* <CurrentUserLocationComponent location={location} /> */}
+              </>
+            )}
+            {region && <MapItemsComponent region={region} />}
+          </MapView>
+          <BackNavigationFabComponent
+            moveTo={goToCurrentLocation}
+            location={location}
+            setIsGotDirection={setIsGotDirection}
+          />
+          <FAB
+            style={styles.fab}
+            onPress={() =>
+              navigation.navigate("Report", { location: location })
+            }
+            icon={() => (
+              <View style={styles.iconContainer}>
+                <Icon name="plus" size={30} color="black" />
               </View>
-              <TouchableOpacity>
-                <View style={styles.button}>
-                  <Text style={styles.buttonText}>Navigation to here</Text>
-                </View>
-              </TouchableOpacity>
-            </Callout>
-          </Marker>
-        )}
-        {isDirection && goToCurrentLocation() && (
-          <>
-            <BaseMarkersComponent wayPoints={wayPoints} />
-            <OnMapDirections wayPoints={wayPoints} polylinePoints={polyline} />
-            {/* <CurrentUserLocationComponent location={location} /> */}
-          </>
-        )}
-        <MapItemsComponent region={region} />
-      </MapView>
-      <BackNavigationFabComponent
-        moveTo={goToCurrentLocation}
-        location={location}
-        setIsGotDirection={setIsGotDirection}
-      />
-      <FAB
-        style={styles.fab}
-        onPress={() => navigation.navigate("Report")}
-        icon={() => (
-          <View style={styles.iconContainer}>
-            <Icon name="plus" size={30} color="black" />
-          </View>
-        )}
-        animated={false}
-      />
+            )}
+            animated={false}
+          />
+        </>
+      )}
     </View>
   );
 }
