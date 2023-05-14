@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setToken, setUser } from "../Redux/authenticationReducer/authActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
+import { logout } from "../axios";
 
 function AppBarComponent({ showBackButton }) {
   const dispatch = useDispatch();
@@ -14,16 +15,15 @@ function AppBarComponent({ showBackButton }) {
   const route = useRoute();
   const user = useSelector((state) => state.auth.user);
   const isHomeInPage = route.name === "Home";
-  const handleMenuPreesed = async () => {
+
+  const handleLogOut = async () => {
+    const ret = await logout();
     await AsyncStorage.removeItem("token");
     console.log("Item removed successfully!");
     dispatch(setUser(null));
     dispatch(setToken(null));
   };
 
-  // useEffect(() => {
-  //   console.log("AppBarComponent ", user);
-  // }, [user]);
   return (
     <AppBar
       style={styles.appbar}
@@ -63,13 +63,17 @@ function AppBarComponent({ showBackButton }) {
           );
         }
       }}
-      trailing={(props) => (
-        <IconButton
-          onPress={handleMenuPreesed}
-          icon={(props) => <Icon name="logout" {...props} />}
-          {...props}
-        />
-      )}
+      trailing={(props) => {
+        if (user) {
+          return (
+            <IconButton
+              onPress={handleLogOut}
+              icon={(props) => <Icon name="logout" {...props} />}
+              {...props}
+            />
+          );
+        }
+      }}
     />
   );
 }
