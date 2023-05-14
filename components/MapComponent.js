@@ -119,6 +119,7 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
           },
           (curLocation) => {
             const { latitude, longitude } = curLocation.coords;
+
             if (!initialPosition) {
               const data = {
                 latitude: latitude,
@@ -132,8 +133,11 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
               console.log("location is " + latitude + " and " + longitude);
               console.log(curLocation.coords.heading);
               setLocation({ latitude: latitude, longitude: longitude });
+            } else {
+              console.log(curLocation);
               mapRef.current.animateCamera({
                 center: { latitude: latitude, longitude: longitude },
+                // zoom: 15,
               });
             }
           }
