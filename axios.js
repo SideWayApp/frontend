@@ -5,8 +5,6 @@ import store from "./Redux/store";
 import { setToken, setUser } from "./Redux/authenticationReducer/authActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// const token = store.getState().auth;
-
 export const getStreetsStartingWith = async (letters) => {
   const data = { letters };
   try {
@@ -165,13 +163,13 @@ const refreshToken = async () => {
 export const logout = async (token) => {
   try {
     const tokens = store.getState().auth.token;
-
+    console.log(tokens);
     const config = {
       headers: {
         Authorization: `Bearer ${tokens.refreshToken}`,
       },
     };
-    const res = await axios.post(
+    const res = await axios.get(
       `${API_BASE_URL}/api/authentication/logout`,
       config
     );

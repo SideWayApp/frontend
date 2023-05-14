@@ -114,8 +114,8 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
         const locationSubscription = await Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.High,
-            timeInterval: 5000,
-            distanceInterval: 10,
+            timeInterval: 1000,
+            distanceInterval: 5,
           },
           (curLocation) => {
             const { latitude, longitude } = curLocation.coords;
@@ -132,6 +132,9 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
               console.log("location is " + latitude + " and " + longitude);
               console.log(curLocation.coords.heading);
               setLocation({ latitude: latitude, longitude: longitude });
+              mapRef.current.animateCamera({
+                center: { latitude: latitude, longitude: longitude },
+              });
             }
           }
         );
