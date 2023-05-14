@@ -10,7 +10,6 @@ import {
 	addRecent,
 	getUserData,
 	addFavorite,
-	deleteRecent,
 	deleteFavorite,
 } from "../axios"
 import AutoCompleteComponent from "../components/AutoCompleteComponent"
@@ -43,7 +42,7 @@ function ChoosePointScreen({ route, navigation }) {
 		}
 	}, [user])
 
-	const fetchAsyncToken = async () => {
+	const updateUser = async () => {
 		if (token) {
 			const u = await getUserData(token)
 			dispatch(setUser(u))
@@ -93,15 +92,8 @@ function ChoosePointScreen({ route, navigation }) {
 		if (listRecents.includes(data.recent)) {
 			return
 		}
-		if (!listRecents.includes(data.recent) && user.recents.length < 5) {
-			await addRecent(data, token)
-			await fetchAsyncToken()
-		}
-		if (listRecents.length >= 5) {
-			await deleteRecent(listRecents[listRecents.length - 1], token)
-			await addRecent(data, token)
-			await fetchAsyncToken()
-		}
+		await addRecent(data, token)
+		await updateUser()
 	}
 
 	async function addToFavArray(value) {
@@ -110,14 +102,14 @@ function ChoosePointScreen({ route, navigation }) {
 		}
 		if (!listFavorites.includes(data.favorite) && user.favorites.length < 5) {
 			await addFavorite(data, token)
-			await fetchAsyncToken()
+			await updateUser()
 			setListFavorites([...listFavorites, data.favorite])
 		}
 	}
 
 	async function deleteFromFavArray(value) {
 		await deleteFavorite(value, token)
-		await fetchAsyncToken()
+		await updateUser()
 		const newListFavorites = listFavorites.filter((item) => item !== value)
 		setListFavorites(newListFavorites)
 	}

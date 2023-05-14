@@ -205,22 +205,30 @@ export const addRecent = async (item, token) => {
   try {
     const urlRoute = `${API_BASE_URL}/api/authentication/addRecent`;
     const res = await axios.put(urlRoute, item, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token.accessToken}` },
     });
     return res.data;
   } catch (error) {
     console.log(error, "addRecent failed in axios");
+    if (error.response.status === 403) {
+      await refreshToken();
+      await addRecent(item, store.getState().auth.token);
+    }
   }
 };
 export const addFavorite = async (item, token) => {
   try {
     const urlRoute = `${API_BASE_URL}/api/authentication/addFavorite`;
     const res = await axios.put(urlRoute, item, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token.accessToken}` },
     });
     return res.data;
   } catch (error) {
     console.log(error, "addFavorite failed in axios");
+    if (error.response.status === 403) {
+      await refreshToken();
+      await addFavorite(item, store.getState().auth.token);
+    }
   }
 };
 export const fetchObjectsInRegion = async (region, preferences) => {
@@ -237,12 +245,16 @@ export const deleteRecent = async (item, token) => {
   try {
     const urlRoute = `${API_BASE_URL}/api/authentication/deleteRecent`;
     const res = await axios.delete(urlRoute, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token.accessToken}` },
       data: { recent: item },
     });
     return res.data;
   } catch (error) {
     console.log(error, "deleteRecent failed in axios");
+    if (error.response.status === 403) {
+      await refreshToken();
+      await deleteRecent(item, store.getState().auth.token);
+    }
   }
 };
 
@@ -250,12 +262,16 @@ export const deleteFavorite = async (item, token) => {
   try {
     const urlRoute = `${API_BASE_URL}/api/authentication/deleteFavorite`;
     const res = await axios.delete(urlRoute, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token.accessToken}` },
       data: { favorite: item },
     });
     return res.data;
   } catch (error) {
     console.log(error, "deleteFavorite failed in axios");
+    if (error.response.status === 403) {
+      await refreshToken();
+      await deleteFavorite(item, store.getState().auth.token);
+    }
   }
 };
 
