@@ -8,12 +8,14 @@ import {
   Alert,
   TextInput,
   SafeAreaView,
+  Pressable,
 } from "react-native";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import SelectDropdown from "react-native-select-dropdown";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
+import { globalStyles } from "../Styles/GlobalStyles";
 
 const genderOptions = ["Male", "Female"];
 
@@ -234,7 +236,8 @@ export const ProfileModal = ({ isVisible, onClose }) => {
 export const EditProfileModal = ({ isVisible, onClose }) => {
   const user = useSelector((state) => state.auth.user);
   const navigation = useNavigation();
-  const [number, onChangeNumber] = React.useState("");
+  const [gender, setGender] = useState("");
+  const [age, setAge] = useState("");
 
   return (
     <Modal
@@ -247,32 +250,28 @@ export const EditProfileModal = ({ isVisible, onClose }) => {
       {user && (
         <>
           <ModalTitle title={`Edit Profile`} />
-          <SafeAreaView>
+          <SafeAreaView style={modalStyles.centeredView}>
             <TextInput
+              type="text"
               style={modalStyles.input}
-              value={user.signUpData.name}
               placeholder="Full Name"
+              returnKeyType="next"
+              value={user.signUpData.name}
             />
-            <TextInput
-              style={modalStyles.input}
-              value={""}
-              placeholder="Email"
-            />
-            <TextInput
-              style={modalStyles.input}
-              value={""}
-              placeholder="Password"
-            />
+            <PickerRow setAge={setAge} setGender={setGender} />
+            <Pressable style={modalStyles.button}>
+              <Text style={modalStyles.buttonText}>Save</Text>
+            </Pressable>
+            <TouchableOpacity
+              style={modalStyles.closeButton}
+              onPress={() => {
+                onClose();
+                navigation.navigate("Home", { openProfileModal: false });
+              }}
+            >
+              <Text style={modalStyles.skipText}>Close</Text>
+            </TouchableOpacity>
           </SafeAreaView>
-          <TouchableOpacity
-            style={modalStyles.closeButton}
-            onPress={() => {
-              onClose();
-              navigation.navigate("Home", { openProfileModal: false });
-            }}
-          >
-            <Text style={modalStyles.skipText}>Close</Text>
-          </TouchableOpacity>
         </>
       )}
     </Modal>
@@ -310,6 +309,12 @@ export const StyledAlert = ({ error, setError }) => {
 };
 
 const modalStyles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
   closeButton: {
     marginTop: "90%",
   },
@@ -369,10 +374,30 @@ const modalStyles = StyleSheet.create({
     textAlign: "center",
   },
   input: {
-    height: 40,
-    margin: 12,
+    width: "80%",
+    height: 50,
     borderWidth: 1,
-    padding: 10,
+    borderColor: "gray",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: "black",
+    top: "15%",
+  },
+  buttonText: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "white",
   },
 });
 
