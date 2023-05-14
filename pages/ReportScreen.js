@@ -114,37 +114,37 @@ return(
 
             <TouchableOpacity
              style={styles.button}>
-                <Icon source={forbiddenIcon} style={styles.button} onPress={()=>handleIconPress("Is this road is blocked?" ,"blocked") }/>
+                <Icon source={forbiddenIcon} style={styles.button} onPress={()=>handleIconPress("Is this road is blocked?" ,"Blocked") }/>
             </TouchableOpacity>
 
             <TouchableOpacity
              style={styles.button}>
-                <Icon source={warningIcon} style={styles.button} onPress={()=>handleIconPress("Is this road dangerous?", "danger")}/>
+                <Icon source={warningIcon} style={styles.button} onPress={()=>handleIconPress("Is this road dangerous?", "Danger")}/>
             </TouchableOpacity>
 
             <TouchableOpacity
              style={styles.button}>
-                <Icon source={floodIcon} style={styles.button} onPress={()=>handleIconPress("Is this road flooded?","flood")}/>
+                <Icon source={floodIcon} style={styles.button} onPress={()=>handleIconPress("Is this road flooded?","Flood")}/>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.button}>
-                <Icon source={protestIcon} style={styles.button} onPress={()=>handleIconPress("Is there is a protest?" ,"protest")}/>
+                <Icon source={protestIcon} style={styles.button} onPress={()=>handleIconPress("Is there is a protest?" ,"Protest")}/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button}>
-                <Icon source={roadConstractionIcon} style={styles.button} onPress={()=>handleIconPress("Those this road is in constarction?","constraction") }/>
+                <Icon source={roadConstractionIcon} style={styles.button} onPress={()=>handleIconPress("Those this road is in constarction?","Constraction") }/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button}>
-                <Icon source={poopIcon} style={styles.button} onPress={()=>handleIconPress("There is dog poop on the way?","dog poop")}/>
+                <Icon source={poopIcon} style={styles.button} onPress={()=>handleIconPress("There is dog poop on the way?","Poop")}/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} >
-                <Icon source={noLightIcon} style={styles.button} onPress={()=>handleIconPress("No lights?", "no lights")}/>
+                <Icon source={noLightIcon} style={styles.button} onPress={()=>handleIconPress("No lights?", "No lights")}/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} >
-                <Icon source={trashIcon} style={styles.button} onPress={()=>handleIconPress("Is this road dirty?","dirty")}/>
+                <Icon source={trashIcon} style={styles.button} onPress={()=>handleIconPress("Is this road dirty?","Dirty")}/>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} >
