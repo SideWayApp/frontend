@@ -24,6 +24,7 @@ function AppBarComponent({ showBackButton }) {
     dispatch(setToken(null));
   };
 
+
   return (
     <AppBar
       style={styles.appbar}
@@ -38,11 +39,13 @@ function AppBarComponent({ showBackButton }) {
               />
             );
           } else {
-            return (
-              <IconButton
+            if(user !== undefined){
+
+              return (
+                <IconButton
                 icon={() => (
                   <Text style={{ color: "white", fontSize: 24 }}>
-                    {user.email.charAt(0).toUpperCase()}
+                    {user.signUpData.name.charAt(0).toUpperCase()}
                   </Text>
                 )}
                 color="white"
@@ -50,8 +53,9 @@ function AppBarComponent({ showBackButton }) {
                   navigation.navigate("Home", { openProfileModal: true });
                   console.log("Profile clicked");
                 }}
-              />
-            );
+                />
+                );
+              }
           }
         } else {
           return (
