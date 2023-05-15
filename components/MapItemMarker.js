@@ -39,6 +39,30 @@ const MapItemMarker = ({ mapItem }) => {
     case "Public WIFI Hotspots":
       icon = "wifi";
       break;
+    case "Blocked":
+      icon = "minus-circle-outline"; 
+      break;
+    case "Danger":
+      icon = "close-octagon"; 
+      break;
+    case "Flood":
+      icon = "waves-arrow-up"; 
+      break;
+    case "Protest":
+      icon = "account-group"; 
+      break;
+    case "Poop":
+      icon = "emoticon-poop"; 
+      break;
+    case "No lights":
+      icon = "lightbulb-off"; 
+      break;
+    case "Dirty":
+      icon = "delete-off"; 
+      break;
+    case "No shadow":
+      icon = "sun-thermometer"; 
+      break;
     default:
       icon = "alert-octagon";
       break;

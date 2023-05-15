@@ -112,41 +112,49 @@ function MapComponent({
 		if (isDirection) goToCurrentLocation()
 	}, [isDirection])
 
-	useEffect(() => {
-		const asyncLocation = async () => {
-			let { status } = await Location.requestForegroundPermissionsAsync()
-			if (status !== "granted") {
-				console.log("Please grant permission...")
-				return
-			} else {
-				const locationSubscription = await Location.watchPositionAsync(
-					{
-						accuracy: Location.Accuracy.High,
-						timeInterval: 5000,
-						distanceInterval: 10,
-					},
-					(curLocation) => {
-						const { latitude, longitude } = curLocation.coords
-						if (!initialPosition) {
-							const data = {
-								latitude: latitude,
-								longitude: longitude,
-								latitudeDelta: LATITUDE_DELTA,
-								longitudeDelta: LONGITUDE_DELTA,
-							}
-							setInitialPosition(data)
-							setRegion(data)
-							// do something with the latitude and longitude
-							console.log("location is " + latitude + " and " + longitude)
-							console.log(curLocation.coords.heading)
-							setLocation({ latitude: latitude, longitude: longitude })
-						}
-					}
-				)
-			}
-		}
-		asyncLocation()
-	}, [])
+  useEffect(() => {
+    const asyncLocation = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Please grant permission...");
+        return;
+      } else {
+        const locationSubscription = await Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.High,
+            timeInterval: 1000,
+            distanceInterval: 5,
+          },
+          (curLocation) => {
+            const { latitude, longitude } = curLocation.coords;
+            if (initialPosition === null) {
+              console.log("initial", initialPosition);
+
+              const data = {
+                latitude: latitude,
+                longitude: longitude,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+              };
+              setInitialPosition(data);
+              setRegion(data);
+              // do something with the latitude and longitude
+              console.log("location is " + latitude + " and " + longitude);
+              console.log(curLocation.coords.heading);
+            } else {
+              console.log("else inital", curLocation);
+              mapRef.current.animateCamera({
+                center: { latitude: latitude, longitude: longitude },
+                // zoom: 15,
+              });
+            }
+            setLocation({ latitude: latitude, longitude: longitude });
+          }
+        );
+      }
+    };
+    asyncLocation();
+  }, []);
 
 	return (
 		<View style={styles.container}>
