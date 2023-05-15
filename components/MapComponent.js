@@ -33,7 +33,6 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
   const handleRegionChangeComplete = (newRegion) => {
-    // Update the current region
     setRegion(newRegion);
   };
 
@@ -41,30 +40,29 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
     if (location) {
       const newLatitudeDelta = 0.0025;
       const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
-      const newPosition = {
-        latitude: location.latitude,
-        longitude: location.longitude,
-        latitudeDelta: newLatitudeDelta,
-        longitudeDelta: newLongitudeDelta,
-      };
-      // mapRef.current.animateToRegion(newPosition);
+      // const newPosition = {
+      //   latitude: location.latitude,
+      //   longitude: location.longitude,
+      //   latitudeDelta: newLatitudeDelta,
+      //   longitudeDelta: newLongitudeDelta,
+      // };
+      // // mapRef.current.animateToRegion(newPosition);
 
-      const { heading } = location;
+      const { heading, latitude, longitude } = location;
       console.log(location);
-
       mapRef.current.animateCamera(
         {
-          center: newPosition,
-          // {
-          //   latitude: location.latitude,
-          //   longitude: location.longitude,
-          // },
+          center: {
+            latitude: latitude,
+            longitude: longitude,
+          },
           heading: heading,
           // pitch: 0,
-          zoom: 21,
+          zoom: 15,
         },
         { duration: 1000 }
       );
+      handleRegionChangeComplete({ latitude: latitude, longitude: longitude });
     }
   };
 
@@ -113,12 +111,13 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
       } else {
         const locationSubscription = await Location.watchPositionAsync(
           {
-            accuracy: Location.Accuracy.High,
+            accuracy: Location.Accuracy.Balanced,
             timeInterval: 1000,
-            distanceInterval: 5,
+            distanceInterval: 3,
           },
           (curLocation) => {
-            const { latitude, longitude } = curLocation.coords;
+            console.log("watchPosition", curLocation);
+            const { latitude, longitude, heading } = curLocation.coords;
             if (initialPosition === null) {
               console.log("initial", initialPosition);
 
@@ -133,14 +132,17 @@ function MapComponent({ wayPoints, polyline, isDirection, setIsGotDirection }) {
               // do something with the latitude and longitude
               console.log("location is " + latitude + " and " + longitude);
               console.log(curLocation.coords.heading);
-            } else {
-              console.log("else inital", curLocation);
-              mapRef.current.animateCamera({
-                center: { latitude: latitude, longitude: longitude },
-                // zoom: 15,
-              });
             }
-            setLocation({ latitude: latitude, longitude: longitude });
+            setLocation({
+              latitude: latitude,
+              longitude: longitude,
+              heading: heading,
+            });
+            mapRef.current.animateCamera({
+              center: { latitude: latitude, longitude: longitude },
+              heading: heading,
+              zoom: 15,
+            });
           }
         );
       }
