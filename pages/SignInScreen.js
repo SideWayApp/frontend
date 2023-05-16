@@ -6,12 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   KeyboardAvoidingView,
+  ActivityIndicator
 } from "react-native";
 
 import {
   BigStyledButton,
   // EditProfileModal,
   StyledTitle,
+  StyledAlert
 } from "../components/AuthFormsComponents";
 import { globalStyles } from "../Styles/GlobalStyles";
 import { useNavigation } from "@react-navigation/native";
@@ -38,18 +40,26 @@ function SignInScreen() {
         email: email,
         password: password,
       };
+      setLoading(true);
       const token = await login(data);
+
       if (token === "Success") {
         console.log(token);
-        // dispatch(setToken(token));
-        // await AsyncStorage.setItem("token", token);
+          setLoading(false);
+          navigation.navigate("How It Works");
         // setIsModalVisible(true);
-        navigation.navigate("How It Works");
       } else {
         console.log("wrong email or password");
+        setError(true);
+        setErrorMessage(validate);
+        setLoading(false);
       }
     } else {
+      setError(true);
+        setErrorMessage(validate);
       console.log(validate);
+      setLoading(false);
+
     }
   };
 
@@ -94,6 +104,8 @@ function SignInScreen() {
         onClose={handleModalClose}
         handleSkip={handleSkip}
       /> */}
+            {error && <StyledAlert error={errorMessage} setError={setError} />}
+
       <StyledTitle title="Sign In" />
       <TextInput
         style={globalStyles.input}
@@ -123,6 +135,11 @@ function SignInScreen() {
       <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
         <Text style={styles.signUpText}>Don't have an account? Sign Up</Text>
       </TouchableOpacity>
+      <ActivityIndicator
+        animating={loading}
+        style={{ marginTop: 20 }}
+        size="large"
+      />
     </KeyboardAvoidingView>
   );
 }
