@@ -148,7 +148,8 @@ function MapComponent({
               console.log("location is " + latitude + " and " + longitude);
               console.log(curLocation.coords.heading);
             }
-			if(initialPosition && getDistance(location.latitude,location.longitude, curLocation.latitude, curLocation.longitude) >2){
+			// const dist = getDistance(location.latitude,location.longitude, curLocation.latitude, curLocation.longitude) 
+			if(initialPosition){
 				setLocation({
 					latitude: latitude,
 					longitude: longitude,
