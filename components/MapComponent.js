@@ -17,6 +17,7 @@ import { useNavigation, useRoute } from "@react-navigation/native"
 import MapClickedMarker from "./MapClickedMarker"
 import CurrentUserLocationComponent from "./CurrentUserLocationComponent"
 import LittleInstructions from "./LittleInstructions"
+import {getDistance} from "./InstructionsComponent"
 
 function MapComponent({
 	wayPoints,
@@ -124,6 +125,7 @@ function MapComponent({
             distanceInterval: 5,
           },
           (curLocation) => {
+
             console.log("watchPosition", curLocation);
             const { latitude, longitude, heading } = curLocation.coords;
             if (initialPosition === null) {
@@ -137,22 +139,30 @@ function MapComponent({
               };
               setInitialPosition(data);
               setRegion(data);
+			  setLocation({
+				latitude: latitude,
+				longitude: longitude,
+				heading: heading,
+			  });
               // do something with the latitude and longitude
               console.log("location is " + latitude + " and " + longitude);
               console.log(curLocation.coords.heading);
             }
-            setLocation({
-              latitude: latitude,
-              longitude: longitude,
-              heading: heading,
-            });
-			if(isDirection){
-				mapRef.current.animateCamera({
-					center: { latitude: latitude, longitude: longitude },
+			if(initialPosition && getDistance(location.latitude,location.longitude, curLocation.latitude, curLocation.longitude) >2){
+				setLocation({
+					latitude: latitude,
+					longitude: longitude,
 					heading: heading,
-					zoom: 10,
-				});
+				  });
+				  if(isDirection){
+					  mapRef.current.animateCamera({
+						  center: { latitude: latitude, longitude: longitude },
+						  heading: heading,
+						  zoom: 10,
+					  });
+				  }
 			}
+            
             }
         );
       }
