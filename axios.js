@@ -4,7 +4,7 @@ import store from "./Redux/store";
 // const token = useSelector((state) => state.auth.token);
 import { setToken, setUser } from "./Redux/authenticationReducer/authActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const API_BASE_URL = "https://sidewayapp-backend.onrender.com/"
+const API_BASE_URL = "https://sidewayapp-backend.onrender.com"
 
 export const getStreetsStartingWith = async (letters) => {
   const data = { letters };
