@@ -119,7 +119,7 @@ function MapComponent({
       } else {
         const locationSubscription = await Location.watchPositionAsync(
           {
-            accuracy: Location.Accuracy.Balanced,
+            accuracy: Location.Accuracy.High,
             timeInterval: 2000,
             distanceInterval: 5,
           },
@@ -146,7 +146,6 @@ function MapComponent({
               longitude: longitude,
               heading: heading,
             });
-            if(isDirection){
 
               mapRef.current.animateCamera({
                 center: { latitude: latitude, longitude: longitude },
@@ -154,7 +153,6 @@ function MapComponent({
                 zoom: 15,
               });
             }
-          }
         );
       }
     };
