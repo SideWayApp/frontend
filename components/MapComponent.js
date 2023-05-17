@@ -120,7 +120,7 @@ function MapComponent({
         const locationSubscription = await Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.High,
-            timeInterval: 2000,
+            timeInterval: 5000,
             distanceInterval: 5,
           },
           (curLocation) => {
@@ -146,12 +146,13 @@ function MapComponent({
               longitude: longitude,
               heading: heading,
             });
-
-              mapRef.current.animateCamera({
-                center: { latitude: latitude, longitude: longitude },
-                heading: heading,
-                zoom: 15,
-              });
+			if(isDirection){
+				mapRef.current.animateCamera({
+					center: { latitude: latitude, longitude: longitude },
+					heading: heading,
+					zoom: 10,
+				});
+			}
             }
         );
       }
