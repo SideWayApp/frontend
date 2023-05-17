@@ -20,8 +20,6 @@ import trashIcon from '../images/garbage-bin.png'
 import hotTempIcon from '../images/hot-temperature.png'
 
 const ReportScreen = () =>{
-    const [text, onChangeText] = useState('your location');
-    const origin = useSelector((state) => state.directions)
     const user = useSelector((state) => state.auth.user)
     const [modalVisible, setModalVisible] = useState(false);
     const [modalQuestion, setModalQuestion] = useState('')
@@ -36,7 +34,7 @@ const ReportScreen = () =>{
             "longitude":longitude,
             "latitude":latitude,
             "creator":user.email,
-            "exists":true                
+            "exists":0                
         }
 
         addMapItemFromLatLong(data);
