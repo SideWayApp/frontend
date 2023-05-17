@@ -21,7 +21,6 @@ import hotTempIcon from '../images/hot-temperature.png'
 
 const ReportScreen = () =>{
     const [text, onChangeText] = useState('your location');
-    const navigation = useNavigation()
     const origin = useSelector((state) => state.directions)
     const user = useSelector((state) => state.auth.user)
     const [modalVisible, setModalVisible] = useState(false);
@@ -59,25 +58,6 @@ return(
         <View>
             <Text style={styles.title}> Report  </Text>
         </View>
-    
-        <View style={{ flexDirection: "row" }}>
-					<View style={{ width: "91%" }}>
-						<Button
-                        style={styles.row_button}
-							title={origin}
-							variant="outlined"
-							value={origin}
-							onPress={() => {
-								
-							}}
-							uppercase={false}
-							color="black"
-						>
-                            <Text style={styles.button_title}  >Choose on map</Text>
-                        </Button>
-                        {/* <Text style={[styles.button_title,styles.row_button]}>{location}</Text> */}
-					</View>
-                </View>
             
         <View style={styles.grid}>
             <Modal
@@ -151,6 +131,10 @@ return(
                 <Icon source={hotTempIcon} style={styles.button} onPress={()=>handleIconPress("No shadow?","No shadow")}/>
             </TouchableOpacity>
         </View>
+        <View>
+            <Text style={styles.top_title}  >Please Notice!</Text>
+            <Text style={styles.bottom_title}  >Your report is from your current location.</Text>
+        </View>
     </View>
 )
 
@@ -171,7 +155,8 @@ const styles = StyleSheet.create({
         marginLeft: 20,
     },
     grid: {
-        marginTop:40,
+        marginTop:80,
+        marginBottom:40,
         marginRight: 30,
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -192,9 +177,15 @@ const styles = StyleSheet.create({
         elevation: 2,
         marginBottom: 5,
       },
-      button_title:{
-        fontSize: 16,
+      top_title:{
+        fontSize: 20,
         fontWeight: 'bold',
+        textAlign: 'center',
+        color:'black',
+        marginTop: 5,
+    },
+      bottom_title:{
+        fontSize: 16,
         textAlign: 'center',
         color:'black',
         marginTop: 5,
@@ -208,7 +199,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
       },
     title: {
-      fontSize: 24,
+      fontSize: 36,
       fontWeight: 'bold',
       textAlign: 'center',
       marginTop: 5,
