@@ -8,7 +8,7 @@ const InstructionsComponent = ({ instructions, setIsDirections,distance,duration
   const getNextInstruction = (currentLatitude, currentLongitude) => {
     for (let i = 0; i < instructions.length; i++) {
       const { latitude, longitude } = instructions[i];
-      const distance = getDistance(
+      const distance = this.getDistance(
         currentLatitude,
         currentLongitude,
         latitude,
@@ -23,7 +23,7 @@ const InstructionsComponent = ({ instructions, setIsDirections,distance,duration
     return null;
   };
 
-  const getDistance = (lat1, lon1, lat2, lon2) => {
+  exports.getDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371; // Radius of the earth in km
     const dLat = deg2rad(lat2 - lat1); // deg2rad below
     const dLon = deg2rad(lon2 - lon1);
