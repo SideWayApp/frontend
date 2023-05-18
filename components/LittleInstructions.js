@@ -118,11 +118,7 @@ const styles = StyleSheet.create({
 		color: "black",
 		borderRadius: 10,
 		padding: 5,
-		fontFamily: "Helvetica",
 		textAlign: "center",
-		textShadowColor: "rgba(0, 0, 0, 0.5)",
-		textShadowOffset: { width: 1, height: 1 },
-		textShadowRadius: 2,
 	},
 })
 
