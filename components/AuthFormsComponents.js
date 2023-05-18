@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   Pressable,
 } from "react-native";
+import { updateUserPrefrences } from "../axios";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import SelectDropdown from "react-native-select-dropdown";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
@@ -42,6 +43,24 @@ export const PickerRow = ({ setAge, setGender }) => {
         callback={setGender}
       />
       <StyledPicker data={ageOptions} title="Select Age" callback={setAge} />
+    </View>
+  );
+};
+
+export const UpdatePickerRow = ({ setAge, setGender, age, gender }) => {
+  const user = useSelector((state) => state.auth.user);
+  return (
+    <View style={styles.pickerRow}>
+      <StyledPicker
+        data={genderOptions}
+        title={user.signUpData.gender}
+        callback={setGender}
+      />
+      <StyledPicker
+        data={ageOptions}
+        title={user.signUpData.age}
+        callback={setAge}
+      />
     </View>
   );
 };
@@ -83,7 +102,7 @@ const ModalSubmitButton = ({ title, onPress }) => {
   );
 };
 
-const ModalCheckbox = ({ title, onPress }) => {
+const ModalCheckbox = ({ title, onPress, isChecked = false }) => {
   return (
     <View style={checkboxStyle.checkboxContainer}>
       <BouncyCheckbox
@@ -93,6 +112,7 @@ const ModalCheckbox = ({ title, onPress }) => {
         text={title}
         iconStyle={{ borderColor: "red" }}
         innerIconStyle={{ borderWidth: 2 }}
+        isChecked={isChecked || false}
         onPress={(isChecked) => {
           onPress(isChecked, title);
         }}
@@ -157,6 +177,7 @@ export const PrefrencesModal = ({ isVisible, onClose, handleSkip }) => {
     security: false,
     speed: false,
   });
+
   return (
     <Modal
       onBackdropPress={onClose}
@@ -186,9 +207,146 @@ export const PrefrencesModal = ({ isVisible, onClose, handleSkip }) => {
   );
 };
 
+const UpdatePrefrences = ({ setPreference, preferences }) => {
+  // useEffect(() => {
+  //   console.log(preferences);
+  // }, [preferences]);
+  const onPress = (isChecked, title) => {
+    setPreference((oldData) => {
+      console.log("old data: ", oldData);
+      console.log("title ", title);
+      // Create a new object to update the preferences
+      const newPreferences = { ...oldData };
+      // Update the appropriate field based on the title
+      switch (title) {
+        case "Accessibility":
+          newPreferences.accessibility = isChecked;
+          break;
+        case "Clean":
+          newPreferences.clean = isChecked;
+          break;
+        case "Security":
+          newPreferences.security = isChecked;
+          break;
+        case "Scenery":
+          newPreferences.scenery = isChecked;
+          break;
+        case "Speed":
+          newPreferences.speed = isChecked;
+          break;
+        default:
+          break;
+      }
+      // Return the updated preferences
+      return newPreferences;
+    });
+  };
+  return (
+    <View
+      style={{
+        flexDirection: "column",
+        paddingLeft: 50,
+      }}
+    >
+      {preferences && (
+        <>
+          <ModalCheckbox
+            onPress={onPress}
+            title="Clean"
+            isChecked={preferences.clean}
+          />
+          <ModalCheckbox
+            onPress={onPress}
+            title="Security"
+            isChecked={preferences.security}
+          />
+          <ModalCheckbox
+            onPress={onPress}
+            title="Scenery"
+            isChecked={preferences.scenery}
+          />
+          <ModalCheckbox
+            onPress={onPress}
+            title="Accessibility"
+            isChecked={preferences.accessibility}
+          />
+          <ModalCheckbox
+            onPress={onPress}
+            title="Speed"
+            isChecked={preferences.speed}
+          />
+        </>
+      )}
+    </View>
+  );
+};
+
+export const UpdatePrefrencesModal = ({ isVisible, onClose, handleSkip }) => {
+  const user = useSelector((state) => state.auth.user);
+  const navigation = useNavigation();
+  const [prefrences, setPreference] = useState({
+    accessibility: false,
+    clean: false,
+    scenery: false,
+    security: false,
+    speed: false,
+  });
+
+  useEffect(() => {
+    if (user) {
+      setPreference({
+        accessibility: user.preferences.accessibility,
+        clean: user.preferences.clean,
+        scenery: user.preferences.scenery,
+        security: user.preferences.security,
+        speed: user.preferences.speed,
+      });
+    }
+  }, [user]);
+
+  return (
+    <Modal
+      onBackdropPress={onClose}
+      visible={isVisible}
+      onRequestClose={onClose}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
+      <ModalTitle title="Set up your prefrences" />
+      <UpdatePrefrences
+        setPreference={setPreference}
+        preferences={prefrences}
+      />
+      <ModalSubmitButton
+        onPress={async () => {
+          onClose(prefrences);
+          await updateUserPrefrences({ preferences: prefrences });
+          navigation.navigate("Home", { openPrefrencesModal: false });
+        }}
+        title="Submit"
+      />
+      <TouchableOpacity
+        style={modalStyles.closeButton}
+        onPress={() => {
+          handleSkip();
+        }}
+      >
+        <Text style={modalStyles.skipText}>Skip</Text>
+      </TouchableOpacity>
+    </Modal>
+  );
+};
+
 export const ProfileModal = ({ isVisible, onClose }) => {
   const user = useSelector((state) => state.auth.user);
   const navigation = useNavigation();
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      setUserName(user.signUpData.name);
+    }
+  }, [user]);
 
   return (
     <Modal
@@ -200,19 +358,20 @@ export const ProfileModal = ({ isVisible, onClose }) => {
     >
       {user && (
         <>
-          <ModalTitle title={`Hello ${user.signUpData.name}`} />
+          <ModalTitle title={`Hello ${userName}`} />
           <BorderLineButton
             title="Update your prefrencess"
             onPress={() => {
-              console.log("Update your prefrencess pressed");
+              console.log(user.preferences);
               navigation.navigate("Home", { openProfileModal: false });
-              navigation.navigate("Home", { openPrefrencesModal: true });
+              navigation.navigate("Home", { openUpdatePrefrencesModal: true });
             }}
           />
           <BorderLineButton
             title="Edit your information"
             onPress={() => {
               console.log("Edit your information pressed");
+              console.log(user.signUpData.name);
               navigation.navigate("Home", { openProfileModal: false });
               navigation.navigate("Home", { openEditProfileModal: true });
             }}
@@ -238,6 +397,16 @@ export const EditProfileModal = ({ isVisible, onClose }) => {
   const navigation = useNavigation();
   const [gender, setGender] = useState("");
   const [age, setAge] = useState("");
+  const [userName, setUserName] = useState("");
+  const handleUpdateUserName = (inputText) => {
+    setUserName(inputText);
+  };
+
+  useEffect(() => {
+    if (user) {
+      setUserName(user.signUpData.name);
+    }
+  }, [user]);
 
   return (
     <Modal
@@ -256,9 +425,10 @@ export const EditProfileModal = ({ isVisible, onClose }) => {
               style={modalStyles.input}
               placeholder="Full Name"
               returnKeyType="next"
-              value={user.signUpData.name}
+              value={userName}
+              onChangeText={handleUpdateUserName}
             />
-            <PickerRow setAge={setAge} setGender={setGender} />
+            <UpdatePickerRow setAge={setAge} setGender={setGender} />
             <Pressable style={modalStyles.button}>
               <Text style={modalStyles.buttonText}>Save</Text>
             </Pressable>

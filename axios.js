@@ -6,6 +6,8 @@ import { setToken, setUser } from "./Redux/authenticationReducer/authActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const API_BASE_URL = "https://sidewayapp-backend.onrender.com"
 
+console.log(API_BASE_URL);
+
 export const getStreetsStartingWith = async (letters) => {
   const data = { letters };
   try {
@@ -135,7 +137,7 @@ export const login = async (data) => {
     return "Success";
   } catch (e) {
     console.log("login", e);
-    if (e.status === 403) {
+    if (e.response.status === 403) {
       await refreshToken();
     }
     return null;
@@ -293,5 +295,21 @@ export const addMapItemFromLatLong = async (data) => {
     return res.data;
   } catch (error) {
     console.log(error, "addMapItem failed in axios");
+  }
+};
+
+export const updateUserPrefrences = async (data) => {
+  try {
+    const token = store.getState().auth.token;
+    const urlRoute = `${API_BASE_URL}/api/authentication/editUserPreferences`;
+    const res = await axios.put(urlRoute, data, {
+      headers: { Authorization: `Bearer ${token.accessToken}` },
+    });
+    console.log(res.data);
+    if (res.data == "preferences changed") await getUserData();
+    return res.data;
+  } catch (error) {
+    console.log(error, "editUserPreferences failed in axios");
+    console.log(error.response.status);
   }
 };
