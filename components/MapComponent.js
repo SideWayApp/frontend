@@ -17,6 +17,7 @@ import { useNavigation, useRoute } from "@react-navigation/native"
 import MapClickedMarker from "./MapClickedMarker"
 import CurrentUserLocationComponent from "./CurrentUserLocationComponent"
 import LittleInstructions from "./LittleInstructions"
+import {getDistance} from "./InstructionsComponent"
 
 function MapComponent({
 	wayPoints,
@@ -119,11 +120,12 @@ function MapComponent({
       } else {
         const locationSubscription = await Location.watchPositionAsync(
           {
-            accuracy: Location.Accuracy.Balanced,
-            timeInterval: 2000,
+            accuracy: Location.Accuracy.High,
+            timeInterval: 5000,
             distanceInterval: 5,
           },
           (curLocation) => {
+
             console.log("watchPosition", curLocation);
             const { latitude, longitude, heading } = curLocation.coords;
             if (initialPosition === null) {
@@ -137,24 +139,32 @@ function MapComponent({
               };
               setInitialPosition(data);
               setRegion(data);
+			  setLocation({
+				latitude: latitude,
+				longitude: longitude,
+				heading: heading,
+			  });
               // do something with the latitude and longitude
               console.log("location is " + latitude + " and " + longitude);
               console.log(curLocation.coords.heading);
             }
-            setLocation({
-              latitude: latitude,
-              longitude: longitude,
-              heading: heading,
-            });
-            if(isDirection){
-
-              mapRef.current.animateCamera({
-                center: { latitude: latitude, longitude: longitude },
-                heading: heading,
-                zoom: 15,
-              });
+			// const dist = getDistance(location.latitude,location.longitude, curLocation.latitude, curLocation.longitude) 
+			if(initialPosition){
+				setLocation({
+					latitude: latitude,
+					longitude: longitude,
+					heading: heading,
+				  });
+				  if(isDirection){
+					  mapRef.current.animateCamera({
+						  center: { latitude: latitude, longitude: longitude },
+						  heading: heading,
+						  zoom: 10,
+					  });
+				  }
+			}
+            
             }
-          }
         );
       }
     };
