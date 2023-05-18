@@ -10,7 +10,7 @@ import {
   SafeAreaView,
   Pressable,
 } from "react-native";
-import { updateUserPrefrences } from "../axios";
+import { updateUserPrefrences, updateUserDetails } from "../axios";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import SelectDropdown from "react-native-select-dropdown";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
@@ -405,6 +405,8 @@ export const EditProfileModal = ({ isVisible, onClose }) => {
   useEffect(() => {
     if (user) {
       setUserName(user.signUpData.name);
+      setAge(user.signUpData.age);
+      setGender(user.signUpData.gender);
     }
   }, [user]);
 
@@ -429,7 +431,21 @@ export const EditProfileModal = ({ isVisible, onClose }) => {
               onChangeText={handleUpdateUserName}
             />
             <UpdatePickerRow setAge={setAge} setGender={setGender} />
-            <Pressable style={modalStyles.button}>
+            <Pressable
+              style={modalStyles.button}
+              onPress={async () => {
+                const requestData = {
+                  signUpData: {
+                    name: userName,
+                    gender: gender,
+                    age: age,
+                  },
+                };
+                console.log(requestData);
+                await updateUserDetails(requestData);
+                navigation.navigate("Home", { openProfileModal: false });
+              }}
+            >
               <Text style={modalStyles.buttonText}>Save</Text>
             </Pressable>
             <TouchableOpacity
