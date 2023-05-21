@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, Fragment } from "react"
 import { View, StyleSheet, Dimensions, Text } from "react-native"
-import MapView, { Marker, Callout } from "react-native-maps"
+import MapView from "react-native-maps"
 import { FAB } from "react-native-paper"
 const { width, height } = Dimensions.get("window")
 import * as Location from "expo-location"
@@ -47,30 +47,34 @@ function MapComponent({
 
   const goToCurrentLocation = async () => {
     if (location) {
+		const { heading, latitude, longitude } = location;
+		mapRef.current.animateCamera({
+			heading: heading,
+		  })
       const newLatitudeDelta = 0.0025;
       const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
-      // const newPosition = {
-      //   latitude: location.latitude,
-      //   longitude: location.longitude,
-      //   latitudeDelta: newLatitudeDelta,
-      //   longitudeDelta: newLongitudeDelta,
-      // };
-      // // mapRef.current.animateToRegion(newPosition);
+      const newPosition = {
+        latitude: latitude,
+        longitude: longitude,
+        latitudeDelta: newLatitudeDelta,
+        longitudeDelta: newLongitudeDelta,
+      };
+      mapRef.current.animateToRegion(newPosition);
 
-      const { heading, latitude, longitude } = location;
-      console.log(location);
-      mapRef.current.animateCamera(
-        {
-          center: {
-            latitude: latitude,
-            longitude: longitude,
-          },
-          heading: heading,
-          // pitch: 0,
-          zoom: 15,
-        },
-        { duration: 1000 }
-      );
+
+    //   console.log(location);
+    //   mapRef.current.animateCamera(
+    //     {
+    //       center: {
+    //         latitude: latitude,
+    //         longitude: longitude,
+    //       },
+    //       heading: heading,
+    //       // pitch: 0,
+    //       zoom: 15,
+    //     },
+    //     { duration: 1000 }
+    //   );
       handleRegionChangeComplete({ latitude: latitude, longitude: longitude });
     }
   };
@@ -122,15 +126,13 @@ function MapComponent({
           {
             accuracy: Location.Accuracy.High,
             timeInterval: 5000,
-            distanceInterval: 5,
+            distanceInterval: 3,
           },
           (curLocation) => {
-
             console.log("watchPosition", curLocation);
             const { latitude, longitude, heading } = curLocation.coords;
             if (initialPosition === null) {
               console.log("initial", initialPosition);
-
               const data = {
                 latitude: latitude,
                 longitude: longitude,
@@ -144,12 +146,11 @@ function MapComponent({
 				longitude: longitude,
 				heading: heading,
 			  });
-              // do something with the latitude and longitude
               console.log("location is " + latitude + " and " + longitude);
               console.log(curLocation.coords.heading);
             }
 			// const dist = getDistance(location.latitude,location.longitude, curLocation.latitude, curLocation.longitude) 
-			if(initialPosition){
+			if(initialPosition !=null){
 				setLocation({
 					latitude: latitude,
 					longitude: longitude,
@@ -197,7 +198,6 @@ function MapComponent({
 							<>
 								<BaseMarkersComponent wayPoints={wayPoints} />
 								<OnMapDirections wayPoints={wayPoints} polylinePoints={polyline} />
-								{/* <CurrentUserLocationComponent location={location} /> */}
 							</>
 						)}
 						{region && <MapItemsComponent region={region} />}
