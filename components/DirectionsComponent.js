@@ -21,7 +21,7 @@ const DirectionsComponent = (props) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const dispatch = useDispatch()
 
-	const handleGetDirections = async () => {
+const handleGetDirections = async () => {
 		setIsLoading(true)
 		try {
 			if (origin === "Origin" || destination === "Destination") {
