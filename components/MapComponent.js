@@ -51,7 +51,7 @@ function MapComponent({
 		mapRef.current.animateCamera({
 			heading: heading,
 		  })
-      const newLatitudeDelta = 0.0025;
+      const newLatitudeDelta = 0.001;
       const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
       const newPosition = {
         latitude: latitude,
@@ -141,36 +141,38 @@ function MapComponent({
               };
               setInitialPosition(data);
               setRegion(data);
-			  setLocation({
-				latitude: latitude,
-				longitude: longitude,
-				heading: heading,
-			  });
               console.log("location is " + latitude + " and " + longitude);
               console.log(curLocation.coords.heading);
             }
-			// const dist = getDistance(location.latitude,location.longitude, curLocation.latitude, curLocation.longitude) 
-			if(initialPosition !=null){
 				setLocation({
 					latitude: latitude,
 					longitude: longitude,
 					heading: heading,
 				  });
-				  if(isDirection){
-					  mapRef.current.animateCamera({
-						  center: { latitude: latitude, longitude: longitude },
-						  heading: heading,
-						  zoom: 10,
-					  });
-				  }
-			}
-            
+				              
             }
         );
       }
     };
     asyncLocation();
   }, []);
+
+
+  useEffect(()=>{
+	const { latitude, longitude, heading } = location;
+	mapRef.current.animateCamera({
+		heading: heading,
+	  })
+ 	 const newLatitudeDelta = 0.001;
+	 const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+	 const newPosition = {
+		latitude: latitude,
+		longitude: longitude,
+		latitudeDelta: newLatitudeDelta,
+		longitudeDelta: newLongitudeDelta,
+ 	 };
+  	mapRef.animateToRegion(newPosition);
+  },[location])
 
 	return (
 		<View style={styles.container}>
