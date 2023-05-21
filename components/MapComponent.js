@@ -160,19 +160,23 @@ function MapComponent({
 
 
   useEffect(()=>{
-	const { latitude, longitude, heading } = location;
-	mapRef.current.animateCamera({
-		heading: heading,
-	  })
- 	 const newLatitudeDelta = 0.001;
-	 const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
-	 const newPosition = {
-		latitude: latitude,
-		longitude: longitude,
-		latitudeDelta: newLatitudeDelta,
-		longitudeDelta: newLongitudeDelta,
- 	 };
-  	mapRef.animateToRegion(newPosition);
+	if(location){
+
+		const { latitude, longitude, heading } = location;
+		mapRef.current.animateCamera({
+			heading: heading,
+		})
+		const newLatitudeDelta = 0.001;
+		const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+		const newPosition = {
+			latitude: latitude,
+			longitude: longitude,
+			latitudeDelta: newLatitudeDelta,
+			longitudeDelta: newLongitudeDelta,
+		};
+		console.log(newPosition)
+		mapRef.current.animateToRegion(newPosition);
+	}
   },[location])
 
 	return (
