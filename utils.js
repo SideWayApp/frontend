@@ -11,7 +11,7 @@ exports.checkIfIsInRangeOfRoute = async (location, wayPoints) => {
         );
         const direction = checkDirectionBetweenCurrentToNextWayPoint(location, wayPoint);
         
-        if (direction > 100 && distance < 20) {
+        if (direction > 100 && distance < 5) {
             console.log("Oops, wrong direction.");
             isInRange = false;
             console.log(`Location = ${location.latitude}, ${location.longitude}, Waypoint = ${wayPoint.latitude}, ${wayPoint.longitude}, Distance = ${distance}`);
