@@ -18,6 +18,7 @@ import MapClickedMarker from "./MapClickedMarker"
 import CurrentUserLocationComponent from "./CurrentUserLocationComponent"
 import LittleInstructions from "./LittleInstructions"
 import {getDistance} from "./InstructionsComponent"
+import {checkIfIsInRangeOfRoute} from "../utils";
 
 function MapComponent({
 	wayPoints,
@@ -193,7 +194,7 @@ function MapComponent({
 								clickedAddress={clickedAddress}
 							/>
 						)}
-						{isDirection && (
+						{isDirection && checkIfIsInRangeOfRoute(location,wayPoints) && (
 							<>
 								<BaseMarkersComponent wayPoints={wayPoints} />
 								<OnMapDirections wayPoints={wayPoints} polylinePoints={polyline} />

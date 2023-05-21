@@ -30,6 +30,8 @@ export const BigStyledButton = ({ text, callback }) => {
   );
 };
 
+
+
 export const StyledTitle = ({ title }) => {
   return <Text style={styles.title}>{title}</Text>;
 };
