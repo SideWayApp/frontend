@@ -13,8 +13,9 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 import { useNavigation, useRoute } from "@react-navigation/native"
 import { useSelector, useDispatch } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
+import {renderRoute} from "../utils"
 
-const DirectionsComponent = (props) => {
+const DirectionsComponent = ({getRoute}) => {
 	const navigation = useNavigation()
 	const { origin, destination } = useSelector((state) => state.directions)
 	const user = useSelector((state) => state.auth.user)
@@ -36,18 +37,21 @@ const handleGetDirections = async () => {
 				setIsLoading(false)
 				return
 			}
-			const res = await getWayPointsAndInstructions(
-				origin,
-				destination,
-				props.preference
-			)
-			props.setDuration(res.duration);
-			props.setDistance(res.distance);
-			props.setWayPoints(res.arr)
-			props.setPolyline(res.points)
-			props.setIsDirection(true)
-			props.setIsGotDirection(true)
-			setIsLoading(false)
+			getRoute();
+			// await renderRoute(setWayPoints,setPolyline,setIsDirection,setIsGotDirection,setDistance,setDuration)
+			// const res = await getWayPointsAndInstructions(
+			// 	origin,
+			// 	destination,
+			// 	user.preference
+			// )
+			
+			// setDuration(res.duration);
+			// setDistance(res.distance);
+			// setWayPoints(res.arr)
+			// setPolyline(res.points)
+			// setIsDirection(true)
+			// setIsGotDirection(true)
+			// setIsLoading(false)
 		} catch (error) {
 			console.error(error)
 		}

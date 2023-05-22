@@ -9,6 +9,7 @@ import { getUserData } from "../axios";
 import { setToken, setUser } from "../Redux/authenticationReducer/authActions";
 import InstructionsComponent from "../components/InstructionsComponent";
 import { useRoute } from "@react-navigation/native";
+import {renderRoute} from "../utils";
 
 import {
   ProfileModal,
@@ -51,6 +52,11 @@ const HomeScreen = () => {
     setIsEditProfileModalVisible(false);
   };
 
+  const getRoute = async ()=>{
+    console.log("Get Route");
+    await renderRoute(setWayPoints,setPolyline,setIsDirection,setIsGotDirection,setDistance,setDuration);
+  }
+
   useEffect(() => {
     if (
       route.params?.openEditProfileModal &&
@@ -88,6 +94,11 @@ const HomeScreen = () => {
   useEffect(() => {
     if (user) {
       setPreference(user.preferences);
+      if(isDirection){
+        getRoute();
+      }else {
+        console.log("false");
+      }
     }
   }, [user]);
 
@@ -119,15 +130,16 @@ const HomeScreen = () => {
       />
       {!isDirection && (
         <DirectionsComponent
-          origin={origin}
-          destination={destination}
-          preference={preference}
-          setWayPoints={setWayPoints}
-          setPolyline={setPolyline}
-          setIsDirection={setIsDirection}
-          setIsGotDirection={setIsGotDirection}
-          setDistance={setDistance}
-          setDuration={setDuration}
+          // origin={origin}
+          // destination={destination}
+          // preference={preference}
+          getRoute={getRoute}
+          // setWayPoints={setWayPoints}
+          // setPolyline={setPolyline}
+          // setIsDirection={setIsDirection}
+          // setIsGotDirection={setIsGotDirection}
+          // setDistance={setDistance}
+          // setDuration={setDuration}
         />
       )}
       {isDirection && (

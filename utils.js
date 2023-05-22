@@ -1,3 +1,6 @@
+import store from "./Redux/store";
+import {getWayPointsAndInstructions} from "./axios";
+
 exports.checkIfIsInRangeOfRoute = async (location, wayPoints) => {
     const thresholdDistance = 15;
     let isPhoneOutOfRange = false;
@@ -30,4 +33,23 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
   // Helper function to convert degrees to radians
   function toRadians(degrees) {
     return degrees * (Math.PI / 180);
+  }
+
+  export const renderRoute = async (setWayPoints,setPolyline,setIsDirection,setIsGotDirection,setDistance,setDuration)=>{  
+    const user = store.getState().auth.user;
+    const origin = store.getState().directions.origin;
+    const destination = store.getState().directions.destination;
+    const res = await getWayPointsAndInstructions(
+      origin,
+      destination,
+      user.preferences
+    );
+    setDuration(res.duration);
+    setDistance(res.distance);
+    setWayPoints(res.arr)
+    setPolyline(res.points)
+    setIsDirection(true)
+    setIsGotDirection(true)
+    return "OK"
+
   }
