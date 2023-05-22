@@ -1,5 +1,5 @@
 exports.checkIfIsInRangeOfRoute = async (location, wayPoints) => {
-    const thresholdDistance = 5;
+    const thresholdDistance = 15;
     let isPhoneOutOfRange = false;
     
     wayPoints.forEach((wayPoint)=>{
