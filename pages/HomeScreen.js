@@ -9,7 +9,7 @@ import { getUserData } from "../axios";
 import { setToken, setUser } from "../Redux/authenticationReducer/authActions";
 import InstructionsComponent from "../components/InstructionsComponent";
 import { useRoute } from "@react-navigation/native";
-import {renderRoute} from "../utils";
+import {renderRoute,calculateDeltasAndAverage} from "../utils";
 
 import {
   ProfileModal,
@@ -27,10 +27,10 @@ const HomeScreen = () => {
   const [isDirection, setIsDirection] = useState(false);
   const [isGotDirection, setIsGotDirection] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
-  const [isEditProfileModalVisible, setIsEditProfileModalVisible] =
-    useState(false);
-  const [isEditPrefrencesModalVisible, setIsEditPrefrencesModalVisible] =
-    useState(false);
+  const [isEditProfileModalVisible, setIsEditProfileModalVisible] =  useState(false);
+  const [isEditPrefrencesModalVisible, setIsEditPrefrencesModalVisible] = useState(false);
+  const [changeDelta, setDelta] = useState(null);
+
 
   const route = useRoute();
 
@@ -55,7 +55,19 @@ const HomeScreen = () => {
   const getRoute = async ()=>{
     console.log("Get Route");
     await renderRoute(setWayPoints,setPolyline,setIsDirection,setIsGotDirection,setDistance,setDuration);
+
   }
+
+  useEffect(()=>{
+    if(wayPoints.length > 0) {
+      console.log(wayPoints)
+      const coordinate1 = wayPoints[0].start;
+      const coordinate2 = wayPoints[wayPoints.length-1].end;
+      const delta = calculateDeltasAndAverage(coordinate1,coordinate2);
+      console.log(delta);
+      setDelta(delta);
+    }
+  },[wayPoints])
 
   useEffect(() => {
     if (
@@ -158,6 +170,7 @@ const HomeScreen = () => {
         isGotDirection={isGotDirection}
         duration={duration}
         distance={distance}
+        changeDelta={changeDelta}
       />
     </View>
   );

@@ -27,6 +27,7 @@ function MapComponent({
 	setIsGotDirection,
 	duration,
 	distance,
+	changeDelta
 }) {
 	const dispatch = useDispatch()
 	const navigation = useNavigation()
@@ -189,6 +190,17 @@ function MapComponent({
 		// }
 	}
   },[location])
+
+  useEffect(()=>{
+	if(changeDelta){
+		mapRef.current.animateToRegion({
+			longitude:changeDelta.longitude,
+			latitude:changeDelta.latitude,
+			latitudeDelta:changeDelta.latitudeDelta ,
+			longitudeDelta:changeDelta.longitudeDelta,
+		})
+	}
+  },[changeDelta])
 
 	return (
 		<View style={styles.container}>
