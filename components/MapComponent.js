@@ -201,7 +201,7 @@ function MapComponent({
 								clickedAddress={clickedAddress}
 							/>
 						)}
-						{isDirection && checkIfIsInRangeOfRoute(location,wayPoints) && (
+						{isDirection && !checkIfIsInRangeOfRoute(location,wayPoints) && (
 							<>
 								<BaseMarkersComponent wayPoints={wayPoints} />
 								<OnMapDirections wayPoints={wayPoints} polylinePoints={polyline} />
