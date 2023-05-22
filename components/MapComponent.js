@@ -172,21 +172,21 @@ function MapComponent({
 			};
 			setInitialPosition(data);
 		}
-		if(isDirection ){
-			console.log("location in useEffect is " + location)
+		// if(isDirection ){
+		// 	console.log("location in useEffect is " + location)
 
-			const newLatitudeDelta = 0.001;
-			const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
-			const newPosition = {
-				latitude: latitude,
-				longitude: longitude,
-				latitudeDelta: newLatitudeDelta,
-				longitudeDelta: newLongitudeDelta,
-			};
-			console.log(newPosition)
-			mapRef.current.animateToRegion(newPosition);
+		// 	const newLatitudeDelta = 0.001;
+		// 	const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+		// 	const newPosition = {
+		// 		latitude: latitude,
+		// 		longitude: longitude,
+		// 		latitudeDelta: newLatitudeDelta,
+		// 		longitudeDelta: newLongitudeDelta,
+		// 	};
+		// 	console.log(newPosition)
+		// 	mapRef.current.animateToRegion(newPosition);
 
-		}
+		// }
 	}
   },[location])
 
