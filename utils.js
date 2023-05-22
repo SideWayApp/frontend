@@ -53,3 +53,26 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
     return "OK"
 
   }
+
+  export const calculateDeltasAndAverage = (coordinate1, coordinate2) => {
+    const lat1 = coordinate1.latitude;
+    const lon1 = coordinate1.longitude;
+    const lat2 = coordinate2.latitude;
+    const lon2 = coordinate2.longitude;
+  
+    const latDelta = Math.abs(lat1 - lat2) * 1.5;
+    const lonDelta = Math.abs(lon1 - lon2) * 1.5;
+  
+    const avgLat = (lat1 + lat2) / 2;
+    const avgLon = (lon1 + lon2) / 2;
+
+  
+    return {
+      latitudeDelta: latDelta,
+      longitudeDelta: lonDelta,
+      latitude: avgLat,
+      longitude: avgLon,
+    };
+  };
+  
+  
