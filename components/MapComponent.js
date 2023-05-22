@@ -189,7 +189,6 @@ function MapComponent({
 			};
 			console.log(newPosition)
 			mapRef.current.animateToRegion(newPosition);
-			mapRef.current.animateToViewingAngle(heading);
 
 		}
 	}
