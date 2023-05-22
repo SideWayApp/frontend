@@ -160,10 +160,6 @@ function MapComponent({
 
 
   useEffect(()=>{
-	console.log(lockMap)
-  },[lockMap])
-
-  useEffect(()=>{
 	if(location){
 		const { latitude, longitude, heading } = location;
 		if (initialPosition === null) {
@@ -176,7 +172,7 @@ function MapComponent({
 			};
 			setInitialPosition(data);
 		}
-		if(isDirection && lockMap){
+		if(isDirection ){
 			console.log("location in useEffect is " + location)
 
 			const newLatitudeDelta = 0.001;
