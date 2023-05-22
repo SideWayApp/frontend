@@ -37,21 +37,37 @@ function MapComponent({
 	const [isMapClicked, setIsMapClicked] = useState(false)
 	const [clickedAddress, setClickedAddress] = useState("")
 	const [initialPosition, setInitialPosition] = useState(null)
+	const [lockMap,setLockMap] = useState(false)
 	const [region, setRegion] = useState(null)
 	const ASPECT_RATIO = width / height
 	const LATITUDE_DELTA = 0.02
 	const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
   const handleRegionChangeComplete = (newRegion) => {
-    setRegion(newRegion);
-  };
-
+	if(newRegion.latitudeDelta && newRegion.longitudeDelta){
+		
+		const newLatitudeDelta = 0.001;
+		const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+		const latitudeDelta = newRegion.latitudeDelta.toFixed(4);
+		const longitudeDelta = newRegion.longitudeDelta.toFixed(4);	
+		console.log("Region changed", longitudeDelta, latitudeDelta);
+		console.log("new",newLongitudeDelta, " ", newLatitudeDelta);
+		if(latitudeDelta <= newLatitudeDelta.toFixed(4) || longitudeDelta <= newLongitudeDelta.toFixed(4)){
+			console.log("if latitudeDelta")
+			setLockMap(true)
+		} 
+		
+		else {setLockMap(false)
+			console.log("else")
+		}
+		setRegion(newRegion);
+	}
+	};
+	
   const goToCurrentLocation = async () => {
     if (location) {
 		const { heading, latitude, longitude } = location;
-		mapRef.current.animateCamera({
-			heading: heading,
-		  })
+
       const newLatitudeDelta = 0.001;
       const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
       const newPosition = {
@@ -59,6 +75,7 @@ function MapComponent({
         longitude: longitude,
         latitudeDelta: newLatitudeDelta,
         longitudeDelta: newLongitudeDelta,
+		heading: heading,
       };
       mapRef.current.animateToRegion(newPosition);
 
@@ -112,10 +129,6 @@ function MapComponent({
 		markerRef.current.showCallout()
 	}
 
-	useEffect(() => {
-		if (isDirection) goToCurrentLocation()
-	}, [isDirection])
-
   useEffect(() => {
     const asyncLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -132,19 +145,6 @@ function MapComponent({
           (curLocation) => {
             console.log("watchPosition", curLocation);
             const { latitude, longitude, heading } = curLocation.coords;
-            if (initialPosition === null) {
-              console.log("initial", initialPosition);
-              const data = {
-                latitude: latitude,
-                longitude: longitude,
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-              };
-              setInitialPosition(data);
-              setRegion(data);
-              console.log("location is " + latitude + " and " + longitude);
-              console.log(curLocation.coords.heading);
-            }
 				setLocation({
 					latitude: latitude,
 					longitude: longitude,
@@ -160,22 +160,38 @@ function MapComponent({
 
 
   useEffect(()=>{
-	if(location){
+	console.log(lockMap)
+  },[lockMap])
 
+  useEffect(()=>{
+	if(location){
 		const { latitude, longitude, heading } = location;
-		mapRef.current.animateCamera({
-			heading: heading,
-		})
-		const newLatitudeDelta = 0.001;
-		const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
-		const newPosition = {
-			latitude: latitude,
-			longitude: longitude,
-			latitudeDelta: newLatitudeDelta,
-			longitudeDelta: newLongitudeDelta,
-		};
-		console.log(newPosition)
-		mapRef.current.animateToRegion(newPosition);
+		if (initialPosition === null) {
+			console.log("initial", initialPosition);
+			const data = {
+				latitude: latitude,
+				longitude: longitude,
+				latitudeDelta: LATITUDE_DELTA,
+				longitudeDelta: LONGITUDE_DELTA,
+			};
+			setInitialPosition(data);
+		}
+		if(isDirection && lockMap){
+			console.log("location in useEffect is " + location)
+
+			const newLatitudeDelta = 0.001;
+			const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+			const newPosition = {
+				latitude: latitude,
+				longitude: longitude,
+				latitudeDelta: newLatitudeDelta,
+				longitudeDelta: newLongitudeDelta,
+			};
+			console.log(newPosition)
+			mapRef.current.animateToRegion(newPosition);
+			mapRef.current.animateToViewingAngle(heading);
+
+		}
 	}
   },[location])
 
@@ -201,7 +217,7 @@ function MapComponent({
 								clickedAddress={clickedAddress}
 							/>
 						)}
-						{isDirection && !checkIfIsInRangeOfRoute(location,wayPoints) && (
+						{isDirection &&  (
 							<>
 								<BaseMarkersComponent wayPoints={wayPoints} />
 								<OnMapDirections wayPoints={wayPoints} polylinePoints={polyline} />
