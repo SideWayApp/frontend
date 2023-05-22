@@ -293,9 +293,19 @@ export const addMapItemFromLatLong = async (data) => {
     const res = await axios.post(urlRoute, data);
     return res.data;
   } catch (error) {
-    console.log(error, "addMapItem failed in axios");
+    console.log(error, "addMapItemFromLatLong failed in axios");
   }
 };
+
+export const updateExistMapItem = async(data)=>{
+  try{
+    const urlRoute = `${API_BASE_URL}/api/items/updateExistMapItem`;
+    const res = await axios.post(urlRoute, data);
+    return res.data;
+  } catch (error) {
+    console.log(error, "updateExistMapItem failed in axios");
+  }
+}
 
 export const updateUserPrefrences = async (data) => {
   try {

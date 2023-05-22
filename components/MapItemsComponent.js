@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, Pressable, Alert, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Pressable, Alert, TouchableOpacity, Modal } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Marker, Callout } from "react-native-maps";
-import { fetchObjectsInRegion } from "../axios";
+import { fetchObjectsInRegion, updateExistMapItem} from "../axios";
 import MapItemMarker from "./MapItemMarker";
 import { useSelector } from "react-redux";
 // "alert-octagon", "camera"
@@ -14,11 +14,73 @@ const minDisplayDelta = {
 export default function MapItemsComponent({ region }) {
   const [mapItems, setMapItem] = useState([]);
   const user = useSelector((state) => state.auth.user);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const updateReport = (type) =>{
-    console.log("yeaaaaaaaaaaaaaaaaaaaa")
+  const handleCalloutPress = (type,mapItemId) =>{
+    let title = '';
+    let changeable = null
+    switch(type){
+      case "Beach":
+      case "Camera":
+      case "Dangerous Building":
+      case "Defibrillator":
+      case "Fountain":
+      case "Light Post":
+      case "MADA Station":
+      case "Museum":
+      case "Polluted Area":
+      case "Shelter":
+      case "Public WIFI Hotspots":
+        title = "This data is immutable"
+        changeable = false
+        break;
+      case "Danger":  
+      case "Flood":
+      case "Protest":
+      case "Poop":
+      case "Constraction":
+        title = "Still there?"
+        changeable = true
+        break;
+      case "No lights":
+        title = "Still no lights?"
+        changeable = true
+        break;
+      case "Dirty":
+        title = "Still dirty?"
+        changeable = true
+        break;
+      case "No shadow":
+        title = "Still no shdaow?"
+        changeable = true
+        break;
+    }
+
+    if(changeable){
+      Alert.alert(type, title, [
+        {text: 'Yes'},
+        {
+          text: 'No', onPress: () =>{
+            handleNoPress(mapItemId);
+          }
+        } 
+      ]);
+
+    }else{
+      Alert.alert(type, title);
+    }
   }
+
+  const handleNoPress = (mapItemId) =>{
+    const data = {
+      "_id" : mapItemId,
+      "userEmail":user.email 
+    }
+    updateExistMapItem(data)
+  }
+
   useEffect(() => {
+    setModalVisible(!modalVisible)
     // Fetch objects based on the current region
     const fetchObjects = async (preferences) => {
       const objects = await fetchObjectsInRegion(region, preferences);
@@ -48,28 +110,10 @@ export default function MapItemsComponent({ region }) {
             }}
           >
             <MapItemMarker mapItem={mapItem} />
-            <Callout tooltip>
+            <Callout tooltip onPress={()=>handleCalloutPress(mapItem.type,mapItem._id)}>
               <View style={styles.calloutContainer}>
                 <Text style={styles.calloutTitle}>{mapItem.type}</Text>
-                <Text style={styles.calloutQuestion}>is it still there?</Text>
-                <View  style={styles.container}>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => {
-                      updateReport(mapItem.type)
-                      }
-                    }>
-                      <Text style={styles.textStyle}>Yes</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => {
-                      
-                      }
-                    }>
-                      <Text style={styles.textStyle}>No</Text>
-                  </TouchableOpacity>
-                </View>           
+                <Text style={styles.calloutQuestion}>Click for more information</Text>          
               </View>
             </Callout>
           </Marker>
