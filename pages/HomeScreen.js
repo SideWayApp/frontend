@@ -60,11 +60,9 @@ const HomeScreen = () => {
 
   useEffect(()=>{
     if(wayPoints.length > 0) {
-      console.log(wayPoints)
       const coordinate1 = wayPoints[0].start;
       const coordinate2 = wayPoints[wayPoints.length-1].end;
       const delta = calculateDeltasAndAverage(coordinate1,coordinate2);
-      console.log(delta);
       setDelta(delta);
     }
   },[wayPoints])

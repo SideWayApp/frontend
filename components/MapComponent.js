@@ -38,7 +38,7 @@ function MapComponent({
 	const [isMapClicked, setIsMapClicked] = useState(false)
 	const [clickedAddress, setClickedAddress] = useState("")
 	const [initialPosition, setInitialPosition] = useState(null)
-	const [lockMap,setLockMap] = useState(false)
+	const [lockMap,setLockMap] = useState(true)
 	const [region, setRegion] = useState(null)
 	const ASPECT_RATIO = width / height
 	const LATITUDE_DELTA = 0.02
@@ -46,40 +46,37 @@ function MapComponent({
 
   const handleRegionChangeComplete = (newRegion) => {
 	if(newRegion.latitudeDelta && newRegion.longitudeDelta){
+		// const newLatitudeDelta = 0.001;
+		// const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+		// const latitudeDelta = newRegion.latitudeDelta.toFixed(4);
+		// const longitudeDelta = newRegion.longitudeDelta.toFixed(4);	
+		// console.log("Region changed", longitudeDelta, latitudeDelta);
+		// console.log("new",newLongitudeDelta, " ", newLatitudeDelta);
+		// if(latitudeDelta <= newLatitudeDelta.toFixed(4) || longitudeDelta <= newLongitudeDelta.toFixed(4)){
+		// 	// setLockMap(true)
+		// } 
 		
-		const newLatitudeDelta = 0.001;
-		const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
-		const latitudeDelta = newRegion.latitudeDelta.toFixed(4);
-		const longitudeDelta = newRegion.longitudeDelta.toFixed(4);	
-		console.log("Region changed", longitudeDelta, latitudeDelta);
-		console.log("new",newLongitudeDelta, " ", newLatitudeDelta);
-		if(latitudeDelta <= newLatitudeDelta.toFixed(4) || longitudeDelta <= newLongitudeDelta.toFixed(4)){
-			console.log("if latitudeDelta")
-			setLockMap(true)
-		} 
-		
-		else {setLockMap(false)
-			console.log("else")
-		}
+		// else {
+		// 	// setLockMap(false)
+		// }
 		setRegion(newRegion);
 	}
 	};
 	
   const goToCurrentLocation = async () => {
     if (location) {
-		const { heading, latitude, longitude } = location;
-
-      const newLatitudeDelta = 0.001;
+		setLockMap(true);
+	  const { heading, latitude, longitude } = location;
+      const newLatitudeDelta = 0.002;
       const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
       const newPosition = {
         latitude: latitude,
         longitude: longitude,
         latitudeDelta: newLatitudeDelta,
         longitudeDelta: newLongitudeDelta,
-		heading: heading,
       };
       mapRef.current.animateToRegion(newPosition);
-
+	  setLockMap(true);
 
     //   console.log(location);
     //   mapRef.current.animateCamera(
@@ -161,6 +158,7 @@ function MapComponent({
 
 
   useEffect(()=>{
+	console.log("LockMap", lockMap);
 	if(location){
 		const { latitude, longitude, heading } = location;
 		if (initialPosition === null) {
@@ -173,23 +171,23 @@ function MapComponent({
 			};
 			setInitialPosition(data);
 		}
-		// if(isDirection ){
-		// 	console.log("location in useEffect is " + location)
+		if(lockMap && mapRef.current){
+			// console.log("location in useEffect is " + location)
+			const newLatitudeDelta = 0.002;
+			const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+			const newPosition = {
+				latitude: latitude,
+				longitude: longitude,
+				latitudeDelta: newLatitudeDelta,
+				longitudeDelta: newLongitudeDelta,
+			};
+			// console.log("newPos",newPosition)
+			// console.log(mapRef.current)
+			mapRef.current.animateToRegion(newPosition);
 
-		// 	const newLatitudeDelta = 0.001;
-		// 	const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
-		// 	const newPosition = {
-		// 		latitude: latitude,
-		// 		longitude: longitude,
-		// 		latitudeDelta: newLatitudeDelta,
-		// 		longitudeDelta: newLongitudeDelta,
-		// 	};
-		// 	console.log(newPosition)
-		// 	mapRef.current.animateToRegion(newPosition);
-
-		// }
+		}
 	}
-  },[location])
+  },[location,lockMap,mapRef])
 
   useEffect(()=>{
 	if(changeDelta){
@@ -202,6 +200,15 @@ function MapComponent({
 	}
   },[changeDelta])
 
+  useEffect(()=>{
+	if(region){
+		const {longitudeDelta,latitudeDelta} = region;
+		const newLatitudeDelta = 0.002;
+		const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
+		console.log("Use Effect Region",latitudeDelta,longitudeDelta,newLongitudeDelta);
+		if(latitudeDelta.toFixed(4) >= newLatitudeDelta && longitudeDelta.toFixed(4) >= newLongitudeDelta) setLockMap(false);
+	}
+  },[region])
 	return (
 		<View style={styles.container}>
 			{initialPosition && (
@@ -213,6 +220,8 @@ function MapComponent({
 						ref={mapRef}
 						onRegionChangeComplete={handleRegionChangeComplete}
 						onPress={handleMapPress}
+						// scrollEnabled={lockMap}
+
 					>
 						{location && <CurrentUserLocationComponent location={location} />}
 						{isMapClicked && !isDirection && (
