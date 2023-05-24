@@ -65,6 +65,7 @@ const HomeScreen = () => {
       // const delta = calculateDeltasAndAverage(coordinate1,coordinate2);
       const coords = [coordinate1,coordinate2];
       setDelta(coords);
+
     }
   },[wayPoints])
 
