@@ -187,7 +187,7 @@ function MapComponent({
 		// 	mapRef.current.animateToRegion(newPosition);
 
 
-		}
+		// }
 	}
   },[location,lockMap,mapRef])
 
