@@ -221,6 +221,7 @@ function MapComponent({
 						onRegionChangeComplete={handleRegionChangeComplete}
 						onPress={handleMapPress}
 						// scrollEnabled={lockMap}
+						showsUserLocation={true}
 
 					>
 						{location && <CurrentUserLocationComponent location={location} />}
@@ -235,7 +236,7 @@ function MapComponent({
 						)}
 						{isDirection &&  (
 							<>
-								<BaseMarkersComponent wayPoints={wayPoints} />
+								<BaseMarkersComponent wayPoints={wayPoints} polylinePoints={polyline} location={location} />
 								<OnMapDirections wayPoints={wayPoints} polylinePoints={polyline} />
 							</>
 						)}
