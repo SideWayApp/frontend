@@ -171,6 +171,7 @@ function MapComponent({
 			};
 			setInitialPosition(data);
 		}
+
 		// if(lockMap && mapRef.current){
 		// 	// console.log("location in useEffect is " + location)
 		// 	const newLatitudeDelta = 0.002;
@@ -185,7 +186,8 @@ function MapComponent({
 		// 	// console.log(mapRef.current)
 		// 	mapRef.current.animateToRegion(newPosition);
 
-		// }
+
+		}
 	}
   },[location,lockMap,mapRef])
 
@@ -214,6 +216,7 @@ function MapComponent({
 // 		if(latitudeDelta.toFixed(4) > newLatitudeDelta && longitudeDelta.toFixed(4) > newLongitudeDelta) setLockMap(false);
 // 	}
 //   },[region])
+
 	return (
 		<View style={styles.container}>
 			{initialPosition && (
@@ -225,7 +228,8 @@ function MapComponent({
 						ref={mapRef}
 						onRegionChangeComplete={handleRegionChangeComplete}
 						onPress={handleMapPress}
-å						showsUserLocation={true}
+
+						showsUserLocation={true}
 						followsUserLocation={true}
 
 					>

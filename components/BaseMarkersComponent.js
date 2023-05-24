@@ -8,16 +8,16 @@ export default function BaseMarkersComponent({wayPoints}){
         <>
         <Marker 
             coordinate={{
-                latitude: wayPoints[0].latitude,
-                longitude: wayPoints[0].longitude
+                latitude: wayPoints[0].start.latitude,
+                longitude: wayPoints[0].start.longitude
             }}
             title="Origin"
             pinColor="#008080"
         />
         <Marker
             coordinate={{
-                latitude: wayPoints[lastIndex].latitude,
-                longitude: wayPoints[lastIndex].longitude,
+                latitude: wayPoints[lastIndex].end.latitude,
+                longitude: wayPoints[lastIndex].end.longitude,
             }}
             title="Destination"
             pinColor="#FF7F50"
