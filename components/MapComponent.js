@@ -229,6 +229,7 @@ function MapComponent({
 						onRegionChangeComplete={handleRegionChangeComplete}
 						onPress={handleMapPress}
 
+
 						showsUserLocation={true}
 						followsUserLocation={true}
 
@@ -245,7 +246,7 @@ function MapComponent({
 						)}
 						{isDirection &&  (
 							<>
-								<BaseMarkersComponent wayPoints={wayPoints} />
+								<BaseMarkersComponent wayPoints={wayPoints} polylinePoints={polyline} location={location} />
 								<OnMapDirections wayPoints={wayPoints} polylinePoints={polyline} />
 							</>
 						)}

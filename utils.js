@@ -1,6 +1,10 @@
 import store from "./Redux/store";
 import {getWayPointsAndInstructions} from "./axios";
 
+
+
+
+
 exports.checkIfIsInRangeOfRoute = async (location, wayPoints) => {
     const thresholdDistance = 15;
     let isPhoneOutOfRange = false;
