@@ -30,7 +30,7 @@ export default function BaseMarkersComponent({wayPoints,polylinePoints,location}
     // const distance = geolib.getDistance(point1,point4)
     // console.log(`First point = (${point1.latitude},${point1.longitude}) , Second Point = (${point4.latitude},${point3.longitude}), Distance = ${distance} meters`)
     
-    const radius = 15; // Radius in meters
+    const radius = 50; // Radius in meters
 
     const isWithinRadius = (point,routeCoordinates) =>{
         return routeCoordinates.some(coord => {
