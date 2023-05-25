@@ -57,7 +57,7 @@ export default function OnMapDirections({ wayPoints, polylinePoints,location }) 
 			/>
 			<Polyline
 			coordinates={walkingTrackCoordinates}
-			strokeWidth={1}
+			strokeWidth={5}
 			strokeColor="black"
 			/>
 		</>
