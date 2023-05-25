@@ -201,6 +201,7 @@ function MapComponent({
                 <OnMapDirections
                   wayPoints={wayPoints}
                   polylinePoints={polyline}
+                  location={location}
                 />
               </>
             )}

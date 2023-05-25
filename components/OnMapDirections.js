@@ -5,8 +5,9 @@ import MapViewDirections from "react-native-maps-directions"
 import polyline from "@mapbox/polyline"
 import { useSelector } from "react-redux"
 
-export default function OnMapDirections({ wayPoints, polylinePoints }) {
+export default function OnMapDirections({ wayPoints, polylinePoints,location }) {
 	const [routeCoordinates, setRouteCoordinates] = useState([])
+	const [walkingTrackCoordinates, setWalkingTrackCoordinates] = useState([])
 	const user = useSelector((state) => state.auth.user)
 	const [LineColor, setLineColor] = useState("gray")
 
@@ -21,6 +22,10 @@ export default function OnMapDirections({ wayPoints, polylinePoints }) {
 			}))
 			setRouteCoordinates(coordinates)
 		}
+		const latitude = location.latitude;
+		const longitude = location.longitude;
+		const newCoordinates = [...walkingTrackCoordinates, { latitude, longitude }];
+		setWalkingTrackCoordinates(newCoordinates);
 	}, [polylinePoints])
 
 	useEffect(() => {
@@ -43,11 +48,18 @@ export default function OnMapDirections({ wayPoints, polylinePoints }) {
 	}, [user])
 
 	return (
-		<Polyline
-			coordinates={routeCoordinates}
-			strokeWidth={8}
-			mode="WALKING"
-			strokeColor={LineColor}
-		/>
+		<>
+			<Polyline
+				coordinates={routeCoordinates}
+				strokeWidth={8}
+				mode="WALKING"
+				strokeColor={LineColor}
+			/>
+			<Polyline
+			coordinates={walkingTrackCoordinates}
+			strokeWidth={1}
+			strokeColor="black"
+			/>
+		</>
 	)
 }
