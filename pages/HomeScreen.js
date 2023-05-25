@@ -30,7 +30,37 @@ const HomeScreen = () => {
   const [isEditProfileModalVisible, setIsEditProfileModalVisible] =  useState(false);
   const [isEditPrefrencesModalVisible, setIsEditPrefrencesModalVisible] = useState(false);
   const [changeDelta, setDelta] = useState(null);
+  const [routeCoordinates, setRouteCoordinates] = useState([])
+  const [location, setLocation] = useState(null);
+  const [locationPoint,setLocationPoint] = useState([]);
 
+  useEffect(() => {
+    const asyncLocation = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Please grant permission...");
+        return;
+      } else {
+        Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.High,
+            timeInterval: 5000,
+            distanceInterval: 3,
+          },
+          (curLocation) => {
+            const { latitude, longitude, heading } = curLocation.coords;
+            setLocation({
+              latitude: latitude,
+              longitude: longitude,
+              heading: heading,
+            });
+
+          }
+        );
+      }
+    };
+    asyncLocation();
+  }, []);
 
   const route = useRoute();
 
@@ -57,6 +87,21 @@ const HomeScreen = () => {
     await renderRoute(setWayPoints,setPolyline,setIsDirection,setIsGotDirection,setDistance,setDuration);
 
   }
+
+
+  useEffect(() => {
+		if (polylinePoints) {
+			const decodedPoints = polyline.decode(polylinePoints, {
+				polylinePrecision: 5,
+			})
+			const coordinates = decodedPoints.map((point) => ({
+				latitude: point[0],
+				longitude: point[1],
+			}))
+			setRouteCoordinates(coordinates)
+		}
+	}, [polylinePoints])
+
 
   useEffect(()=>{
     if(wayPoints.length > 0) {
@@ -169,6 +214,7 @@ const HomeScreen = () => {
         duration={duration}
         distance={distance}
         changeDelta={changeDelta}
+        location={location}
       />
     </View>
   );
