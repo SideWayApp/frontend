@@ -5,10 +5,6 @@ import * as geolib from 'geolib';
 import polyline from "@mapbox/polyline"
 
 export default function BaseMarkersComponent({wayPoints,polylinePoints,location}){
-    const [routeCoordinates, setRouteCoordinates] = useState([])
-    
-    const lastIndex = Object.values(wayPoints).length-1;
-    
     
     
     return (

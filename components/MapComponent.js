@@ -34,6 +34,7 @@ function MapComponent({
   const navigation = useNavigation();
   const mapRef = useRef(null);
   const markerRef = useRef(null);
+  const [location, setLocation] = useState(null);
   const [coordinates, setCoordinates] = useState(null);
   const [isMapClicked, setIsMapClicked] = useState(false);
   const [clickedAddress, setClickedAddress] = useState("");
@@ -41,7 +42,7 @@ function MapComponent({
   const [lockMap, setLockMap] = useState(true);
   const [region, setRegion] = useState(null);
 
-  const handleRegionChangeComplete = ({newRegion,location}) => {
+  const handleRegionChangeComplete = (newRegion) => {
     if (newRegion.latitudeDelta && newRegion.longitudeDelta) {
       // const newLatitudeDelta = 0.001;
         // const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
@@ -109,7 +110,32 @@ function MapComponent({
     markerRef.current.showCallout();
   };
 
-
+  useEffect(() => {
+    const asyncLocation = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Please grant permission...");
+        return;
+      } else {
+        Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.High,
+            timeInterval: 5000,
+            distanceInterval: 3,
+          },
+          (curLocation) => {
+            const { latitude, longitude, heading } = curLocation.coords;
+            setLocation({
+              latitude: latitude,
+              longitude: longitude,
+              heading: heading,
+            });
+          }
+        );
+      }
+    };
+    asyncLocation();
+  }, []);
 
   useEffect(() => {
     if (location) {
