@@ -52,7 +52,7 @@ const HomeScreen = () => {
     setIsEditProfileModalVisible(false);
   };
 
-  const getRoute = async ()=>{
+  const getRoute = async() =>{
     console.log("Get Route");
     await renderRoute(setWayPoints,setPolyline,setIsDirection,setIsGotDirection,setDistance,setDuration);
 
@@ -139,16 +139,7 @@ const HomeScreen = () => {
       />
       {!isDirection && (
         <DirectionsComponent
-          // origin={origin}
-          // destination={destination}
-          // preference={preference}
           getRoute={getRoute}
-          // setWayPoints={setWayPoints}
-          // setPolyline={setPolyline}
-          // setIsDirection={setIsDirection}
-          // setIsGotDirection={setIsGotDirection}
-          // setDistance={setDistance}
-          // setDuration={setDuration}
         />
       )}
       {isDirection && (
@@ -168,6 +159,7 @@ const HomeScreen = () => {
         duration={duration}
         distance={distance}
         changeDelta={changeDelta}
+        getRoute={getRoute}
       />
     </View>
   );

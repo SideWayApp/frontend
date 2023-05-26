@@ -28,7 +28,8 @@ function MapComponent({
   setIsGotDirection,
   duration,
   distance,
-  changeDelta
+  changeDelta,
+  getRoute
 }) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -41,6 +42,7 @@ function MapComponent({
   const [initialPosition, setInitialPosition] = useState(null);
   const [lockMap, setLockMap] = useState(true);
   const [region, setRegion] = useState(null);
+  const [isWalking,setIsWalking] = useState(false);
 
   const handleRegionChangeComplete = (newRegion) => {
     if (newRegion.latitudeDelta && newRegion.longitudeDelta) {
@@ -64,6 +66,9 @@ function MapComponent({
   const goToCurrentLocation = () => {
     if (location) {
       setLockMap(true);
+      if(isDirection){
+        setIsWalking(true);
+      }
       const { heading, latitude, longitude } = location;
       const newLatitudeDelta = 0.002;
       const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
@@ -120,8 +125,8 @@ function MapComponent({
         Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.High,
-            timeInterval: 5000,
-            distanceInterval: 3,
+            timeInterval: 10000,
+            distanceInterval: 5,
           },
           (curLocation) => {
             const { latitude, longitude, heading } = curLocation.coords;
@@ -202,6 +207,9 @@ function MapComponent({
                   wayPoints={wayPoints}
                   polylinePoints={polyline}
                   location={location}
+                  getRoute={getRoute}
+                  mapRef={mapRef}
+                  isWalking={isWalking}
                 />
               </>
             )}
