@@ -1,8 +1,13 @@
 import store from "./Redux/store";
 import {getWayPointsAndInstructions} from "./axios";
+import * as geolib from 'geolib';
 
-
-
+exports.isWithinRadius = (point,routeCoordinates,radius) =>{
+  return routeCoordinates.some(coord => {
+      const distance = geolib.getDistance(point, coord);
+      return distance <= radius;
+  });    
+}
 
 
 exports.checkIfIsInRangeOfRoute = async (location, wayPoints) => {
