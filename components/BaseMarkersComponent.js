@@ -6,7 +6,7 @@ import polyline from "@mapbox/polyline"
 
 export default function BaseMarkersComponent({wayPoints,polylinePoints,location}){
     
-    
+    const lastIndex = Object.values(wayPoints).length-1;
     return (
         <>
         <Marker 
