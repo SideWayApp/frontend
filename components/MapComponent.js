@@ -161,11 +161,12 @@ function MapComponent({
     if (changeDelta) {
       const edgePadding = {
         top: 100,
-        right: 150,
+        right: 100,
         bottom: 100,
+        left:100,
       };
-      mapRef.current.fitToCoordinates(changeDelta, {
-        edgePadding,
+      mapRef.current?.fitToCoordinates(changeDelta, {
+        edgePadding:edgePadding,
         animated: true,
       });
     }
