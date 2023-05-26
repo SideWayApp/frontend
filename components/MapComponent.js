@@ -185,6 +185,7 @@ function MapComponent({
             onPress={handleMapPress}
             showsUserLocation={true}
             followsUserLocation={true}
+            showsMyLocationButton={false}
           >
             {location && (
               <CurrentUserLocationComponent location={location} />
