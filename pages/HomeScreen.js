@@ -30,6 +30,7 @@ const HomeScreen = () => {
   const [isEditProfileModalVisible, setIsEditProfileModalVisible] =  useState(false);
   const [isEditPrefrencesModalVisible, setIsEditPrefrencesModalVisible] = useState(false);
   const [changeDelta, setDelta] = useState(null);
+  const [isWalking,setIsWalking] = useState(false);
 
 
   const route = useRoute();
@@ -57,6 +58,10 @@ const HomeScreen = () => {
     await renderRoute(setWayPoints,setPolyline,setIsDirection,setIsGotDirection,setDistance,setDuration);
 
   }
+
+  useEffect(()=>{
+    console.log("IsWalking? " + isWalking)
+  },[isWalking])
 
   useEffect(()=>{
     if(wayPoints.length > 0) {
@@ -142,7 +147,7 @@ const HomeScreen = () => {
           getRoute={getRoute}
         />
       )}
-      {isDirection && (
+      {isDirection && isWalking && (        
         <InstructionsComponent
           instructions={wayPoints}
           duration={duration}
@@ -160,6 +165,8 @@ const HomeScreen = () => {
         distance={distance}
         changeDelta={changeDelta}
         getRoute={getRoute}
+        setIsWalking={setIsWalking}
+        isWalking={isWalking}
       />
     </View>
   );
