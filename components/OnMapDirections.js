@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react"
 import { Polyline } from "react-native-maps"
 import polyline from "@mapbox/polyline"
-import { useSelector } from "react-redux"
+import {isWithinRadius} from '../utils';
+import { useDispatch, useSelector } from "react-redux"
+import {getAddressFromCoordinates} from '../axios'
+import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 
-export default function OnMapDirections({ wayPoints, polylinePoints, location }) {
+export default function OnMapDirections({ wayPoints, polylinePoints, location,getRoute,mapRef, isWalking}) {
   const [routeCoordinates, setRouteCoordinates] = useState([])
   const [walkingTrackCoordinates, setWalkingTrackCoordinates] = useState([])
   const user = useSelector((state) => state.auth.user)
   const [lineColor, setLineColor] = useState("gray")
-
+	const dispatch = useDispatch()
+  
   useEffect(() => {
     if (polylinePoints) {
       const decodedPoints = polyline.decode(polylinePoints, {
@@ -20,12 +24,33 @@ export default function OnMapDirections({ wayPoints, polylinePoints, location })
       }))
       setRouteCoordinates(coordinates)
     }
-    const latitude = location.latitude
-    const longitude = location.longitude
-    const newCoordinates = [...walkingTrackCoordinates, { latitude, longitude }]
-    console.log("New Coordinates:", newCoordinates) // Log to check the new coordinates
-    setWalkingTrackCoordinates(newCoordinates)
-  }, [polylinePoints, location])
+    
+  }, [polylinePoints])
+
+  useEffect(()=>{
+    const checkData = async()=>{
+      const latitude = location.latitude
+      const longitude = location.longitude
+      const newCoordinates = [...walkingTrackCoordinates, { latitude, longitude }]
+      // console.log("New Coordinates:", newCoordinates) // Log to check the new coordinates
+      setWalkingTrackCoordinates(newCoordinates)
+      if (routeCoordinates){
+        if (!isWithinRadius(location,routeCoordinates,30) && isWalking){
+          console.log("Not in radius...")
+          //const locationAddress = await getAddressFromCoordinates(location.latitude,location.longitude)
+          const locationAddressObject = await mapRef.current.addressForCoordinate(location)
+          const locationAddress = locationAddressObject.thoroughfare + " " + 
+            locationAddressObject.name + " " + locationAddressObject.locality;
+          console.log(locationAddress)
+          dispatch(setOrigin(locationAddress))
+          getRoute();
+        }
+      }  
+    }
+    checkData();
+  },[location])
+
+
 
   useEffect(() => {
     if (user && user.preferences) {
@@ -46,7 +71,6 @@ export default function OnMapDirections({ wayPoints, polylinePoints, location })
     }
   }, [user])
 
-  console.log("Walking Track Coordinates:", walkingTrackCoordinates) // Log to check the walking track coordinates
 
   return (
     <>
