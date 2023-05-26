@@ -29,7 +29,9 @@ function MapComponent({
   duration,
   distance,
   changeDelta,
-  getRoute
+  getRoute,
+  isWalking,
+  setIsWalking
 }) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -42,7 +44,6 @@ function MapComponent({
   const [initialPosition, setInitialPosition] = useState(null);
   const [lockMap, setLockMap] = useState(true);
   const [region, setRegion] = useState(null);
-  const [isWalking,setIsWalking] = useState(false);
 
   const handleRegionChangeComplete = (newRegion) => {
     if (newRegion.latitudeDelta && newRegion.longitudeDelta) {
@@ -183,7 +184,7 @@ function MapComponent({
             onRegionChangeComplete={handleRegionChangeComplete}
             onPress={handleMapPress}
             showsUserLocation={true}
-            followsUserLocation={true}
+            followsUserLocation={isWalking}
           >
             {location && (
               <CurrentUserLocationComponent location={location} />

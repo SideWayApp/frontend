@@ -30,6 +30,7 @@ const HomeScreen = () => {
   const [isEditProfileModalVisible, setIsEditProfileModalVisible] =  useState(false);
   const [isEditPrefrencesModalVisible, setIsEditPrefrencesModalVisible] = useState(false);
   const [changeDelta, setDelta] = useState(null);
+  const [isWalking,setIsWalking] = useState(false);
 
 
   const route = useRoute();
@@ -148,6 +149,7 @@ const HomeScreen = () => {
           duration={duration}
           distance={distance}
           setIsDirections={setIsDirection}
+          setIsWalking={setIsWalking}
         />
       )}
       <MapComponent
@@ -160,6 +162,8 @@ const HomeScreen = () => {
         distance={distance}
         changeDelta={changeDelta}
         getRoute={getRoute}
+        isWalking={isWalking}
+        setIsWalking={setIsWalking}
       />
     </View>
   );
