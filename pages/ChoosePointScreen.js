@@ -78,6 +78,7 @@ function ChoosePointScreen({ route, navigation }) {
 					location.coords.longitude
 				)
 				OriginOrDestination(getAdd)
+				
 				navigation.navigate("Home")
 			}
 		} catch (error) {

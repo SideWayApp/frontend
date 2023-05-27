@@ -60,6 +60,10 @@ const HomeScreen = () => {
   }
 
   useEffect(()=>{
+    console.log("IsWalking? " + isWalking)
+  },[isWalking])
+
+  useEffect(()=>{
     if(wayPoints.length > 0) {
       const coordinate1 = wayPoints[0].start;
       const coordinate2 = wayPoints[wayPoints.length-1].end;
@@ -143,7 +147,7 @@ const HomeScreen = () => {
           getRoute={getRoute}
         />
       )}
-      {isDirection && (
+      {isDirection && isWalking && (        
         <InstructionsComponent
           instructions={wayPoints}
           duration={duration}

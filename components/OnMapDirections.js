@@ -3,14 +3,14 @@ import { Polyline } from "react-native-maps"
 import polyline from "@mapbox/polyline"
 import {isWithinRadius} from '../utils';
 import { useDispatch, useSelector } from "react-redux"
-import {getAddressFromCoordinates} from '../axios'
-import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
+import { setOrigin } from "../Redux/DirectionsStore/actions"
 
 export default function OnMapDirections({ wayPoints, polylinePoints, location,getRoute,mapRef, isWalking}) {
   const [routeCoordinates, setRouteCoordinates] = useState([])
   const [walkingTrackCoordinates, setWalkingTrackCoordinates] = useState([])
   const user = useSelector((state) => state.auth.user)
   const [lineColor, setLineColor] = useState("gray")
+  const [isInRadius,setIsInRadius] = useState(false);
 	const dispatch = useDispatch()
   
   useEffect(() => {
@@ -35,20 +35,24 @@ export default function OnMapDirections({ wayPoints, polylinePoints, location,ge
       // console.log("New Coordinates:", newCoordinates) // Log to check the new coordinates
       setWalkingTrackCoordinates(newCoordinates)
       if (routeCoordinates){
-        if (!isWithinRadius(location,routeCoordinates,30) && isWalking){
-          console.log("Not in radius...")
-          //const locationAddress = await getAddressFromCoordinates(location.latitude,location.longitude)
-          const locationAddressObject = await mapRef.current.addressForCoordinate(location)
-          const locationAddress = locationAddressObject.thoroughfare + " " + 
-            locationAddressObject.name + " " + locationAddressObject.locality;
-          console.log(locationAddress)
-          dispatch(setOrigin(locationAddress))
-          getRoute();
+        if (isWalking){
+          console.log("IsWalking here")
+          setIsInRadius(isWithinRadius(location,routeCoordinates,30))
+          if (!isInRadius){
+            console.log("Not in radius...")
+            //const locationAddress = await getAddressFromCoordinates(location.latitude,location.longitude)
+            const locationAddressObject = await mapRef.current.addressForCoordinate(location)
+            const locationAddress = locationAddressObject.thoroughfare + " " + 
+              locationAddressObject.name + " " + locationAddressObject.locality;
+            console.log(locationAddress)
+            dispatch(setOrigin(locationAddress))
+            getRoute();
+          }
         }
       }  
     }
     checkData();
-  },[location])
+  },[location,isInRadius,isWalking])
 
 
 
