@@ -153,6 +153,7 @@ const HomeScreen = () => {
           duration={duration}
           distance={distance}
           setIsDirections={setIsDirection}
+          setIsWalking={setIsWalking}
         />
       )}
       <MapComponent
