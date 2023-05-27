@@ -205,6 +205,7 @@ function MapComponent({
                   wayPoints={wayPoints}
                   polylinePoints={polyline}
                   location={location}
+                  isWalking={isWalking}
                 />
                 <OnMapDirections
                   wayPoints={wayPoints}

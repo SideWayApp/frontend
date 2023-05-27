@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as Location from "expo-location";
 
-const InstructionsComponent = ({ instructions, setIsDirections,distance,duration }) => {
+const InstructionsComponent = ({ instructions, setIsDirections,distance,duration,setIsWalking }) => {
   const [displayedInstructions, setDisplayedInstructions] = useState("");
 
   const getNextInstruction = (currentLatitude, currentLongitude) => {
@@ -90,6 +90,7 @@ const InstructionsComponent = ({ instructions, setIsDirections,distance,duration
         style={styles.stopBnt}
         onPress={() => {
           setIsDirections(false);
+          setIsWalking(false)
         }}
       >
         <Text style={styles.text}>Stop Directions</Text>

@@ -3,8 +3,7 @@ import { Polyline } from "react-native-maps"
 import polyline from "@mapbox/polyline"
 import {isWithinRadius} from '../utils';
 import { useDispatch, useSelector } from "react-redux"
-import {getAddressFromCoordinates} from '../axios'
-import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
+import { setOrigin } from "../Redux/DirectionsStore/actions"
 
 export default function OnMapDirections({ wayPoints, polylinePoints, location,getRoute,mapRef, isWalking}) {
   const [routeCoordinates, setRouteCoordinates] = useState([])
