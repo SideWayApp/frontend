@@ -184,8 +184,7 @@ function MapComponent({
             onRegionChangeComplete={handleRegionChangeComplete}
             onPress={handleMapPress}
             showsUserLocation={true}
-            followsUserLocation={true}
-            showsMyLocationButton={false}
+            followsUserLocation={isWalking}
           >
             {location && (
               <CurrentUserLocationComponent location={location} />

@@ -166,8 +166,8 @@ const HomeScreen = () => {
         distance={distance}
         changeDelta={changeDelta}
         getRoute={getRoute}
-        setIsWalking={setIsWalking}
         isWalking={isWalking}
+        setIsWalking={setIsWalking}
       />
     </View>
   );
