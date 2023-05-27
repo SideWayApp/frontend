@@ -6,20 +6,15 @@ import polyline from "@mapbox/polyline"
 
 export default function BaseMarkersComponent({wayPoints,polylinePoints,location,isWalking}){
     const lastIndex = Object.values(wayPoints).length-1;
-    const [originPoint, setOriginPoint] = useState({
-        latitude: wayPoints[0].start.latitude,
-        longitude: wayPoints[0].start.longitude
-    })
-    if (isWalking){
-        setOriginPoint({
-            latitude: location.latitude,
-            longitude: location.longitude
-        })
-    }
+
+    
     return (
         <>
         <Marker 
-            coordinate={originPoint}
+            coordinate={{
+                latitude: wayPoints[0].start.latitude,
+                longitude: wayPoints[0].start.longitude
+            }}
             title="Origin"
             pinColor="#008080"
         />
