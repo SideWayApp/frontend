@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions, Modal, Text, TouchableOpacity } from "react-native";
 import MapView from "react-native-maps";
 import { FAB } from "react-native-paper";
 import * as Location from "expo-location";
@@ -15,6 +15,8 @@ import { useNavigation } from "@react-navigation/native";
 import MapClickedMarker from "./MapClickedMarker";
 import CurrentUserLocationComponent from "./CurrentUserLocationComponent";
 import LittleInstructions from "./LittleInstructions";
+import { useSelector } from "react-redux";
+import { updateExistMapItem } from "../axios"
 
 const { width, height } = Dimensions.get("window");
 const ASPECT_RATIO = width / height;
@@ -31,7 +33,6 @@ function MapComponent({
   changeDelta,
   getRoute,
   isWalking,
-  setIsWalking
 }) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -44,30 +45,23 @@ function MapComponent({
   const [initialPosition, setInitialPosition] = useState(null);
   const [lockMap, setLockMap] = useState(true);
   const [region, setRegion] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [simpleModalVisible, setSimpleModalVisible] = useState(false);
+  const [selectedMapItemType, setSelectedMapItemType] = useState("");  
+  const [selectedMapItemId, setSelectedMapItemId] = useState("");  
+  const user = useSelector((state) => state.auth.user);
+  const [title,setTitle] = useState("check")
 
   const handleRegionChangeComplete = (newRegion) => {
     if (newRegion.latitudeDelta && newRegion.longitudeDelta) {
-      // const newLatitudeDelta = 0.001;
-        // const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
-        // const latitudeDelta = newRegion.latitudeDelta.toFixed(4);
-        // const longitudeDelta = newRegion.longitudeDelta.toFixed(4);  
-        // console.log("Region changed", longitudeDelta, latitudeDelta);
-        // console.log("new",newLongitudeDelta, " ", newLatitudeDelta);
-        // if(latitudeDelta <= newLatitudeDelta.toFixed(4) || longitudeDelta <= newLongitudeDelta.toFixed(4)){
-        //  // setLockMap(true)
-        // } 
-        
-        // else {
-        //  // setLockMap(false)
-        // }
-		setRegion(newRegion);
+      setRegion(newRegion);
     }
   };
 
   const goToCurrentLocation = () => {
     if (location) {
       setLockMap(true);
-      if(isDirection){
+      if (isDirection) {
         setIsWalking(true);
       }
       const { heading, latitude, longitude } = location;
@@ -116,6 +110,75 @@ function MapComponent({
     markerRef.current.showCallout();
   };
 
+  const handleCalloutPress = (type,mapItemId) => {
+    setSelectedMapItemType(type);
+	setSelectedMapItemId(mapItemId)
+	
+    
+	let title = '';
+    let changeable = null
+    switch(type){
+      case "Beach":
+      case "Camera":
+      case "Dangerous Building":
+      case "Defibrillator":
+      case "Fountain":
+      case "Light Post":
+      case "MADA Station":
+      case "Museum":
+      case "Polluted Area":
+      case "Shelter":
+      case "Public WIFI Hotspots":
+        title = "This data is immutable"
+        changeable = false
+        break;
+      case "Danger":  
+      case "Flood":
+      case "Protest":
+      case "Poop":
+      case "Constraction":
+        title = "Still there?"
+        changeable = true
+        break;
+      case "No lights":
+        title = "Still no lights?"
+        changeable = true
+        break;
+      case "Dirty":
+        title = "Still dirty?"
+        changeable = true
+        break;
+      case "No shadow":
+        title = "Still no shdaow?"
+        changeable = true
+        break;
+    }
+	setTitle(title);
+	if(changeable){
+		setModalVisible(!modalVisible);
+	}
+	else{
+		setSimpleModalVisible(!simpleModalVisible)
+	}
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  const handleCloseSimpleModal = () => {
+    setSimpleModalVisible(false);
+  };
+
+  const handleNoPressed = () =>{
+	const data = {
+		"_id" : selectedMapItemId,
+		"userEmail":user.email 
+	}
+	updateExistMapItem(data)
+	setModalVisible(false);
+  }
+  
   useEffect(() => {
     const asyncLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -164,10 +227,10 @@ function MapComponent({
         top: 100,
         right: 100,
         bottom: 100,
-        left:100,
+        left: 100,
       };
       mapRef.current?.fitToCoordinates(changeDelta, {
-        edgePadding:edgePadding,
+        edgePadding: edgePadding,
         animated: true,
       });
     }
@@ -216,8 +279,42 @@ function MapComponent({
                 />
               </>
             )}
-            {region && <MapItemsComponent region={region} />}
+            {region && (
+              <MapItemsComponent
+                region={region}
+                handleCalloutPress={handleCalloutPress}
+              />
+            )}
           </MapView>
+
+          <Modal visible={simpleModalVisible} animationType="slide" transparent={true}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalText}> {title}</Text>
+                <TouchableOpacity style={styles.button} onPress={handleCloseSimpleModal}>
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+
+          <Modal visible={modalVisible} animationType="slide" transparent={true}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalText}>{selectedMapItemType}</Text>
+                <Text style={styles.modalText}> {title}</Text>
+				<View  style={{flexDirection: 'row'}}>
+					<TouchableOpacity style={styles.button} onPress={handleCloseModal}>
+					<Text style={styles.closeButtonText}>Yes</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.button} onPress={handleNoPressed}>
+					<Text style={styles.closeButtonText}>No</Text>
+					</TouchableOpacity>
+				</View>
+              </View>
+            </View>
+          </Modal>
+
           <View style={[styles.container, isDirection && styles.containerHigher]}>
             <BackNavigationFabComponent
               moveTo={goToCurrentLocation}
@@ -299,6 +396,42 @@ const styles = StyleSheet.create({
   },
   containerHigher: {
     marginTop: -200,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: '#2196F3',
+    borderRadius: 5,
+    padding: 10,
+	margin:10,
+    elevation: 2,
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
