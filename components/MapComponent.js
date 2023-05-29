@@ -61,9 +61,9 @@ function MapComponent({
   const goToCurrentLocation = () => {
     if (location) {
       setLockMap(true);
-      if (isDirection) {
-        setIsWalking(true);
-      }
+      // if (isDirection) {
+      //   setIsWalking(true);
+      // }
       const { heading, latitude, longitude } = location;
       const newLatitudeDelta = 0.002;
       const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO;
@@ -248,6 +248,7 @@ function MapComponent({
             onPress={handleMapPress}
             showsUserLocation={true}
             followsUserLocation={isWalking}
+            showsMyLocationButton={false}
           >
             {location && (
               <CurrentUserLocationComponent location={location} />
