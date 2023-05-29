@@ -25,7 +25,7 @@ const MapClickedMarker = ({
         </View>
         <TouchableOpacity>
           <View style={styles.button}>
-            <Text style={styles.buttonText}>Navigation to here</Text>
+            <Text style={styles.buttonText}>Navigate to here</Text>
           </View>
         </TouchableOpacity>
       </Callout>
