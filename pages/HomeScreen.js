@@ -16,6 +16,7 @@ import {
 	UpdatePrefrencesModal,
 	EditProfileModal,
 } from "../components/AuthFormsComponents"
+import { Button } from 'react-native-paper';
 
 const HomeScreen = () => {
 	const { origin, destination } = useSelector((state) => state)
@@ -54,6 +55,10 @@ const HomeScreen = () => {
 		setIsEditProfileModalVisible(false)
 	}
 
+	const handleStopPreview = () =>{
+		setIsDirection(false);
+		setIsWalking(false)
+	}
 	const getRoute = async () => {
 		console.log("Get Route")
 		await renderRoute(
@@ -160,6 +165,9 @@ const HomeScreen = () => {
 					setIsDirections={setIsDirection}
 					setIsWalking={setIsWalking}
 				/>
+			)}
+			{isDirection && !isWalking && (
+				<Button onPress={handleStopPreview}>Stop Directions</Button>
 			)}
 			<MapComponent
 				wayPoints={wayPoints}
