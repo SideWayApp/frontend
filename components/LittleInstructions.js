@@ -7,10 +7,9 @@ import {
 	TouchableOpacity,
 	Animated,
 } from "react-native"
-import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 
-const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window")
-const HEIGHT_MAX = WINDOW_HEIGHT * 0.2
+const { height: WINDOW_HEIGHT } = Dimensions.get("window")
+
 const HEIGHT_MIN = WINDOW_HEIGHT * 0.125
 
 function LittleInstructions({ duration, distance }) {
@@ -53,19 +52,7 @@ function LittleInstructions({ duration, distance }) {
 
 	const arrivalTime = calculateArrivalTime(duration)
 
-	const [expanded, setExpanded] = useState(false)
 	const bottomSheetHeight = useRef(new Animated.Value(HEIGHT_MIN)).current
-
-	const toggleBottomSheet = () => {
-		const toValue = expanded ? HEIGHT_MIN : HEIGHT_MAX
-		Animated.timing(bottomSheetHeight, {
-			toValue,
-			duration: 300,
-			useNativeDriver: false,
-		}).start(() => {
-			setExpanded(!expanded)
-		})
-	}
 
 	useEffect(() => {
 		const timer = setInterval(() => {
@@ -82,13 +69,7 @@ function LittleInstructions({ duration, distance }) {
 	return (
 		<View style={styles.container}>
 			<Animated.View style={[styles.bottomSheet, { height: bottomSheetHeight }]}>
-				<TouchableOpacity onPress={toggleBottomSheet} style={styles.arrowContainer}>
-					<Icon
-						style={styles.arrow}
-						size={35}
-						name={expanded ? "chevron-down" : "chevron-up"}
-					/>
-				</TouchableOpacity>
+				<TouchableOpacity style={styles.arrowContainer}></TouchableOpacity>
 				<View style={styles.body}>
 					<Text style={styles.text}>{"Arrival at " + arrivalTime}</Text>
 					<Text style={styles.text}>{duration}</Text>

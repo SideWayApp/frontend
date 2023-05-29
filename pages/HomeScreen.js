@@ -7,6 +7,7 @@ import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { getUserData } from "../axios"
 import { setToken, setUser } from "../Redux/authenticationReducer/authActions"
+import { setIsWalking } from "../Redux/IsWalkingStore/IsWalkingActions"
 import InstructionsComponent from "../components/InstructionsComponent"
 import { useRoute } from "@react-navigation/native"
 import { renderRoute, calculateDeltasAndAverage } from "../utils"
@@ -16,7 +17,7 @@ import {
 	UpdatePrefrencesModal,
 	EditProfileModal,
 } from "../components/AuthFormsComponents"
-import { Button } from 'react-native-paper';
+import { Button } from "react-native-paper"
 
 const HomeScreen = () => {
 	const { origin, destination } = useSelector((state) => state)
@@ -33,7 +34,8 @@ const HomeScreen = () => {
 	const [isEditPrefrencesModalVisible, setIsEditPrefrencesModalVisible] =
 		useState(false)
 	const [changeDelta, setDelta] = useState(null)
-	const [isWalking, setIsWalking] = useState(false)
+
+	const { isWalking } = useSelector((state) => state.isWalking)
 
 	const route = useRoute()
 
@@ -55,9 +57,9 @@ const HomeScreen = () => {
 		setIsEditProfileModalVisible(false)
 	}
 
-	const handleStopPreview = () =>{
-		setIsDirection(false);
-		setIsWalking(false)
+	const handleStopPreview = () => {
+		setIsDirection(false)
+		dispatch(setIsWalking(false))
 	}
 	const getRoute = async () => {
 		console.log("Get Route")
@@ -70,10 +72,6 @@ const HomeScreen = () => {
 			setDuration
 		)
 	}
-
-	useEffect(() => {
-		console.log("IsWalking? " + isWalking)
-	}, [isWalking])
 
 	useEffect(() => {
 		if (wayPoints.length > 0) {
@@ -154,16 +152,13 @@ const HomeScreen = () => {
 				isVisible={isProfileModalVisible}
 				onClose={handleProfileModalClose}
 			/>
-			{!isDirection && (
-				<DirectionsComponent getRoute={getRoute} setIsWalking={setIsWalking} />
-			)}
+			{!isDirection && <DirectionsComponent getRoute={getRoute} />}
 			{isDirection && isWalking && (
 				<InstructionsComponent
 					instructions={wayPoints}
 					duration={duration}
 					distance={distance}
 					setIsDirections={setIsDirection}
-					setIsWalking={setIsWalking}
 				/>
 			)}
 			{isDirection && !isWalking && (
@@ -179,8 +174,6 @@ const HomeScreen = () => {
 				distance={distance}
 				changeDelta={changeDelta}
 				getRoute={getRoute}
-				isWalking={isWalking}
-				setIsWalking={setIsWalking}
 			/>
 		</View>
 	)
