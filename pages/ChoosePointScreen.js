@@ -62,6 +62,8 @@ function ChoosePointScreen({ route, navigation }) {
 	}
 	const getLocation = async () => {
 		setIsLoadingLocation(true)
+		const { setIsWalking } = route.params
+		setIsWalking()
 		try {
 			const currentLocation = await Location.getCurrentPositionAsync({})
 			setLocation(currentLocation)
@@ -78,7 +80,7 @@ function ChoosePointScreen({ route, navigation }) {
 					location.coords.longitude
 				)
 				OriginOrDestination(getAdd)
-				
+
 				navigation.navigate("Home")
 			}
 		} catch (error) {

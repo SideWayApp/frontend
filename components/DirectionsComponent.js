@@ -13,16 +13,16 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons"
 import { useNavigation, useRoute } from "@react-navigation/native"
 import { useSelector, useDispatch } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
-import {renderRoute} from "../utils"
+import { renderRoute } from "../utils"
 
-const DirectionsComponent = ({getRoute}) => {
+const DirectionsComponent = ({ getRoute, setIsWalking }) => {
 	const navigation = useNavigation()
 	const { origin, destination } = useSelector((state) => state.directions)
 	const user = useSelector((state) => state.auth.user)
 	const [isLoading, setIsLoading] = useState(false)
 	const dispatch = useDispatch()
 
-const handleGetDirections = async () => {
+	const handleGetDirections = async () => {
 		setIsLoading(true)
 		try {
 			if (origin === "Origin" || destination === "Destination") {
@@ -37,14 +37,14 @@ const handleGetDirections = async () => {
 				setIsLoading(false)
 				return
 			}
-			getRoute();
+			getRoute()
 			// await renderRoute(setWayPoints,setPolyline,setIsDirection,setIsGotDirection,setDistance,setDuration)
 			// const res = await getWayPointsAndInstructions(
 			// 	origin,
 			// 	destination,
 			// 	user.preference
 			// )
-			
+
 			// setDuration(res.duration);
 			// setDistance(res.distance);
 			// setWayPoints(res.arr)
@@ -68,7 +68,10 @@ const handleGetDirections = async () => {
 							value={origin}
 							onPress={() => {
 								if (user) {
-									navigation.navigate("Choose Point", { type: "Origin" })
+									navigation.navigate("Choose Point", {
+										type: "Origin",
+										setIsWalking: () => setIsWalking(true),
+									})
 								} else {
 									Alert.alert(
 										"Not logged in",
