@@ -5,7 +5,6 @@ import {addMapItemFromLatLong} from '../axios'
 import { Button } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native"
 import { useSelector, useDispatch } from "react-redux"
-import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 import Stack from "@react-native-material/core"
 
 import Icon from '../components/IconComponent'
@@ -27,6 +26,7 @@ const ReportScreen = () =>{
     const latitude = route.params.location.latitude
     const longitude = route.params.location.longitude
     const [type,setType] = useState("") 
+    const navigation = useNavigation();
 
     const submitReport = ()=>{
         const data = {
@@ -74,13 +74,17 @@ return(
                                 onPress={() => {
                                     setModalVisible(!modalVisible)
                                     submitReport()
+                                    navigation.navigate("Home")
                                 }
                                 }>
                                 <Text style={styles.textStyle}>Yes</Text>
                             </Pressable>
                             <Pressable
                                 style={[styles.button1, styles.buttonClose]}
-                                onPress={() => setModalVisible(!modalVisible)
+                                onPress={() => {
+                                    setModalVisible(!modalVisible)
+                                    navigation.navigate("Home")
+                                }
                                 }>
                                 <Text style={styles.textStyle}>No</Text>
                             </Pressable>
