@@ -15,6 +15,7 @@ import {
 import AutoCompleteComponent from "../components/AutoCompleteComponent"
 import ListDirectionsComponent from "../components/ListDirectionsComponent"
 import { setUser } from "../Redux/authenticationReducer/authActions"
+import { setIsWalking } from "../Redux/IsWalkingStore/IsWalkingActions"
 
 function ChoosePointScreen({ route, navigation }) {
 	const dispatch = useDispatch()
@@ -62,8 +63,7 @@ function ChoosePointScreen({ route, navigation }) {
 	}
 	const getLocation = async () => {
 		setIsLoadingLocation(true)
-		const { setIsWalking } = route.params
-		setIsWalking()
+		dispatch(setIsWalking(true))
 		try {
 			const currentLocation = await Location.getCurrentPositionAsync({})
 			setLocation(currentLocation)

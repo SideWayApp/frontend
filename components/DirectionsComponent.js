@@ -15,7 +15,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { setOrigin, setDestination } from "../Redux/DirectionsStore/actions"
 import { renderRoute } from "../utils"
 
-const DirectionsComponent = ({ getRoute, setIsWalking }) => {
+const DirectionsComponent = ({ getRoute }) => {
 	const navigation = useNavigation()
 	const { origin, destination } = useSelector((state) => state.directions)
 	const user = useSelector((state) => state.auth.user)
@@ -38,20 +38,6 @@ const DirectionsComponent = ({ getRoute, setIsWalking }) => {
 				return
 			}
 			getRoute()
-			// await renderRoute(setWayPoints,setPolyline,setIsDirection,setIsGotDirection,setDistance,setDuration)
-			// const res = await getWayPointsAndInstructions(
-			// 	origin,
-			// 	destination,
-			// 	user.preference
-			// )
-
-			// setDuration(res.duration);
-			// setDistance(res.distance);
-			// setWayPoints(res.arr)
-			// setPolyline(res.points)
-			// setIsDirection(true)
-			// setIsGotDirection(true)
-			// setIsLoading(false)
 		} catch (error) {
 			console.error(error)
 		}
@@ -70,7 +56,6 @@ const DirectionsComponent = ({ getRoute, setIsWalking }) => {
 								if (user) {
 									navigation.navigate("Choose Point", {
 										type: "Origin",
-										setIsWalking: () => setIsWalking(true),
 									})
 								} else {
 									Alert.alert(
