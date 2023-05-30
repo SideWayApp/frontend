@@ -1,6 +1,6 @@
 import React from "react";
 import { Marker, Callout } from "react-native-maps";
-import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 
 const MapClickedMarker = ({
   handleNavigation,
@@ -16,18 +16,11 @@ const MapClickedMarker = ({
       ref={markerRef}
       onLayout={handleOnLayout}
     >
-      <Callout onPress={handleNavigation}>
-        <View>
-          <Text>{`${coordinates.latitude.toFixed(
-            6
-          )}, ${coordinates.longitude.toFixed(6)}`}</Text>
-          <Text>{clickedAddress}</Text>
+      <Callout tooltip onPress={handleNavigation}>
+        <View style={styles.calloutContainer}>
+        <Text style={styles.calloutQuestion}>Navigate here</Text>
+          <Text style={styles.calloutAdress}>{clickedAddress}</Text>
         </View>
-        <TouchableOpacity>
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Navigate to here</Text>
-          </View>
-        </TouchableOpacity>
       </Callout>
     </Marker>
   );
@@ -79,6 +72,26 @@ const styles = StyleSheet.create({
   buttonText: {
     fontWeight: "bold",
     textAlign: "center",
+  },
+  calloutContainer: {
+    backgroundColor: "gray",
+    borderRadius: 5,
+    width: 150,
+  },
+  calloutQuestion: {
+    color:"white",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginBottom: 2.5,
+    textAlign: "center",
+  },
+  calloutAdress: {
+    fontSize: 13,
+    marginBottom: 5,
+    textAlign: "center",
+  },
+  calloutDescription: {
+    fontSize: 14,
   },
 });
 
