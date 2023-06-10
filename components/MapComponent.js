@@ -63,6 +63,9 @@ function MapComponent({
 		if (newRegion.latitudeDelta && newRegion.longitudeDelta) {
 			setRegion(newRegion)
 		}
+		if(isDirection && isWalking){
+			mapRef.current.animateToRegion(newRegion,1000);
+		}
 	}
 
 	const goToCurrentLocation = () => {
@@ -71,7 +74,7 @@ function MapComponent({
 				dispatch(setIsWalking(true))
 			}
 			const { heading, latitude, longitude } = location
-			const newLatitudeDelta = 0.002
+			const newLatitudeDelta = 0.003
 			const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO
 			const newPosition = {
 				latitude: latitude,
@@ -79,7 +82,7 @@ function MapComponent({
 				latitudeDelta: newLatitudeDelta,
 				longitudeDelta: newLongitudeDelta,
 			}
-			mapRef.current.animateToRegion(newPosition)
+			mapRef.current.animateToRegion(newPosition,1000)
 			handleRegionChangeComplete({ latitude: latitude, longitude: longitude })
 		}
 	}
@@ -251,10 +254,9 @@ function MapComponent({
 						onRegionChangeComplete={handleRegionChangeComplete}
 						onPress={handleMapPress}
 						showsUserLocation={true}
-						followsUserLocation={isWalking}
-						showsMyLocationButton={false}
-						scrollEnabled={!isWalking}
-        				zoomEnabled={!isWalking}
+						// followsUserLocation={isWalking}
+						// scrollEnabled={!isWalking}
+        				// zoomEnabled={!isWalking}
 					>
 						{location && <CurrentUserLocationComponent location={location} />}
 						{isDirection && (
