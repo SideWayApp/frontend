@@ -24,6 +24,7 @@ import CurrentUserLocationComponent from "./CurrentUserLocationComponent"
 import LittleInstructions from "./LittleInstructions"
 import { useSelector } from "react-redux"
 import { updateExistMapItem } from "../axios"
+import { setIsWalking } from "../Redux/IsWalkingStore/IsWalkingActions"
 
 const { width, height } = Dimensions.get("window")
 const ASPECT_RATIO = width / height
@@ -67,7 +68,8 @@ function MapComponent({
 
 	const goToCurrentLocation = () => {
 		if (location) {
-			setLockMap(true)
+			// setLockMap(true)
+			dispatch(setIsWalking(true))
 			const { heading, latitude, longitude } = location
 			const newLatitudeDelta = 0.002
 			const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO
@@ -251,6 +253,8 @@ function MapComponent({
 						showsUserLocation={true}
 						followsUserLocation={isWalking}
 						showsMyLocationButton={false}
+						scrollEnabled={!isWalking}
+        				zoomEnabled={!isWalking}
 					>
 						{location && <CurrentUserLocationComponent location={location} />}
 						{isMapClicked && !isDirection && (
