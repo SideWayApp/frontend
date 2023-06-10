@@ -68,8 +68,9 @@ function MapComponent({
 
 	const goToCurrentLocation = () => {
 		if (location) {
-			// setLockMap(true)
-			dispatch(setIsWalking(true))
+			if(isDirection){
+				dispatch(setIsWalking(true))
+			}
 			const { heading, latitude, longitude } = location
 			const newLatitudeDelta = 0.002
 			const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO
@@ -257,15 +258,6 @@ function MapComponent({
         				zoomEnabled={!isWalking}
 					>
 						{location && <CurrentUserLocationComponent location={location} />}
-						{isMapClicked && !isDirection && (
-							<MapClickedMarker
-								handleNavigation={handleNavigation}
-								handleOnLayout={handleOnLayout}
-								coordinates={coordinates}
-								markerRef={markerRef}
-								clickedAddress={clickedAddress}
-							/>
-						)}
 						{isDirection && (
 							<>
 								<BaseMarkersComponent

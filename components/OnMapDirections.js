@@ -4,7 +4,7 @@ import polyline from "@mapbox/polyline"
 import { isWithinRadius } from "../utils"
 import { useDispatch, useSelector } from "react-redux"
 import { setOrigin } from "../Redux/DirectionsStore/actions"
-
+import { getAddressFromLatLng } from '../axios'
 export default function OnMapDirections({
 	wayPoints,
 	polylinePoints,
@@ -43,18 +43,9 @@ export default function OnMapDirections({
 				if (isWalking) {
 					setIsInRadius(isWithinRadius(location, routeCoordinates, 30))
 					if (!isInRadius) {
-						const locationAddressObject = await mapRef.current.addressForCoordinate(
-							location
-						)
-						const locationAddress =
-							locationAddressObject.thoroughfare +
-							" " +
-							locationAddressObject.name +
-							" " +
-							locationAddressObject.locality
-						console.log(locationAddress)
-						dispatch(setOrigin(locationAddress))
-						getRoute()
+						const newLocation  = await getAddressFromLatLng(latitude, longitude)
+						dispatch(setOrigin(newLocation))
+						await getRoute()
 					}
 				}
 			}
