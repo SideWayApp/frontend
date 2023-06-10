@@ -18,7 +18,7 @@ const InstructionsComponent = ({ instructions, setIsDirections }) => {
 				longitude
 			)
 			console.log("distance", distance)
-			if (distance < 10) {
+			if (distance < 15) {
 				return instructions[i + 1]
 					? instructions[i + 1].instruction
 					: "You have arrived at your destination."
