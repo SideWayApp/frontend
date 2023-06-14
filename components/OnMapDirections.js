@@ -41,7 +41,7 @@ export default function OnMapDirections({
 			setWalkingTrackCoordinates(newCoordinates)
 			if (routeCoordinates) {
 				if (isWalking) {
-					const distance = await isWithinRadius(location, routeCoordinates, 30);
+					const distance = await isWithinRadius(location, routeCoordinates, 40);
 					setIsInRadius(distance)
 					if (!isInRadius) {
 						const newLocation  = await getAddressFromLatLng(latitude, longitude)
