@@ -17,7 +17,6 @@ const InstructionsComponent = ({ instructions, setIsDirections }) => {
 				latitude,
 				longitude
 			)
-			console.log("distance", distance)
 			if (distance < 15) {
 				return instructions[i + 1]
 					? instructions[i + 1].instruction
@@ -61,7 +60,7 @@ const InstructionsComponent = ({ instructions, setIsDirections }) => {
 				(location) => {
 					const { latitude, longitude } = location.coords
 					// do something with the latitude and longitude
-					console.log("inst location is " + latitude + " and " + longitude)
+					// console.log("inst location is " + latitude + " and " + longitude)
 					const inst = getNextInstruction(latitude, longitude)
 					console.log(inst)
 					if (inst) {
