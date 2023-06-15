@@ -74,7 +74,7 @@ function MapComponent({
 				dispatch(setIsWalking(true))
 			}
 			const { heading, latitude, longitude } = location
-			const newLatitudeDelta = 0.003
+			const newLatitudeDelta = 0.004
 			const newLongitudeDelta = newLatitudeDelta * ASPECT_RATIO
 			const newPosition = {
 				latitude: latitude,
@@ -82,7 +82,7 @@ function MapComponent({
 				latitudeDelta: newLatitudeDelta,
 				longitudeDelta: newLongitudeDelta,
 			}
-			mapRef.current.animateToRegion(newPosition,1000)
+			mapRef.current.animateToRegion(newPosition,500)
 			handleRegionChangeComplete({ latitude: latitude, longitude: longitude })
 		}
 	}

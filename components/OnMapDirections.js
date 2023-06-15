@@ -42,17 +42,19 @@ export default function OnMapDirections({
 			if (routeCoordinates) {
 				if (isWalking) {
 					const distance = await isWithinRadius(location, routeCoordinates, 40);
-					setIsInRadius(distance)
-					if (!isInRadius) {
+					if(!distance){
 						const newLocation  = await getAddressFromLatLng(latitude, longitude)
 						dispatch(setOrigin(newLocation))
 						await getRoute()
 					}
+
+					// setIsInRadius(distance)
+
 				}
 			}
 		}
 		checkData()
-	}, [location, isInRadius, isWalking])
+	}, [location, isWalking])
 
 	useEffect(() => {
 		if (user && user.preferences) {
