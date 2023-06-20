@@ -5,6 +5,7 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { setToken, setUser } from "../Redux/authenticationReducer/authActions";
+import {setOrigin, setDestination} from "../Redux/DirectionsStore/actions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
 import { logout } from "../axios";
@@ -22,6 +23,9 @@ function AppBarComponent({ showBackButton }) {
     console.log("Item removed successfully!");
     dispatch(setUser(null));
     dispatch(setToken(null));
+    dispatch(setOrigin("Origin"));
+    dispatch(setDestination("Destination"));
+
   };
 
   return (
