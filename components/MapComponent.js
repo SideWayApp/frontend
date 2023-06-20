@@ -145,6 +145,7 @@ function MapComponent({
 			case "Protest":
 			case "Poop":
 			case "Constraction":
+			case "Blocked":
 				title = "Still there?"
 				changeable = true
 				break
