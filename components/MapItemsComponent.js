@@ -35,7 +35,7 @@ export default function MapItemsComponent({ region,handleCalloutPress }) {
 
   return (
     <>
-      {mapItems.map((mapItem, index) => {
+      { mapItems && mapItems.map((mapItem, index) => {
         return ( 
         <Marker
           key={index}

@@ -5,6 +5,7 @@ import { isWithinRadius } from "../utils"
 import { useDispatch, useSelector } from "react-redux"
 import { setOrigin } from "../Redux/DirectionsStore/actions"
 import { getAddressFromLatLng } from '../axios'
+import { setIsWalking } from "../Redux/IsWalkingStore/IsWalkingActions"
 export default function OnMapDirections({
 	wayPoints,
 	polylinePoints,
@@ -41,17 +42,22 @@ export default function OnMapDirections({
 			setWalkingTrackCoordinates(newCoordinates)
 			if (routeCoordinates) {
 				if (isWalking) {
-					setIsInRadius(isWithinRadius(location, routeCoordinates, 30))
-					if (!isInRadius) {
+					const distance = await isWithinRadius(location, routeCoordinates, 40);
+					console.log("distance",distance)
+					if(!distance){
 						const newLocation  = await getAddressFromLatLng(latitude, longitude)
+						dispatch(setIsWalking(false))
 						dispatch(setOrigin(newLocation))
 						await getRoute()
 					}
+
+					// setIsInRadius(distance)
+
 				}
 			}
 		}
 		checkData()
-	}, [location, isInRadius, isWalking])
+	}, [location, isWalking])
 
 	useEffect(() => {
 		if (user && user.preferences) {
