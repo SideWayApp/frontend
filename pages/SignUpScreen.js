@@ -119,13 +119,13 @@ const SignUpScreen = () => {
       return "Passwords do not match.";
     }
 
-    if (!gender) {
-      return "Gender is required.";
-    }
+    // if (!gender) {
+    //   return "Gender is required.";
+    // }
 
-    if (!age) {
-      return "Age is required.";
-    }
+    // if (!age) {
+    //   return "Age is required.";
+    // }
 
     return null;
   };
