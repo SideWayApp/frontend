@@ -3,10 +3,11 @@ import {getWayPointsAndInstructions} from "./axios";
 import * as geolib from 'geolib';
 
 exports.isWithinRadius = (point,routeCoordinates,radius) =>{
-  return routeCoordinates.some(coord => {
-      const distance = geolib.getDistance(point, coord);
-      return distance <= radius;
-  });    
+  return true;
+  // return routeCoordinates.some(coord => {
+  //     const distance = geolib.getDistance(point, coord);
+  //     return distance <= radius;
+  // });    
 }
 
 

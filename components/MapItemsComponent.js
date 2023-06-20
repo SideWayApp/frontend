@@ -6,8 +6,8 @@ import MapItemMarker from "./MapItemMarker";
 import { useSelector } from "react-redux";
 
 const minDisplayDelta = {
-  latitudeDelta: 0.02,
-  longitudeDelta: 0.02,
+  latitudeDelta: 0.04,
+  longitudeDelta: 0.04,
 };
 
 export default function MapItemsComponent({ region,handleCalloutPress }) {
