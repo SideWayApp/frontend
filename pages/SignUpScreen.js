@@ -152,6 +152,8 @@ const SignUpScreen = () => {
         }}
       />
       <TextInput
+            autoCapitalize = "none"
+
         style={globalStyles.input}
         keyboardType="email-address"
         placeholder="Email"
