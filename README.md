@@ -1,4 +1,6 @@
 Personalized Navigation Application
+
+
 Welcome to the Personalized Navigation Application! This application is designed to provide users with personalized routes based on their preferences while taking into account obstacles in public spaces. Whether you're navigating through a crowded city or exploring a new area, this app aims to make your journey as smooth and efficient as possible.
 
 Features
